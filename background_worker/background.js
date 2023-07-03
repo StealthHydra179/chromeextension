@@ -1,18 +1,34 @@
+let tabList = []
+let changedSchema = false
+
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.tabs.query(
-        queryInfo = {},
-        callback = function(tabArray) {
-            tabArray.forEach(tab => {
-                chrome.scripting.executeScript({
-                    target: {tabId: tab.id},
-                    files: ['background_worker/injected_content.js']
-                }).then(() => {
-                    // console.log("injected content script into all tabs")
-                }).catch(err => console.log(err))
-            })
+    chrome.storage.local.get("tabList", function(result) {
+        if (result.tabList && !changedSchema) {
+            tabList = result.tabList
+            console.log("tabList loaded from storage: ")
+            console.log(tabList)
+        } else {
+            console.log("tabList not loaded from storage")
         }
-    )
+        //update tabList with current tab info
+        chrome.tabs.query(
+            queryInfo = {},
+            callback = function(tabArray) {
+                tabArray.forEach(tab => {
+                    chrome.scripting.executeScript({
+                        target: {tabId: tab.id},
+                        files: ['background_worker/injected_content.js']
+                    }).then(() => {
+                        console.log("injected content script into all tabs")
+                    }).catch(err => {
+                        console.log(err)
+                        console.log(tab.url)
+                    })
+                })
+            }
+        )
+    })
 })
 
 
@@ -40,32 +56,59 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 //chrome:// tabs don't work
 
-
-let tabList = []
-//content: tab, state, time
-
 //get current state of the tabs and store it in tabList
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // console.log("tab: " + sender + "\nmessage: " + request.message)
     // console.log(sender);
 
     if (request.message.state === "loaded") {
-        tabList = tabList.filter(tab => tab.document_id !== sender.documentId)
-        tabList.push({
-            "document_id": sender.documentId, 
-            "document_url": sender.origin,
-            "visibility": "hidden", 
-            "last_update_time": 0
-        })
+        //if object exists, update it
+        //if object doesn't exist, add it
+        let tabExists = false
+        tabList.forEach(tab => {
+            if (tab.document_id === sender.documentId) {
+                tabExists = true
+                tab.visibility = "hidden"
+                tab.update_time.push({"visibility": "hidden","time": request.message.update_time})
+                tab.loaded_time.push({"state": "loaded","time": request.message.update_time})
+                tab.open = true
+            }
+        }
+        )
+        if (!tabExists) {
+            tabList.push({
+                "document_id": sender.documentId, 
+                "origin": sender.origin,
+                "url": sender.url,
+                // "document_url": sender.origin,
+                "title": sender.tab.title,
+                "visibility": "hidden",
+                "active": sender.tab.active,
+                "audible": sender.tab.audible,
+                "muted": sender.tab.mutedInfo.muted,
+                "update_time": [{"visibility": "hidden","time": request.message.update_time}],
+                "loaded_time": [{"state": "loaded","time": request.message.update_time}],
+                "open": true
+            })
+        }
     }
     if (request.message.state === "closed") {
-        tabList = tabList.filter(tab => tab.document_id !== sender.documentId)
+        //update tabList
+        tabList.forEach(tab => {
+            if (tab.document_id === sender.documentId) {
+                tab.open = false
+                tab.last_update_time = request.message.update_time
+                tab.update_time.push({"visibility": "hidden", "time": request.message.update_time})
+                tab.loaded_time.push({"state": "closed", "time": request.message.update_time})
+            }
+        })
     }
+
     if (request.message.state === "visible") {
         tabList.forEach(tab => {
             if (tab.document_id === sender.documentId && request.message.update_time >= tab.last_update_time) {
                 tab.visibility = "visible"
-                tab.last_update_time = request.message.update_time
+                tab.update_time.push({"visibility": "visible", "time": request.message.update_time})
             }
         })
     }
@@ -73,14 +116,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         tabList.forEach(tab => {
             if (tab.document_id === sender.documentId && request.message.update_time >= tab.last_update_time) {
                 tab.visibility = "hidden"
-                tab.last_update_time = request.message.update_time
+                tab.update_time.push({"visibility": "hidden", "time": request.message.update_time})
             }
         })
     }
     console.log(tabList)
     console.log(request.message)
 
-    updateHistory();
+    updateStorage();
     /*
     example sender object:
         documentId: "7DF44B79F740FEDBB3300A015FCA347D"
@@ -116,6 +159,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 //update history
-function updateHistory() {
-
+function updateStorage() {
+    chrome.storage.local.set({"tabList": tabList}, function() {
+        console.log(tabList)
+    })
 }

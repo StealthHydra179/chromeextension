@@ -3,7 +3,7 @@
     "name": "Anti-Distractor",
     "description": "This extension will block distracting websites while in focus mode",
     "version": "0.1.0",
-    "permissions": ["scripting", "tabs"],
+    "permissions": ["scripting","<all_urls>", "tabs", "storage", "unlimitedStorage"],
     "host_permissions": ["<all_urls>"],
     "action": {
         "default_popup": "popup/popup.html",

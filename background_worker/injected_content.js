@@ -17,7 +17,7 @@ window.addEventListener("beforeunload", function() {
 
 //on page load
 chrome.runtime.sendMessage({message: {"state": "loaded", "update_time": Date.now()}})
-console.log("loaded")
+console.log("loaded") //change to extension loaded and add a extension unload part as well
 
 if (!document.hidden) {
     console.log("visible")
