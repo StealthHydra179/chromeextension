@@ -3,8 +3,16 @@
     "name": "Anti-Distractor",
     "description": "This extension will block distracting websites while in focus mode",
     "version": "0.1.0",
-    "permissions": ["scripting","<all_urls>", "tabs", "storage", "unlimitedStorage"],
-    "host_permissions": ["<all_urls>"],
+    "permissions": [
+        "scripting",
+        "tabs",
+        "storage",
+        "unlimitedStorage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "options_page": "options/options.html",
     "action": {
         "default_popup": "popup/popup.html",
         "default_icon": "images/icon/anti-distractor.png"
@@ -14,7 +22,9 @@
             "js": [
                 "scripts/page_visibility.js"
             ],
-            "matches": ["<all_urls>"]
+            "matches": [
+                "<all_urls>"
+            ]
         }
     ],
     "background": {
