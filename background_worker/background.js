@@ -1,5 +1,6 @@
 let tabList = []
-let changedSchema = false
+let specificList = {}
+let changedSchema = true
 
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function () {
@@ -91,6 +92,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 //get current state of the tabs and store it in tabList
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.message === "requestData") {
+        generateSpecifics();
+        console.log("requestData received")
+        chrome.storage.local.get("specificList", function (result) {
+            sendResponse(result.specificList)
+            console.log("specificList sent")
+            console.log(result.specificList)
+        })
+        return true
+    }
+
+    console.log(request.message.state, sender.url)
     if (request.message.state === "loaded") {
         //if object exists, update it
         //if object doesn't exist, add it
@@ -102,6 +115,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 tab.update_time.push({ "visibility": "hidden", "time": request.message.update_time })
                 tab.loaded_time.push({ "state": "loaded", "time": request.message.update_time })
                 tab.open = true
+                last_update_time = request.message.update_time
             }
         }
         )
@@ -118,7 +132,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 "muted": sender.tab.mutedInfo.muted,
                 "update_time": [{ "visibility": "hidden", "time": request.message.update_time }],
                 "loaded_time": [{ "state": "loaded", "time": request.message.update_time }],
-                "open": true
+                "open": true,
+                "last_update_time": request.message.update_time
             })
         }
     }
@@ -130,21 +145,26 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 tab.last_update_time = request.message.update_time
                 tab.update_time.push({ "visibility": "hidden", "time": request.message.update_time })
                 tab.loaded_time.push({ "state": "closed", "time": request.message.update_time })
+                tab.open = false
             }
         })
     }
 
     if (request.message.state === "visible") {
+        console.log("ifvisible")
         tabList.forEach(tab => {
-            if (tab.document_id === sender.documentId && request.message.update_time >= tab.last_update_time) {
+            if (tab.document_id === sender.documentId ) {//&& request.message.update_time >= tab.last_update_time
+                console.log("visible")
                 tab.visibility = "visible"
                 tab.update_time.push({ "visibility": "visible", "time": request.message.update_time })
             }
         })
     }
     if (request.message.state === "hidden") {
+        console.log("ifhidden")
         tabList.forEach(tab => {
-            if (tab.document_id === sender.documentId && request.message.update_time >= tab.last_update_time) {
+            if (tab.document_id === sender.documentId ) {// && request.message.update_time >= tab.last_update_time
+                console.log("hidden")
                 tab.visibility = "hidden"
                 tab.update_time.push({ "visibility": "hidden", "time": request.message.update_time })
             }
@@ -197,27 +217,104 @@ function updateStorage() {
 }
 
 function generateSpecifics() {
-    let specificList = {}
     chrome.storage.local.get("specificList", function (result) {
-        if (result.specificList !== undefined) {
+        if (result.specificList !== undefined && changedSchema === false) {
             specificList = result.specificList
         }
         calculateSpecifics()
     })
 
     function calculateSpecifics() {
+        specificList = {} //until redo logic to check if alr exists
         //tablist is the input
         //specificList is the output
 
         //specific list is a dictionary of dictionaries
-        /* the first key is "url" (sorted by the origns of the tabs)
+        /* the first dict is "url" (sorted by the origns of the tabs)
         the second key is "page" (sorted by the individual pages)
 
         */
-        
+
+        //for each tab in tablist
+        tabList.forEach(tab => {
+            //if the origin is not in the specific list, add it
+            if (specificList[tab.origin] === undefined) {
+                specificList[tab.origin] = {}
+            }
+            //if the url is not in the specific list, add it
+            if (specificList[tab.origin][tab.url] === undefined) {
+                specificList[tab.origin][tab.url] = {
+                    "title": tab.title,
+                    "url": tab.url,
+                    "origin": tab.origin,
+                    "total_time": -1,
+                    "total_visits": -1,
+                    "total_time_visible": -1,
+                    "total_time_hidden": -1,
+                    "total_time_active": -1, //not currently implemented
+                    "total_time_inactive": -1, //not currently implemented
+                    "total_time_audible": -1, //not currently implemented
+                    "total_time_muted": -1, //not currently implemented
+                    "total_time_unmuted": -1, //not currently implemented
+                    "total_time_loaded": -1,
+                    "total_time_closed": -1,
+                    "update_time": [],
+                    "loaded_time": [],
+                }
+
+
+
+                //update total_visible and hidden time
+                let currentLoopState = tab.update_time[0].visibility
+                let currentLoopTime = tab.update_time[0].time
+                tab.update_time.forEach(update => {
+                    if (currentLoopState === "hidden" && update.visibility === "visible") {
+                        console.log("hidden to visible")
+                        specificList[tab.origin][tab.url].total_time_hidden += update.time - currentLoopTime
+                        currentLoopState = "visible"
+                        currentLoopTime = update.time
+                        specificList[tab.origin][tab.url].total_visits++;
+                    }
+                    if (currentLoopState === "visible" && update.visibility === "hidden") {
+                        console.log("visible to hidden")
+                        specificList[tab.origin][tab.url].total_time_visible += update.time - currentLoopTime
+                        currentLoopState = "hidden"
+                        currentLoopTime = update.time
+                    }
+                })
+
+                //update total_loaded and closed time
+                currentLoopState = tab.loaded_time[0].state
+                currentLoopTime = tab.loaded_time[0].time
+                tab.loaded_time.forEach(update => {
+                    if (currentLoopState === "closed" && update.state === "loaded") {
+                        console.log("loaded to closed")
+                        specificList[tab.origin][tab.url].total_time_closed += update.time - currentLoopTime
+                        currentLoopState = "loaded"
+                        currentLoopTime = update.time
+                        specificList[tab.origin][tab.url].total_visits++;
+                    }
+                    if (currentLoopState === "loaded" && update.state === "closed") {
+                        console.log("closed to loaded")
+                        specificList[tab.origin][tab.url].total_time_loaded += update.time - currentLoopTime
+                        currentLoopState = "closed"
+                        currentLoopTime = update.time
+                    }
+                })
+                
+                //update total_time
+                specificList[tab.origin][tab.url].total_time = specificList[tab.origin][tab.url].total_time_visible + specificList[tab.origin][tab.url].total_time_hidden
+
+                //pass through update and loaded time
+                specificList[tab.origin][tab.url].update_time = tab.update_time
+                specificList[tab.origin][tab.url].loaded_time = tab.loaded_time
+            }
+        })
+
+
         saveSpecifics()
     }
-    
+
     function saveSpecifics() {
         chrome.storage.local.set({ "specificList": specificList }, function () {
             console.log(specificList)
