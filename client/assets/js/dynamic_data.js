@@ -2,18 +2,18 @@ console.log("hi")
 //get speciic data from the database
 chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     console.log(response)
-
+    let specificList = response.specificList
 
     //update the website
 
     //unique websites visited
-    document.getElementById("websites_visited_row_1").innerHTML = Object.keys(response).length
+    document.getElementById("websites_visited_row_1").innerHTML = Object.keys(specificList).length
 
 
     //unique webpages visited (miltiply by total visited or smth?)
     let webpageCount = 0
-    for (let website in response) {
-        webpageCount += Object.keys(response[website]).length
+    for (let website in specificList) {
+        webpageCount += Object.keys(specificList[website]).length
     }
     document.getElementById("webpages_visited_row_1").innerHTML = webpageCount
 
@@ -22,16 +22,87 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
 
 
     //total time used
-    let totalTime = 0
-    for (let website in response) {
-        for (let webpage in response[website]) {
-            if (response[website][webpage]["total_time"] <= -1) {
+    let totalTimeVisible = 0
+    for (let website in specificList) {
+        for (let webpage in specificList[website]) {
+            if (specificList[website][webpage]["total_time_visible"] <= -1) {
                 continue
             }
-            totalTime += response[website][webpage]["total_time"]
+            totalTimeVisible += specificList[website][webpage]["total_time_visible"]
         }
     }
-    document.getElementById("total_time_used_row_1").innerHTML = totalTime
+    console.log(totalTimeVisible)
+    //document.getElementById("total_time_used_row_1").innerHTML = totalTime
+    // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
+    let years = Math.floor(totalTimeVisible / 31536000000)
+    totalTimeVisible -= years * 31536000000
+    let months = Math.floor(totalTimeVisible / 2592000000)
+    totalTimeVisible -= months * 2592000000
+    let weeks = Math.floor(totalTimeVisible / 604800000)
+    totalTimeVisible -= weeks * 604800000
+    let days = Math.floor(totalTimeVisible / 86400000)
+    totalTimeVisible -= days * 86400000
+    let hours = Math.floor(totalTimeVisible / 3600000)
+    totalTimeVisible -= hours * 3600000
+    let minutes = Math.floor(totalTimeVisible / 60000)
+    totalTimeVisible -= minutes * 60000
+    let seconds = Math.floor(totalTimeVisible/1000)
+    totalTimeVisible -= seconds * 1000
+
+    let timeString = ""
+    if (years > 0) {
+        if (years === 1) {
+            timeString += years + " year "
+        } else {
+            timeString += years + " years "
+        }
+    }
+    if (months > 0) {
+        if (months === 1) {
+            timeString += months + " month "
+        } else {
+            timeString += months + " months "
+        }
+    }
+    if (weeks > 0) {
+        if (weeks === 1) {
+            timeString += weeks + " week "
+        } else {
+            timeString += weeks + " weeks "
+        }
+    }
+    if (days > 0) {
+        if (days === 1) {
+            timeString += days + " day "
+        } else {
+            timeString += days + " days "
+        }
+    }
+    if (hours > 0) {
+        if (hours === 1) {
+            timeString += hours + " hour "
+        } else {
+            timeString += hours + " hours "
+        }
+    }
+    if (minutes > 0) {
+        if (minutes === 1) {
+            timeString += minutes + " minute "
+        } else {
+            timeString += minutes + " minutes "
+        }
+    }
+    if (seconds > 0) {
+        if (seconds === 1) {
+            timeString += seconds + " second "
+        } else {
+            timeString += seconds + " seconds "
+        }
+    }
+    if (timeString === "") {
+        timeString = "0 seconds"
+    }
+    document.getElementById("total_time_used_row_1").innerHTML = timeString
 })
 
 
