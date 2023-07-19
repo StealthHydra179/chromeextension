@@ -1,5 +1,4 @@
-console.log("hi")
-//get speciic data from the database
+//get specific data from the database
 chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     console.log(response)
     let specificList = response.specificList
@@ -9,8 +8,7 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     //unique websites visited
     document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length
 
-
-    //unique webpages visited (miltiply by total visited or smth?)
+    //unique webpages visited
     let webpageCount = 0
     for (let website in specificList) {
         webpageCount += Object.keys(specificList[website]).length
@@ -22,33 +20,34 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
 
 
     //total time used
-    let totalTimeVisible = 0
+    let totalTimeUsedVisible = 0
     for (let website in specificList) {
         for (let webpage in specificList[website]) {
             console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
             if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
                 continue
             }
-            totalTimeVisible += specificList[website][webpage]["total_time_visible"]
+            totalTimeUsedVisible += specificList[website][webpage]["total_time_visible"]
         }
     }
-    console.log("TOTAL TIME VISIBLE", totalTimeVisible)
+    console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible)
+    let totalTimeVisible = totalTimeUsedVisible
     //document.getElementById("total_time_used_row_1").innerHTML = totalTime
     // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
-    let years = Math.floor(totalTimeVisible / 31536000000)
-    totalTimeVisible -= years * 31536000000
-    let months = Math.floor(totalTimeVisible / 2592000000)
-    totalTimeVisible -= months * 2592000000
-    let weeks = Math.floor(totalTimeVisible / 604800000)
-    totalTimeVisible -= weeks * 604800000
-    let days = Math.floor(totalTimeVisible / 86400000)
-    totalTimeVisible -= days * 86400000
-    let hours = Math.floor(totalTimeVisible / 3600000)
-    totalTimeVisible -= hours * 3600000
-    let minutes = Math.floor(totalTimeVisible / 60000)
-    totalTimeVisible -= minutes * 60000
-    let seconds = Math.floor(totalTimeVisible/1000)
-    totalTimeVisible -= seconds * 1000
+    let years = Math.floor(totalTimeUsedVisible / 31536000000)
+    totalTimeUsedVisible -= years * 31536000000
+    let months = Math.floor(totalTimeUsedVisible / 2592000000)
+    totalTimeUsedVisible -= months * 2592000000
+    let weeks = Math.floor(totalTimeUsedVisible / 604800000)
+    totalTimeUsedVisible -= weeks * 604800000
+    let days = Math.floor(totalTimeUsedVisible / 86400000)
+    totalTimeUsedVisible -= days * 86400000
+    let hours = Math.floor(totalTimeUsedVisible / 3600000)
+    totalTimeUsedVisible -= hours * 3600000
+    let minutes = Math.floor(totalTimeUsedVisible / 60000)
+    totalTimeUsedVisible -= minutes * 60000
+    let seconds = Math.floor(totalTimeUsedVisible/1000)
+    totalTimeUsedVisible -= seconds * 1000
 
     let timeString = ""
     if (years > 0) {
@@ -104,8 +103,131 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
         timeString = "0 seconds"
     }
     document.getElementById("total_time_used_row_1").innerHTML = timeString
+
+
+
+
+    // top 10 websites used
+    //TODO EDIT CODE TO HAVE HISTORY
+
+
+    // top 4 time breakdown, the rest of the time goes to
+    topTimeBreakdown(response)
+
+
 })
 
+function calculate_totalTimeVisible(response) {
+    let totalTimeVisible = 0
+    for (let website in specificList) {
+        for (let webpage in specificList[website]) {
+            console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
+            if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
+                continue
+            }
+            totalTimeVisible += specificList[website][webpage]["total_time_visible"]
+        }
+    }
+    return totalTimeVisible
+}
+
+function topTimeBreakdown(response) {
+    let sortedSpecificArray = response.sortedSpecificArray;
+
+    let totalTimeUsed = 0
+    let length = response.sortedSpecificArray.length
+    for (let i = 0; i < sortedSpecificArray.length; i++) {
+        if (sortedSpecificArray[i]["value"]["total_time_visible"] < 0) {
+            length = i - 1
+            break
+        }
+        totalTimeUsed += sortedSpecificArray[i]["value"]["total_time_visible"]
+        if (i >= 3) {
+            if (sortedSpecificArray[i+1]["value"]["total_time_visible"] < 1) {
+                length = 4
+            } else {
+                length = 5
+            }
+            break
+        }
+    }
+
+    let piechart = document.getElementById("piechart").getContext('2d');
+
+    let topWebsiteUsed1 = piechart.createLinearGradient(0, 0, 0, 300);
+    topWebsiteUsed1.addColorStop(0, '#fc4a1a');
+    topWebsiteUsed1.addColorStop(1, '#f7b733');
+
+    let topWebsiteUsed2 = piechart.createLinearGradient(0, 0, 0, 300);
+    topWebsiteUsed2.addColorStop(0, '#008cff');
+    topWebsiteUsed2.addColorStop(1, '#8e54e9');
+
+    let topWebsiteUsed3 = piechart.createLinearGradient(0, 0, 0, 300);
+    topWebsiteUsed3.addColorStop(0, '#ee0979');
+    topWebsiteUsed3.addColorStop(1, '#ff6a00');
+
+    let topWebsiteUsed4 = piechart.createLinearGradient(0, 0, 0, 300);
+    topWebsiteUsed4.addColorStop(0, '#42e695');
+    topWebsiteUsed4.addColorStop(1, '#3bb2b8');
+
+    let others = piechart.createLinearGradient(0, 0, 0, 300);
+    others.addColorStop(0, '#ffd31a');
+    others.addColorStop(1, '#ffb94d');
+
+    let colors = []
+    let times = []
+    let labels = []
+    if (sortedSpecificArray.length < 5) {
+        switch (sortedSpecificArray.length) {
+            case 1:
+                colors = [topWebsiteUsed1]
+                times = [sortedSpecificArray[0]["value"]["total_time_visible"]]
+                labels = [sortedSpecificArray[0]["key"]]
+                break
+            case 2:
+                colors = [topWebsiteUsed1, topWebsiteUsed2]
+                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"]]
+                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"]]
+                break
+            case 3:
+                colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3]
+                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"]]
+                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"]]
+                break
+            case 4:
+                colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3, topWebsiteUsed4]
+                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"], sortedSpecificArray[3]["value"]["total_time_visible"]]
+                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"], sortedSpecificArray[3]["key"]]
+                break
+        }
+    } else {
+        colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3, topWebsiteUsed4, others]
+        times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"], sortedSpecificArray[3]["value"]["total_time_visible"], calculate_totalTimeVisible()-totalTimeUsed]
+        labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"], sortedSpecificArray[3]["key"], "Others"]
+    }
+
+    console.log("Colors: ", colors)
+    console.log("Times: ", times)
+
+    let piechartChart = new Chart(piechart, {
+        type: 'doughnut', data: {
+            labels: labels,
+            datasets: [{
+                backgroundColor: colors,
+                hoverBackgroundColor: colors,
+                data: times,
+                borderWidth: [1, 1, 1, 1, 1]
+            }]
+        }, options: {
+            maintainAspectRatio: false, cutout: 100, plugins: {
+                legend: {
+                    display: false,
+                }
+            }
+
+        }
+    });
+}
 
 /*example data
 {
