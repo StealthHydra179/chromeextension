@@ -7,7 +7,7 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     //update the website
 
     //unique websites visited
-    document.getElementById("websites_visited_row_1").innerHTML = Object.keys(specificList).length
+    document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length
 
 
     //unique webpages visited (miltiply by total visited or smth?)
@@ -25,13 +25,14 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     let totalTimeVisible = 0
     for (let website in specificList) {
         for (let webpage in specificList[website]) {
-            if (specificList[website][webpage]["total_time_visible"] <= -1) {
+            console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
+            if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
                 continue
             }
             totalTimeVisible += specificList[website][webpage]["total_time_visible"]
         }
     }
-    console.log(totalTimeVisible)
+    console.log("TOTAL TIME VISIBLE", totalTimeVisible)
     //document.getElementById("total_time_used_row_1").innerHTML = totalTime
     // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
     let years = Math.floor(totalTimeVisible / 31536000000)

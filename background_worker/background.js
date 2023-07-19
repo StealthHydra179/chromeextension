@@ -13,9 +13,7 @@ chrome.runtime.onInstalled.addListener(function () {
             console.log("tabList not loaded from storage")
         }
         //update tabList with current tab info
-        chrome.tabs.query(
-            queryInfo = {},
-            callback = function (tabArray) {
+        chrome.tabs.query({}, function (tabArray) {
                 tabArray.forEach(tab => {
                     chrome.scripting.executeScript({
                         target: {tabId: tab.id},
@@ -43,9 +41,7 @@ chrome.runtime.onStartup.addListener(function () {
             console.log("tabList not loaded from storage")
         }
         //update tabList with current tab info
-        chrome.tabs.query(
-            queryInfo = {},
-            callback = function (tabArray) {
+        chrome.tabs.query({}, function (tabArray) {
                 tabArray.forEach(tab => {
                     chrome.scripting.executeScript({
                         target: {tabId: tab.id},
@@ -364,28 +360,30 @@ function generateSpecifics() {
         console.log(Object.entries(specificList))
         //for each key value pair in specific list
         for (const [key, origin] of Object.entries(specificList)) {
-            console.log("run", key)
-            let total_time = 0 - 1
-            let total_visits = 0 - 1
-            let total_time_visible = 0 - 1
-            let total_time_hidden = 0 - 1
-            let total_time_loaded = 0 - 1
-            let total_time_closed = 0 - 1
-            let total_time_active = 0 - 1
-            let total_time_inactive = 0 - 1
-            let total_time_audible = 0 - 1
-            let total_time_muted = 0 - 1
-            let total_time_unmuted = 0 - 1
+            // console.log("run", key)
+            let total_time = -1
+            let total_visits = -1
+            let total_time_visible = -1
+            let total_time_hidden = -1
+            let total_time_loaded = -1
+            let total_time_closed = -1
+            let total_time_active = -1
+            let total_time_inactive = -1
+            let total_time_audible = -1
+            let total_time_muted = -1
+            let total_time_unmuted = -1
 
-            specificList[key].forEach(page => {
-                if (specificList[key].total_time > 0) {
+//for each key value pair in origin
+            for (const [pkey, page] of Object.entries(specificList[key])) {
+//             specificList[key].forEach(page => {
+                if (page.total_time > 0) {
                     if (total_time === -1) {
                         total_time = page.total_time
                     } else {
                         total_time += page.total_time
                     }
                 }
-                if (specificList[key].total_visits > 0) {
+                if (page.total_visits > 0) {
                     if (total_visits === -1) {
                         total_visits = page.total_visits
                     } else {
@@ -393,7 +391,7 @@ function generateSpecifics() {
                     }
 
                 }
-                if (specificList[key].total_time_visible > 0) {
+                if (page.total_time_visible > 0) {
                     if (total_time_visible === -1) {
                         total_time_visible = page.total_time_visible
                     } else {
@@ -401,74 +399,64 @@ function generateSpecifics() {
                     }
 
                 }
-                if (specificList[key].total_time_hidden > 0) {
+                if (page.total_time_hidden > 0) {
                     if (total_time_hidden === -1) {
                         total_time_hidden = page.total_time_hidden
                     } else {
                         total_time_hidden += page.total_time_hidden
                     }
                 }
-                if (specificList[key].total_time_loaded > 0) {
+                if (page.total_time_loaded > 0) {
                     if (total_time_loaded === -1) {
                         total_time_loaded = page.total_time_loaded
                     } else {
                         total_time_loaded += page.total_time_loaded
                     }
                 }
-                if (specificList[key].total_time_closed > 0) {
+                if (page.total_time_closed > 0) {
                     if (total_time_closed === -1) {
                         total_time_closed = page.total_time_closed
                     } else {
                         total_time_closed += page.total_time_closed
                     }
                 }
-                if (specificList[key].total_time_active > 0) {
+                if (page.total_time_active > 0) {
                     if (total_time_active === -1) {
                         total_time_active = page.total_time_active
                     } else {
                         total_time_active += page.total_time_active
                     }
                 }
-                if (specificList[key].total_time_inactive > 0) {
+                if (page.total_time_inactive > 0) {
                     if (total_time_inactive === -1) {
                         total_time_inactive = page.total_time_inactive
                     } else {
                         total_time_inactive += page.total_time_inactive
                     }
                 }
-                if (specificList[key].total_time_audible > 0) {
+                if (page.total_time_audible > 0) {
                     if (total_time_audible === -1) {
                         total_time_audible = page.total_time_audible
                     } else {
                         total_time_audible += page.total_time_audible
                     }
                 }
-                if (specificList[key].total_time_muted > 0) {
+                if (page.total_time_muted > 0) {
                     if (total_time_muted === -1) {
                         total_time_muted = page.total_time_muted
                     } else {
                         total_time_muted += page.total_time_muted
                     }
                 }
-                if (specificList[key].total_time_unmuted > 0) {
+                if (page.total_time_unmuted > 0) {
                     if (total_time_unmuted === -1) {
                         total_time_unmuted = page.total_time_unmuted
                     } else {
                         total_time_unmuted += page.total_time_unmuted
                     }
                 }
-            })
-            // specificList[key].total_time = total_time
-            // specificList[key].total_visits = total_visits
-            // specificList[key].total_time_visible = total_time_visible
-            // specificList[key].total_time_hidden = total_time_hidden
-            // specificList[key].total_time_loaded = total_time_loaded
-            // specificList[key].total_time_closed = total_time_closed
-            // specificList[key].total_time_active = total_time_active
-            // specificList[key].total_time_inactive = total_time_inactive
-            // specificList[key].total_time_audible = total_time_audible
-            // specificList[key].total_time_muted = total_time_muted
-            // specificList[key].total_time_unmuted = total_time_unmuted
+            }//)
+
             specificList[key]["total_time"] = total_time
             specificList[key]["total_visits"] = total_visits
             specificList[key]["total_time_visible"] = total_time_visible
@@ -480,7 +468,7 @@ function generateSpecifics() {
             specificList[key]["total_time_audible"] = total_time_audible
             specificList[key]["total_time_muted"] = total_time_muted
             specificList[key]["total_time_unmuted"] = total_time_unmuted
-            console.log(specificList[key])
+            // console.log(specificList[key])
         }
 
         saveSpecifics()
