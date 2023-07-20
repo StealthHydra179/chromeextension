@@ -20,21 +20,11 @@ chrome.runtime.sendMessage({message: "requestData"}, (response) => {
 
 
     //total time used
-    let totalTimeUsedVisible = 0
-    for (let website in specificList) {
-        for (let webpage in specificList[website]) {
-            console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
-            if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
-                continue
-            }
-            totalTimeUsedVisible += specificList[website][webpage]["total_time_visible"]
-        }
-    }
+    let totalTimeUsedVisible = calculate_totalTimeVisible(response)
     console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible)
-    let totalTimeVisible = totalTimeUsedVisible
     //document.getElementById("total_time_used_row_1").innerHTML = totalTime
     // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
-    timeString = millisecondsToTimeString(totalTimeVisible)
+    timeString = millisecondsToTimeString(totalTimeUsedVisible)
     document.getElementById("total_time_used_row_1").innerHTML = timeString
 
 
@@ -53,7 +43,7 @@ function calculate_totalTimeVisible(response) {
     let totalTimeVisible = 0
     for (let website in specificList) {
         for (let webpage in specificList[website]) {
-            console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
+            // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
             if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
                 continue
             }
@@ -145,11 +135,13 @@ function topTimeBreakdown(response) {
     for (let i = 0; i < sortedSpecificArray.length; i++) {
         if (sortedSpecificArray[i]["value"]["total_time_visible"] <= 0) {
             length = i
+            console.log("b1", sortedSpecificArray[i]["value"]["total_time_visible"])
             break
         }
         totalTimeUsed += sortedSpecificArray[i]["value"]["total_time_visible"]
         if (i >= 3) {
-            if (sortedSpecificArray[i + 1]["value"]["total_time_visible"] <= 0) {
+            if (totalTimeUsed >= calculate_totalTimeVisible(response)) {
+                console.log("timematch?")
                 length = 4
             } else {
                 length = 5
@@ -157,6 +149,8 @@ function topTimeBreakdown(response) {
             break
         }
     }
+
+    console.log("LENGTH: ", length)
 
     let pieChart = document.getElementById("topTimesPieChart").getContext('2d');
 
@@ -174,11 +168,11 @@ function topTimeBreakdown(response) {
 
     let topWebsiteUsed4 = pieChart.createLinearGradient(0, 0, 0, 300);
     topWebsiteUsed4.addColorStop(0, '#42e695');
-    topWebsiteUsed4.addColorStop(1, '#3bb2b8');
+    topWebsiteUsed4.addColorStop(1, '#3bb86d');
 
     let others = pieChart.createLinearGradient(0, 0, 0, 300);
-    others.addColorStop(0, '#ffd31a');
-    others.addColorStop(1, '#ffb94d');
+    others.addColorStop(0, '#12a986');
+    others.addColorStop(1, '#4dcaff');
 
     let colors = []
     let times = []
@@ -274,7 +268,28 @@ function topTimeBreakdown(response) {
         if (i === 0) {
             li.className += " border-top"
         }
-        li.innerHTML = labels[i] + " <span class=\"badge bg-primary rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>"
+
+        let pill_class
+        switch (i) {
+            case 0:
+                pill_class = "bg-warning text-dark"
+                break
+            case 1:
+                pill_class = "bg-primary"
+                break
+            case 2:
+                pill_class = "bg-danger"
+                break
+            case 3:
+                pill_class = "bg-success"
+                break
+            case 4:
+                pill_class = "bg-info"
+                break
+            case 5:
+                pill_class = "bg-secondary"
+        }
+        li.innerHTML = labels[i] + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>"
         legend.appendChild(li)
     }
 }

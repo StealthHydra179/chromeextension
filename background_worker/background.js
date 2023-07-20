@@ -1,16 +1,22 @@
 let tabList = []
 let specificList = {}
 let changedSchema = false
+let installTime;
 
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function () {
     chrome.storage.local.get("tabList", function (result) {
-        if (result.tabList && !changedSchema) {
+        if (result.tabList !== [] && !changedSchema) {
             tabList = result.tabList
             console.log("tabList loaded from storage: ")
             console.log(tabList)
         } else {
             console.log("tabList not loaded from storage")
+            chrome.storage.local.get("tabList", function (result) {
+                if (result.tabList !== undefined && result.tabList !== null && result.tabList !== []) {
+                    tabList = result.tabList
+                }
+            })
         }
         //update tabList with current tab info
         chrome.tabs.query({}, function (tabArray) {
@@ -21,12 +27,18 @@ chrome.runtime.onInstalled.addListener(function () {
                     }).then(() => {
                         console.log("injected content script into all tabs")
                     }).catch(err => {
-                        console.log(err)
-                        console.log(tab.url)
+                        console.log(err, tab.url)
+                        // memory saved/ tabs that are open but are not loaded dont work
                     })
                 })
             }
         )
+
+        installTime = Date.now()
+        //set installed time
+        chrome.storage.local.set({"installTime": installTime}, function (result) {
+            console.log("installTime set to " + installTime)
+        })
     })
 })
 
@@ -55,6 +67,11 @@ chrome.runtime.onStartup.addListener(function () {
                 })
             }
         )
+    })
+
+    chrome.storage.local.get("installTime", function (result) {
+        installTime = result.installTime
+        console.log("installTime loaded from storage: " + installTime)
     })
 })
 
@@ -89,35 +106,33 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 //get current state of the tabs and store it in tabList
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.message === "requestData") {
-        generateSpecifics();
 
-        let sortedSpecificArray = []
-        for (const [key, value] of Object.entries(specificList)) {
-            sortedSpecificArray.push({key: key, value: value})
-        }
-
-        sortedSpecificArray.sort(function (a, b) {
-            return b.value.total_time - a.value.total_time
-        })
-
-        let sentData = {
-            "tabList": tabList,
-            "specificList": specificList,
-            "sortedSpecificArray": sortedSpecificArray
-        }
         console.log("requestData received")
-        if (specificList !== {}) {
+        chrome.storage.local.get("specificList", function (result) {
+            specificList = result.specificList
+            updateStorage();
+            generateSpecifics();
+
+            let sortedSpecificArray = []
+            for (const [key, value] of Object.entries(specificList)) {
+                sortedSpecificArray.push({key: key, value: value})
+            }
+
+            sortedSpecificArray.sort(function (a, b) {
+                return b.value.total_time_visible - a.value.total_time_visible
+            })
+
+            let sentData = {
+                "tabList": tabList,
+                "specificList": specificList,
+                "sortedSpecificArray": sortedSpecificArray,
+                "timeSinceInstall": Date.now()-installTime
+            }
             sendResponse(sentData)
             console.log("sentData sent")
             console.log(sentData)
-        } else {
-            chrome.storage.local.get("specificList", function (result) {
-                sendResponse(result.specificList)
-                console.log("specificList sent")
-                sentData.specificList = result.specificList
-                console.log(sentData)
-            })
-        }
+        })
+
 
         //i think visible still is broken?
         return true
@@ -135,7 +150,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     tab.update_time.push({"visibility": "hidden", "time": request.message.update_time})
                     tab.loaded_time.push({"state": "loaded", "time": request.message.update_time})
                     tab.open = true
-                    last_update_time = request.message.update_time
+                    tab.last_update_time = request.message.update_time
                 }
             }
         )
@@ -190,8 +205,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }
         })
     }
-    // console.log(tabList)
-    // console.log(request.message)
+// console.log(tabList)
+// console.log(request.message)
 
     updateStorage();
     generateSpecifics();
@@ -232,7 +247,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 //update history
 function updateStorage() {
     chrome.storage.local.set({"tabList": tabList}, function () {
-        console.log(tabList)
+        // console.log(tabList)
     })
 }
 

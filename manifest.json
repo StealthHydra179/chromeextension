@@ -7,10 +7,17 @@
         "scripting",
         "tabs",
         "storage",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "activeTab"
+
     ],
     "host_permissions": [
-        "<all_urls>"
+        "<all_urls>",
+        "http://*/*",
+        "https://*/*",
+        "ftp://*/*",
+        "file://*/*",
+        "*://*/*"
     ],
     "options_page": "options/options.html",
     "action": {
@@ -23,7 +30,12 @@
                 "scripts/page_visibility.js"
             ],
             "matches": [
-                "<all_urls>"
+                "<all_urls>",
+                "http://*/*",
+                "https://*/*",
+                "ftp://*/*",
+                "file://*/*",
+                "*://*/*"
             ]
         }
     ],

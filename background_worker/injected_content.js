@@ -7,7 +7,7 @@ document.addEventListener("visibilitychange", function () {
                 "state": "hidden",
                 "update_time": Date.now()
             }
-        }).then(r => console.log(r)).catch(e => console.log(e))
+        })
     } else {
         // console.log("visible")
         chrome.runtime.sendMessage({
@@ -15,19 +15,20 @@ document.addEventListener("visibilitychange", function () {
                 "state": "visible",
                 "update_time": Date.now()
             }
-        }).then(r => console.log(r)).catch(e => console.log(e))
+        })
     }
 })
 
 
 //on page close?
 window.addEventListener("beforeunload", function () {
+
     chrome.runtime.sendMessage({
         message: {
             "state": "closed",
             "update_time": Date.now()
         }
-    }).then(r => console.log(r)).catch(e => console.log(e))
+    })
 })
 
 //on page load
@@ -36,7 +37,7 @@ chrome.runtime.sendMessage({
         "state": "loaded",
         "update_time": Date.now()
     }
-}).then(r => console.log(r)).catch(e => console.log(e))
+})
 // console.log("loaded") //change to extension loaded and add a extension unload part as well
 
 if (!document.hidden) {
@@ -46,7 +47,7 @@ if (!document.hidden) {
             "state": "visible",
             "update_time": Date.now()
         }
-    }).then(r => console.log(r)).catch(e => console.log(e))
+    })
 }
 
 //every minute, poll the tab for its visiblity state
@@ -58,7 +59,7 @@ setInterval(function () {
                 "state": "hidden",
                 "update_time": Date.now()
             }
-        }).then(r => console.log(r)).catch(e => console.log(e))
+        })
     } else {
         // console.log("visible")
         chrome.runtime.sendMessage({
@@ -66,7 +67,7 @@ setInterval(function () {
                 "state": "visible",
                 "update_time": Date.now()
             }
-        }).then(r => console.log(r)).catch(e => console.log(e))
+        })
     }
 }, 60000);
 
