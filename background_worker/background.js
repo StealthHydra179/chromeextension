@@ -1,6 +1,6 @@
 let tabList = [];
 let specificList = {};
-let changedSchema = false;
+let changedSchema = true;
 let installTime;
 
 //script on all tabs when extension is created
@@ -357,58 +357,64 @@ function generateSpecifics() {
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
                         // console.log("hidden to visible")
                         specificList[tab.origin][tab.url].total_time_hidden += update.time - currentLoopTime;
-                        // currentLoopState = "visible"
-                        currentLoopTime = update.time;
+                        specificList[tab.origin][tab.url].total_visits++;
                     } else if (currentLoopState === "visible" && update.visibility === "hidden") {
                         // console.log("visible to hidden")
                         specificList[tab.origin][tab.url].total_time_visible += update.time - currentLoopTime;
-                        // currentLoopState = "hidden"
-                        currentLoopTime = update.time;
                     } else if (currentLoopState === "visible" && update.visibility === "visible") {
                         // console.log("visible to visible")
                         specificList[tab.origin][tab.url].total_time_visible += update.time - currentLoopTime;
-                        currentLoopTime = update.time;
                     } else if (currentLoopState === "hidden" && update.visibility === "hidden") {
                         // console.log("hidden to hidden")
                         specificList[tab.origin][tab.url].total_time_hidden += update.time - currentLoopTime;
-                        currentLoopTime = update.time;
                     } else {
                         console.log("error in visibility loop", currentLoopState, update.visibility);
                     }
 
+                    currentLoopTime = update.time;
                     currentLoopState = update.visibility;
                 });
+                if (currentLoopState === "visible") {
+                    specificList[tab.origin][tab.url].total_time_visible += Date.now() - currentLoopTime;
+                } else if (currentLoopState === "hidden") {
+                    specificList[tab.origin][tab.url].total_time_hidden += Date.now() - currentLoopTime;
+                }
 
                 //update total_loaded and closed time
                 currentLoopState = tab.loaded_time[0].state;
                 currentLoopTime = tab.loaded_time[0].time;
+                first = true
                 tab.loaded_time.forEach((update) => {
+                    if (first) {
+                        first = false;
+                        return;
+                    }
+
                     if (currentLoopState === "closed" && update.state === "loaded") {
                         // console.log("loaded to closed")
                         specificList[tab.origin][tab.url].total_time_closed += update.time - currentLoopTime;
-                        // currentLoopState = "loaded"
-                        currentLoopTime = update.time;
-                        specificList[tab.origin][tab.url].total_visits++;
+
                     } else if (currentLoopState === "loaded" && update.state === "closed") {
                         // console.log("closed to loaded")
                         specificList[tab.origin][tab.url].total_time_loaded += update.time - currentLoopTime;
-                        // currentLoopState = "closed"
-                        currentLoopTime = update.time;
                     } else if (currentLoopState === "loaded" && update.state === "loaded") {
                         // console.log("loaded to loaded")
                         specificList[tab.origin][tab.url].total_time_loaded += update.time - currentLoopTime;
-                        // currentLoopState = "loaded"
-                        currentLoopTime = update.time;
                     } else if (currentLoopState === "closed" && update.state === "closed") {
                         // console.log("closed to closed")
                         specificList[tab.origin][tab.url].total_time_closed += update.time - currentLoopTime;
-                        // currentLoopState = "closed"
-                        currentLoopTime = update.time;
                     } else {
                         console.log(currentLoopState + " to " + update.state + " not implemented");
                     }
+                    currentLoopTime = update.time;
                     currentLoopState = update.state;
                 });
+                if (currentLoopState === "loaded") {
+                    specificList[tab.origin][tab.url].total_time_loaded += Date.now() - currentLoopTime;
+                } else if (currentLoopState === "closed") {
+                    specificList[tab.origin][tab.url].total_time_closed += Date.now() - currentLoopTime;
+                }
+
 
                 //update total_time
                 specificList[tab.origin][tab.url].total_time =
