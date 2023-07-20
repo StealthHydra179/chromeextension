@@ -389,9 +389,13 @@ function allPages(response) {
     let sortedTabList = response.sortedTabList;
 
     for (let i = 0; i < sortedTabList.length; i++) {
-        if (sortedTabList[i]["total_time_visible"] <= 0  || sortedTabList[i]["total_visits"] === undefined) {
+        if (sortedTabList[i]["total_visits"] === undefined) {
             console.log("skipping: ", sortedTabList[i], sortedTabList[i]["total_time_visible"], sortedTabList[i]["total_visits"])
             continue
+        }
+
+        if (sortedTabList[i]["total_time_visible"] <= 0) {
+            sortedTabList[i]["total_time_visible"]  = 0;
         }
 
         // add row
