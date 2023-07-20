@@ -413,7 +413,7 @@ function allPages(response) {
 
         // add state
         let state = document.createElement("td");
-        if (sortedTabList[i]["open"] === "closed") {
+        if (sortedTabList[i]["open"] === false) {
             state.innerHTML = "<span class=\"badge bg-light-danger text-danger w-100\">Closed</span>";
         } else if (sortedTabList[i]["visibility"] === "visible") {
             state.innerHTML = "<span class=\"badge bg-light-success text-success w-100\">Visible</span>";

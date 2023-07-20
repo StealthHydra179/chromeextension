@@ -23,10 +23,18 @@ document.addEventListener("visibilitychange", function() {
 window.addEventListener("beforeunload", function() {
     chrome.runtime.sendMessage({
         message: {
+            state: "hidden",
+            update_time: Date.now()
+        }
+    })
+    chrome.runtime.sendMessage({
+        message: {
             state: "closed",
             update_time: Date.now()
         }
-    });
+    })
+
+
 });
 
 //on page load
@@ -43,6 +51,14 @@ if (!document.hidden) {
     chrome.runtime.sendMessage({
         message: {
             state: "visible",
+            update_time: Date.now()
+        }
+    });
+} else {
+    // console.log("hidden")
+    chrome.runtime.sendMessage({
+        message: {
+            state: "hidden",
             update_time: Date.now()
         }
     });

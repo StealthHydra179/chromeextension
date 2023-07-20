@@ -163,7 +163,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         //if object doesn't exist, add it
         let tabExists = false;
         tabList.forEach((tab) => {
-            if (tab.document_id === sender.documentId) {
+            if (tab.url === sender.url) {
                 tabExists = true;
                 tab.visibility = "hidden";
                 tab.update_time.push({
@@ -200,7 +200,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "closed") {
         //update tabList
         tabList.forEach((tab) => {
-            if (tab.document_id === sender.documentId) {
+            if (tab.url === sender.url) {
                 tab.open = false;
                 tab.last_update_time = request.message.update_time;
                 tab.update_time.push({
@@ -219,7 +219,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "visible") {
         // console.log("ifvisible")
         tabList.forEach((tab) => {
-            if (tab.document_id === sender.documentId) {
+            if (tab.url === sender.url) {
                 //&& request.message.update_time >= tab.last_update_time
                 // console.log("visible")
                 tab.visibility = "visible";
@@ -233,7 +233,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "hidden") {
         // console.log("ifhidden")
         tabList.forEach((tab) => {
-            if (tab.document_id === sender.documentId) {
+            if (tab.url === sender.url) {
                 // && request.message.update_time >= tab.last_update_time
                 // console.log("hidden")
                 tab.visibility = "hidden";
