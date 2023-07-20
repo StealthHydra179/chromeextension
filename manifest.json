@@ -25,9 +25,7 @@
   },
   "content_scripts": [
     {
-      "js": [
-        "scripts/page_visibility.js"
-      ],
+      "js": ["scripts/page_visibility.js"],
       "matches": [
         "<all_urls>",
         "http://*/*",

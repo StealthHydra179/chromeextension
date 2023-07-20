@@ -1,290 +1,346 @@
 //get specific data from the database
-chrome.runtime.sendMessage({message: "requestData"}, (response) => {
-    console.log(response)
-    let specificList = response.specificList
+chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
+  console.log(response);
+  let specificList = response.specificList;
 
-    //update the website
+  //update the website
 
-    //unique websites visited
-    document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length
+  //unique websites visited
+  document.getElementById("websites_visited_row_1").innerHTML =
+    "" + Object.keys(specificList).length;
 
-    //unique webpages visited
-    let webpageCount = 0
-    for (let website in specificList) {
-        webpageCount += Object.keys(specificList[website]).length
-    }
-    document.getElementById("webpages_visited_row_1").innerHTML = webpageCount
+  //unique webpages visited
+  let webpageCount = 0;
+  for (let website in specificList) {
+    webpageCount += Object.keys(specificList[website]).length;
+  }
+  document.getElementById("webpages_visited_row_1").innerHTML = webpageCount;
 
+  //Average Time Per Day Over The Last 7 Days
 
-    //Average Time Per Day Over The Last 7 Days
+  //total time used
+  let totalTimeUsedVisible = calculate_totalTimeVisible(response);
+  console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible);
+  //document.getElementById("total_time_used_row_1").innerHTML = totalTime
+  // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
+  timeString = millisecondsToTimeString(totalTimeUsedVisible);
+  document.getElementById("total_time_used_row_1").innerHTML = timeString;
 
+  // top 10 websites used
+  //TODO EDIT CODE TO HAVE HISTORY
 
-    //total time used
-    let totalTimeUsedVisible = calculate_totalTimeVisible(response)
-    console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible)
-    //document.getElementById("total_time_used_row_1").innerHTML = totalTime
-    // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
-    timeString = millisecondsToTimeString(totalTimeUsedVisible)
-    document.getElementById("total_time_used_row_1").innerHTML = timeString
+  // top 4 time breakdown, the rest of the time goes to
+  topTimeBreakdown(response);
 
+  // row 3?
 
-    // top 10 websites used
-    //TODO EDIT CODE TO HAVE HISTORY
-
-
-    // top 4 time breakdown, the rest of the time goes to
-    topTimeBreakdown(response)
-
-
-    // row 3?
-
-
-    // row 4
-    // top websites
-    topWebsites(response)
-})
+  // row 4
+  // top websites
+  topWebsites(response);
+});
 
 function calculate_totalTimeVisible(response) {
-    let specificList = response.specificList
-    let totalTimeVisible = 0
-    for (let website in specificList) {
-        for (let webpage in specificList[website]) {
-            // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
-            if (specificList[website][webpage]["total_time_visible"] === undefined || specificList[website][webpage]["total_time_visible"] <= -1) {
-                continue
-            }
-            totalTimeVisible += specificList[website][webpage]["total_time_visible"]
-        }
+  let specificList = response.specificList;
+  let totalTimeVisible = 0;
+  for (let website in specificList) {
+    for (let webpage in specificList[website]) {
+      // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
+      if (
+        specificList[website][webpage]["total_time_visible"] === undefined ||
+        specificList[website][webpage]["total_time_visible"] <= -1
+      ) {
+        continue;
+      }
+      totalTimeVisible += specificList[website][webpage]["total_time_visible"];
     }
-    return totalTimeVisible
+  }
+  return totalTimeVisible;
 }
 
 function millisecondsToTimeString(milliseconds) {
-    let years = Math.floor(milliseconds / 31536000000)
-    milliseconds -= years * 31536000000
-    let months = Math.floor(milliseconds / 2592000000)
-    milliseconds -= months * 2592000000
-    let weeks = Math.floor(milliseconds / 604800000)
-    milliseconds -= weeks * 604800000
-    let days = Math.floor(milliseconds / 86400000)
-    milliseconds -= days * 86400000
-    let hours = Math.floor(milliseconds / 3600000)
-    milliseconds -= hours * 3600000
-    let minutes = Math.floor(milliseconds / 60000)
-    milliseconds -= minutes * 60000
-    let seconds = Math.floor(milliseconds / 1000)
-    milliseconds -= seconds * 1000
-    // does not display miliseconds right now
+  let years = Math.floor(milliseconds / 31536000000);
+  milliseconds -= years * 31536000000;
+  let months = Math.floor(milliseconds / 2592000000);
+  milliseconds -= months * 2592000000;
+  let weeks = Math.floor(milliseconds / 604800000);
+  milliseconds -= weeks * 604800000;
+  let days = Math.floor(milliseconds / 86400000);
+  milliseconds -= days * 86400000;
+  let hours = Math.floor(milliseconds / 3600000);
+  milliseconds -= hours * 3600000;
+  let minutes = Math.floor(milliseconds / 60000);
+  milliseconds -= minutes * 60000;
+  let seconds = Math.floor(milliseconds / 1000);
+  milliseconds -= seconds * 1000;
+  // does not display miliseconds right now
 
-    let timeString = ""
-    if (years > 0) {
-        if (years === 1) {
-            timeString += years + " year "
-        } else {
-            timeString += years + " years "
-        }
+  let timeString = "";
+  if (years > 0) {
+    if (years === 1) {
+      timeString += years + " year ";
+    } else {
+      timeString += years + " years ";
     }
-    if (months > 0) {
-        if (months === 1) {
-            timeString += months + " month "
-        } else {
-            timeString += months + " months "
-        }
+  }
+  if (months > 0) {
+    if (months === 1) {
+      timeString += months + " month ";
+    } else {
+      timeString += months + " months ";
     }
-    if (weeks > 0) {
-        if (weeks === 1) {
-            timeString += weeks + " week "
-        } else {
-            timeString += weeks + " weeks "
-        }
+  }
+  if (weeks > 0) {
+    if (weeks === 1) {
+      timeString += weeks + " week ";
+    } else {
+      timeString += weeks + " weeks ";
     }
-    if (days > 0) {
-        if (days === 1) {
-            timeString += days + " day "
-        } else {
-            timeString += days + " days "
-        }
+  }
+  if (days > 0) {
+    if (days === 1) {
+      timeString += days + " day ";
+    } else {
+      timeString += days + " days ";
     }
-    if (hours > 0) {
-        if (hours === 1) {
-            timeString += hours + " hour "
-        } else {
-            timeString += hours + " hours "
-        }
+  }
+  if (hours > 0) {
+    if (hours === 1) {
+      timeString += hours + " hour ";
+    } else {
+      timeString += hours + " hours ";
     }
-    if (minutes > 0) {
-        if (minutes === 1) {
-            timeString += minutes + " minute "
-        } else {
-            timeString += minutes + " minutes "
-        }
+  }
+  if (minutes > 0) {
+    if (minutes === 1) {
+      timeString += minutes + " minute ";
+    } else {
+      timeString += minutes + " minutes ";
     }
-    if (seconds > 0) {
-        if (seconds === 1) {
-            timeString += seconds + " second "
-        } else {
-            timeString += seconds + " seconds "
-        }
+  }
+  if (seconds > 0) {
+    if (seconds === 1) {
+      timeString += seconds + " second ";
+    } else {
+      timeString += seconds + " seconds ";
     }
-    if (timeString === "") {
-        timeString = "0 seconds"
-    }
+  }
+  if (timeString === "") {
+    timeString = "0 seconds";
+  }
 
-    return timeString
+  return timeString;
 }
 
 function topTimeBreakdown(response) {
-    let sortedSpecificArray = response.sortedSpecificArray;
+  let sortedSpecificArray = response.sortedSpecificArray;
 
-    let totalTimeUsed = 0
-    let length = response.sortedSpecificArray.length
-    for (let i = 0; i < sortedSpecificArray.length; i++) {
-        if (sortedSpecificArray[i]["value"]["total_time_visible"] <= 0) {
-            length = i
-            console.log("b1", sortedSpecificArray[i]["value"]["total_time_visible"])
-            break
-        }
-        totalTimeUsed += sortedSpecificArray[i]["value"]["total_time_visible"]
-        if (i >= 3) {
-            if (totalTimeUsed >= calculate_totalTimeVisible(response)) {
-                console.log("timematch?")
-                length = 4
-            } else {
-                length = 5
-            }
-            break
-        }
+  let totalTimeUsed = 0;
+  let length = response.sortedSpecificArray.length;
+  for (let i = 0; i < sortedSpecificArray.length; i++) {
+    if (sortedSpecificArray[i]["value"]["total_time_visible"] <= 0) {
+      length = i;
+      console.log("b1", sortedSpecificArray[i]["value"]["total_time_visible"]);
+      break;
+    }
+    totalTimeUsed += sortedSpecificArray[i]["value"]["total_time_visible"];
+    if (i >= 3) {
+      if (totalTimeUsed >= calculate_totalTimeVisible(response)) {
+        console.log("timematch?");
+        length = 4;
+      } else {
+        length = 5;
+      }
+      break;
+    }
+  }
+
+  console.log("LENGTH: ", length);
+
+  let pieChart = document.getElementById("topTimesPieChart").getContext("2d");
+
+  let topWebsiteUsed1 = pieChart.createLinearGradient(0, 0, 0, 300);
+  topWebsiteUsed1.addColorStop(0, "#fc4a1a");
+  topWebsiteUsed1.addColorStop(1, "#f7b733");
+
+  let topWebsiteUsed2 = pieChart.createLinearGradient(0, 0, 0, 300);
+  topWebsiteUsed2.addColorStop(0, "#008cff");
+  topWebsiteUsed2.addColorStop(1, "#8e54e9");
+
+  let topWebsiteUsed3 = pieChart.createLinearGradient(0, 0, 0, 300);
+  topWebsiteUsed3.addColorStop(0, "#ee0979");
+  topWebsiteUsed3.addColorStop(1, "#ff6a00");
+
+  let topWebsiteUsed4 = pieChart.createLinearGradient(0, 0, 0, 300);
+  topWebsiteUsed4.addColorStop(0, "#42e695");
+  topWebsiteUsed4.addColorStop(1, "#3bb86d");
+
+  let others = pieChart.createLinearGradient(0, 0, 0, 300);
+  others.addColorStop(0, "#12a986");
+  others.addColorStop(1, "#4dcaff");
+
+  let colors = [];
+  let times = [];
+  let labels = [];
+  if (length < 5) {
+    switch (length) {
+      case 1:
+        colors = [topWebsiteUsed1];
+        times = [sortedSpecificArray[0]["value"]["total_time_visible"]];
+        labels = [sortedSpecificArray[0]["key"]];
+        break;
+      case 2:
+        colors = [topWebsiteUsed1, topWebsiteUsed2];
+        times = [
+          sortedSpecificArray[0]["value"]["total_time_visible"],
+          sortedSpecificArray[1]["value"]["total_time_visible"],
+        ];
+        labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"]];
+        break;
+      case 3:
+        colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3];
+        times = [
+          sortedSpecificArray[0]["value"]["total_time_visible"],
+          sortedSpecificArray[1]["value"]["total_time_visible"],
+          sortedSpecificArray[2]["value"]["total_time_visible"],
+        ];
+        labels = [
+          sortedSpecificArray[0]["key"],
+          sortedSpecificArray[1]["key"],
+          sortedSpecificArray[2]["key"],
+        ];
+        break;
+      case 4:
+        colors = [
+          topWebsiteUsed1,
+          topWebsiteUsed2,
+          topWebsiteUsed3,
+          topWebsiteUsed4,
+        ];
+        times = [
+          sortedSpecificArray[0]["value"]["total_time_visible"],
+          sortedSpecificArray[1]["value"]["total_time_visible"],
+          sortedSpecificArray[2]["value"]["total_time_visible"],
+          sortedSpecificArray[3]["value"]["total_time_visible"],
+        ];
+        labels = [
+          sortedSpecificArray[0]["key"],
+          sortedSpecificArray[1]["key"],
+          sortedSpecificArray[2]["key"],
+          sortedSpecificArray[3]["key"],
+        ];
+        break;
+    }
+  } else {
+    colors = [
+      topWebsiteUsed1,
+      topWebsiteUsed2,
+      topWebsiteUsed3,
+      topWebsiteUsed4,
+      others,
+    ];
+    times = [
+      sortedSpecificArray[0]["value"]["total_time_visible"],
+      sortedSpecificArray[1]["value"]["total_time_visible"],
+      sortedSpecificArray[2]["value"]["total_time_visible"],
+      sortedSpecificArray[3]["value"]["total_time_visible"],
+      calculate_totalTimeVisible(response) - totalTimeUsed,
+    ];
+    labels = [
+      sortedSpecificArray[0]["key"],
+      sortedSpecificArray[1]["key"],
+      sortedSpecificArray[2]["key"],
+      sortedSpecificArray[3]["key"],
+      "Others",
+    ];
+  }
+
+  console.log("Colors: ", colors);
+  console.log("Times: ", times);
+
+  new Chart(pieChart, {
+    type: "doughnut",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          backgroundColor: colors,
+          hoverBackgroundColor: colors,
+          data: times,
+          borderWidth: [1, 1, 1, 1, 1],
+        },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      cutout: 100,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              let label = context.label || "";
+
+              if (label) {
+                label += ": ";
+              }
+              console.log("CONTEXT:", context);
+              if (context.parsed !== null) {
+                // console.log(context.parsed.y)
+                label += millisecondsToTimeString(context.parsed);
+              }
+              return label;
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // update legend
+  let legend = document.getElementById("topTimesBreakdownLegend");
+
+  for (let i = 0; i < length; i++) {
+    let li = document.createElement("li");
+    li.className =
+      "list-group-item d-flex bg-transparent justify-content-between align-items-center";
+    if (i === 0) {
+      li.className += " border-top";
     }
 
-    console.log("LENGTH: ", length)
-
-    let pieChart = document.getElementById("topTimesPieChart").getContext('2d');
-
-    let topWebsiteUsed1 = pieChart.createLinearGradient(0, 0, 0, 300);
-    topWebsiteUsed1.addColorStop(0, '#fc4a1a');
-    topWebsiteUsed1.addColorStop(1, '#f7b733');
-
-    let topWebsiteUsed2 = pieChart.createLinearGradient(0, 0, 0, 300);
-    topWebsiteUsed2.addColorStop(0, '#008cff');
-    topWebsiteUsed2.addColorStop(1, '#8e54e9');
-
-    let topWebsiteUsed3 = pieChart.createLinearGradient(0, 0, 0, 300);
-    topWebsiteUsed3.addColorStop(0, '#ee0979');
-    topWebsiteUsed3.addColorStop(1, '#ff6a00');
-
-    let topWebsiteUsed4 = pieChart.createLinearGradient(0, 0, 0, 300);
-    topWebsiteUsed4.addColorStop(0, '#42e695');
-    topWebsiteUsed4.addColorStop(1, '#3bb86d');
-
-    let others = pieChart.createLinearGradient(0, 0, 0, 300);
-    others.addColorStop(0, '#12a986');
-    others.addColorStop(1, '#4dcaff');
-
-    let colors = []
-    let times = []
-    let labels = []
-    if (length < 5) {
-        switch (length) {
-            case 1:
-                colors = [topWebsiteUsed1]
-                times = [sortedSpecificArray[0]["value"]["total_time_visible"]]
-                labels = [sortedSpecificArray[0]["key"]]
-                break
-            case 2:
-                colors = [topWebsiteUsed1, topWebsiteUsed2]
-                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"]]
-                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"]]
-                break
-            case 3:
-                colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3]
-                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"]]
-                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"]]
-                break
-            case 4:
-                colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3, topWebsiteUsed4]
-                times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"], sortedSpecificArray[3]["value"]["total_time_visible"]]
-                labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"], sortedSpecificArray[3]["key"]]
-                break
-        }
-    } else {
-        colors = [topWebsiteUsed1, topWebsiteUsed2, topWebsiteUsed3, topWebsiteUsed4, others]
-        times = [sortedSpecificArray[0]["value"]["total_time_visible"], sortedSpecificArray[1]["value"]["total_time_visible"], sortedSpecificArray[2]["value"]["total_time_visible"], sortedSpecificArray[3]["value"]["total_time_visible"], calculate_totalTimeVisible(response) - totalTimeUsed]
-        labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"], sortedSpecificArray[3]["key"], "Others"]
+    let pill_class;
+    switch (i) {
+      case 0:
+        pill_class = "bg-warning text-dark";
+        break;
+      case 1:
+        pill_class = "bg-primary";
+        break;
+      case 2:
+        pill_class = "bg-danger";
+        break;
+      case 3:
+        pill_class = "bg-success";
+        break;
+      case 4:
+        pill_class = "bg-info";
+        break;
+      case 5:
+        pill_class = "bg-secondary";
     }
-
-    console.log("Colors: ", colors)
-    console.log("Times: ", times)
-
-    new Chart(pieChart, {
-        type: 'doughnut', data: {
-            labels: labels, datasets: [{
-                backgroundColor: colors, hoverBackgroundColor: colors, data: times, borderWidth: [1, 1, 1, 1, 1]
-            }]
-        }, options: {
-            maintainAspectRatio: false, cutout: 100, plugins: {
-                legend: {
-                    display: false,
-                }, tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            let label = context.label || ''
-
-                            if (label) {
-                                label += ': '
-                            }
-                            console.log("CONTEXT:", context)
-                            if (context.parsed !== null) {
-                                // console.log(context.parsed.y)
-                                label += millisecondsToTimeString(context.parsed)
-                            }
-                            return label
-                        }
-                    }
-                }
-            }
-
-        }
-    });
-
-    // update legend
-    let legend = document.getElementById("topTimesBreakdownLegend")
-
-
-    for (let i = 0; i < length; i++) {
-        let li = document.createElement("li")
-        li.className = "list-group-item d-flex bg-transparent justify-content-between align-items-center"
-        if (i === 0) {
-            li.className += " border-top"
-        }
-
-        let pill_class
-        switch (i) {
-            case 0:
-                pill_class = "bg-warning text-dark"
-                break
-            case 1:
-                pill_class = "bg-primary"
-                break
-            case 2:
-                pill_class = "bg-danger"
-                break
-            case 3:
-                pill_class = "bg-success"
-                break
-            case 4:
-                pill_class = "bg-info"
-                break
-            case 5:
-                pill_class = "bg-secondary"
-        }
-        li.innerHTML = labels[i] + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>"
-        legend.appendChild(li)
-    }
+    li.innerHTML =
+      labels[i] +
+      ' <span class="badge ' +
+      pill_class +
+      ' rounded-pill">' +
+      millisecondsToTimeString(times[i]) +
+      "</span>";
+    legend.appendChild(li);
+  }
 }
 
-function topWebsites(response) {
-
-}
+function topWebsites(response) {}
 
 /*EXAMPLE DATA
 {
