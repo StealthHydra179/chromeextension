@@ -1,495 +1,495 @@
 $(function () {
-  "use strict";
+  'use strict'
 
   window.Apex = {
     stroke: {
-      width: 3,
+      width: 3
     },
     markers: {
-      size: 0,
+      size: 0
     },
     tooltip: {
       fixed: {
-        enabled: true,
-      },
-    },
-  };
+        enabled: true
+      }
+    }
+  }
 
-  var randomizeArray = function (arg) {
-    var array = arg.slice();
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
+  const randomizeArray = function (arg) {
+    const array = arg.slice()
+    let currentIndex = array.length
+    let temporaryValue
+    let randomIndex
 
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex -= 1
 
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+      temporaryValue = array[currentIndex]
+      array[currentIndex] = array[randomIndex]
+      array[randomIndex] = temporaryValue
     }
 
-    return array;
-  };
+    return array
+  }
 
   // data for the sparklines that appear below header area
-  var sparklineData = [
+  const sparklineData = [
     47, 45, 54, 38, 56, 24, 65, 31, 37, 39, 62, 51, 35, 41, 35, 27, 93, 53, 61,
-    27, 54, 43, 19, 46,
-  ];
+    27, 54, 43, 19, 46
+  ]
 
   var spark1 = {
     chart: {
-      foreColor: "rgba(255, 255, 255, 255)",
-      type: "area",
+      foreColor: 'rgba(255, 255, 255, 255)',
+      type: 'area',
       height: 160,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     stroke: {
       width: 2,
-      curve: "straight",
+      curve: 'straight'
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "light",
-        gradientToColors: ["#fff"],
+        shade: 'light',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.9,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     tooltip: {
       enabled: true,
-      theme: "dark",
+      theme: 'dark'
     },
     series: [
       {
-        data: randomizeArray(sparklineData),
-      },
+        data: randomizeArray(sparklineData)
+      }
     ],
     yaxis: {
-      min: 0,
+      min: 0
     },
     title: {
-      text: "$424,652",
+      text: '$424,652',
       offsetX: 0,
       style: {
-        fontSize: "24px",
-        cssClass: "apexcharts-yaxis-title",
-      },
+        fontSize: '24px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
     },
     subtitle: {
-      text: "Sales",
+      text: 'Sales',
       offsetX: 0,
       style: {
-        fontSize: "14px",
-        cssClass: "apexcharts-yaxis-title",
-      },
-    },
-  };
+        fontSize: '14px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
+    }
+  }
 
   var spark2 = {
     chart: {
-      foreColor: "rgba(255, 255, 255, 0.85)",
-      type: "area",
+      foreColor: 'rgba(255, 255, 255, 0.85)',
+      type: 'area',
       height: 160,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     stroke: {
       width: 2,
-      curve: "straight",
+      curve: 'straight'
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     tooltip: {
       enabled: true,
-      theme: "dark",
+      theme: 'dark'
     },
     series: [
       {
-        data: randomizeArray(sparklineData),
-      },
+        data: randomizeArray(sparklineData)
+      }
     ],
     yaxis: {
-      min: 0,
+      min: 0
     },
     title: {
-      text: "$235,312",
+      text: '$235,312',
       offsetX: 0,
       style: {
-        fontSize: "24px",
-        cssClass: "apexcharts-yaxis-title",
-      },
+        fontSize: '24px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
     },
     subtitle: {
-      text: "Expenses",
+      text: 'Expenses',
       offsetX: 0,
       style: {
-        fontSize: "14px",
-        cssClass: "apexcharts-yaxis-title",
-      },
-    },
-  };
+        fontSize: '14px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
+    }
+  }
 
   var spark3 = {
     chart: {
-      foreColor: "rgba(255, 255, 255, 255)",
-      type: "area",
+      foreColor: 'rgba(255, 255, 255, 255)',
+      type: 'area',
       height: 160,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     stroke: {
       width: 2,
-      curve: "straight",
+      curve: 'straight'
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     tooltip: {
       enabled: true,
-      theme: "dark",
+      theme: 'dark'
     },
     series: [
       {
-        data: randomizeArray(sparklineData),
-      },
+        data: randomizeArray(sparklineData)
+      }
     ],
     xaxis: {
       crosshairs: {
-        width: 1,
-      },
+        width: 1
+      }
     },
     yaxis: {
-      min: 0,
+      min: 0
     },
     title: {
-      text: "$135,965",
+      text: '$135,965',
       offsetX: 0,
       style: {
-        fontSize: "24px",
-        cssClass: "apexcharts-yaxis-title",
-      },
+        fontSize: '24px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
     },
     subtitle: {
-      text: "Profits",
+      text: 'Profits',
       offsetX: 0,
       style: {
-        fontSize: "14px",
-        cssClass: "apexcharts-yaxis-title",
-      },
-    },
-  };
+        fontSize: '14px',
+        cssClass: 'apexcharts-yaxis-title'
+      }
+    }
+  }
 
-  var spark1 = new ApexCharts(document.querySelector("#spark1"), spark1);
-  spark1.render();
-  var spark2 = new ApexCharts(document.querySelector("#spark2"), spark2);
-  spark2.render();
-  var spark3 = new ApexCharts(document.querySelector("#spark3"), spark3);
-  spark3.render();
+  var spark1 = new ApexCharts(document.querySelector('#spark1'), spark1)
+  spark1.render()
+  var spark2 = new ApexCharts(document.querySelector('#spark2'), spark2)
+  spark2.render()
+  var spark3 = new ApexCharts(document.querySelector('#spark3'), spark3)
+  spark3.render()
 
-  var options1 = {
+  const options1 = {
     chart: {
-      type: "line",
-      width: "100%",
+      type: 'line',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 1,
         opacityTo: 1,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     series: [
       {
-        name: "Sales",
-        data: [25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54],
-      },
+        name: 'Sales',
+        data: [25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54]
+      }
     ],
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  var options2 = {
+  const options2 = {
     chart: {
-      type: "line",
-      width: "100%",
+      type: 'line',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 1,
         opacityTo: 1,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     series: [
       {
-        name: "Expenses",
-        data: [12, 14, 2, 47, 42, 15, 47, 75, 65, 19, 14],
-      },
+        name: 'Expenses',
+        data: [12, 14, 2, 47, 42, 15, 47, 75, 65, 19, 14]
+      }
     ],
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  var options3 = {
+  const options3 = {
     chart: {
-      type: "line",
-      width: "100%",
+      type: 'line',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 1,
         opacityTo: 1,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     series: [
       {
-        name: "Profits",
-        data: [47, 45, 74, 14, 56, 74, 14, 11, 7, 39, 82],
-      },
+        name: 'Profits',
+        data: [47, 45, 74, 14, 56, 74, 14, 11, 7, 39, 82]
+      }
     ],
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  var options4 = {
+  const options4 = {
     chart: {
-      type: "bar",
-      width: "100%",
+      type: 'bar',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     plotOptions: {
       bar: {
-        columnWidth: "50%",
-      },
+        columnWidth: '50%'
+      }
     },
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     series: [
       {
-        name: "Sales",
-        data: [25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54],
-      },
+        name: 'Sales',
+        data: [25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54]
+      }
     ],
     labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     xaxis: {
       crosshairs: {
-        width: 1,
-      },
+        width: 1
+      }
     },
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  var options5 = {
+  const options5 = {
     chart: {
-      type: "bar",
-      width: "100%",
+      type: 'bar',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     plotOptions: {
       bar: {
-        columnWidth: "50%",
-      },
+        columnWidth: '50%'
+      }
     },
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     series: [
       {
-        name: "Expenses",
-        data: [12, 14, 2, 47, 42, 15, 47, 75, 65, 19, 14],
-      },
+        name: 'Expenses',
+        data: [12, 14, 2, 47, 42, 15, 47, 75, 65, 19, 14]
+      }
     ],
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     xaxis: {
       crosshairs: {
-        width: 1,
-      },
+        width: 1
+      }
     },
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  var options6 = {
+  const options6 = {
     chart: {
-      type: "bar",
-      width: "100%",
+      type: 'bar',
+      width: '100%',
       height: 55,
       sparkline: {
-        enabled: true,
-      },
+        enabled: true
+      }
     },
     plotOptions: {
       bar: {
-        columnWidth: "50%",
-      },
+        columnWidth: '50%'
+      }
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#fff"],
+        shade: 'dark',
+        gradientToColors: ['#fff'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.2,
-        stops: [0, 100, 100, 100],
-      },
+        stops: [0, 100, 100, 100]
+      }
     },
-    colors: ["#fff"],
+    colors: ['#fff'],
     dataLabels: {
-      enabled: false,
+      enabled: false
     },
     series: [
       {
-        name: "Profits",
-        data: [47, 45, 74, 14, 56, 74, 14, 11, 7, 39, 82],
-      },
+        name: 'Profits',
+        data: [47, 45, 74, 14, 56, 74, 14, 11, 7, 39, 82]
+      }
     ],
     labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     xaxis: {
       crosshairs: {
-        width: 1,
-      },
+        width: 1
+      }
     },
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
       x: {
-        show: false,
-      },
-    },
-  };
+        show: false
+      }
+    }
+  }
 
-  new ApexCharts(document.querySelector("#chart1"), options1).render();
-  new ApexCharts(document.querySelector("#chart2"), options2).render();
-  new ApexCharts(document.querySelector("#chart3"), options3).render();
-  new ApexCharts(document.querySelector("#chart4"), options4).render();
-  new ApexCharts(document.querySelector("#chart5"), options5).render();
-  new ApexCharts(document.querySelector("#chart6"), options6).render();
-});
+  new ApexCharts(document.querySelector('#chart1'), options1).render()
+  new ApexCharts(document.querySelector('#chart2'), options2).render()
+  new ApexCharts(document.querySelector('#chart3'), options3).render()
+  new ApexCharts(document.querySelector('#chart4'), options4).render()
+  new ApexCharts(document.querySelector('#chart5'), options5).render()
+  new ApexCharts(document.querySelector('#chart6'), options6).render()
+})
