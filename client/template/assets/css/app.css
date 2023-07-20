@@ -103,7 +103,7 @@ a {
 }
 
 .page-content {
-    padding: 1.5rem 1.5rem 0.7rem 1.5rem;
+    padding: 1.5rem 1.5rem 0.7rem;
 }
 
 .page-footer {
@@ -200,7 +200,7 @@ a {
 }
 
 .sidebar-wrapper .metismenu ul a {
-    padding: 6px 15px 6px 15px;
+    padding: 6px 15px;
     font-size: 15px;
     border: 0;
 }
@@ -757,8 +757,8 @@ form select.error:focus {
 }
 
 .dash-wrapper {
-    margin: -1.5rem -1.5rem -3.5rem -1.5rem;
-    padding: 1.5rem 1.5rem 3.5rem 1.5rem;
+    margin: -1.5rem -1.5rem -3.5rem;
+    padding: 1.5rem 1.5rem 3.5rem;
 }
 
 .dash-array-chart-box {
@@ -1174,7 +1174,7 @@ form select.error:focus {
 
 .chat-content {
     margin-left: 340px;
-    padding: 85px 15px 15px 15px;
+    padding: 85px 15px 15px;
 }
 
 .chat-header {
@@ -2160,7 +2160,7 @@ input.search-control-2::placeholder {
 .dropdown-large .dropdown-menu {
     width: 360px;
     border: 0;
-    padding: 0 0;
+    padding: 0;
     border-radius: 10px;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
@@ -2422,7 +2422,7 @@ input.search-control-2::placeholder {
     }
 
     .email-content {
-        padding: 100px 0 0 0;
+        padding: 100px 0 0;
     }
 }
 
