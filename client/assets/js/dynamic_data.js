@@ -36,6 +36,12 @@ chrome.runtime.sendMessage({message: "requestData"}, (response) => {
     topTimeBreakdown(response)
 
 
+    // row 3?
+
+
+    // row 4
+    // top websites
+    topWebsites(response)
 })
 
 function calculate_totalTimeVisible(response) {
@@ -206,30 +212,19 @@ function topTimeBreakdown(response) {
         labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"], sortedSpecificArray[3]["key"], "Others"]
     }
 
-    // for (let i = 0; i < times.length; i++) {
-    //     times[i] = Math.floor(times[i] / totalTimeUsed * 100)
-    // }
-
     console.log("Colors: ", colors)
     console.log("Times: ", times)
 
     new Chart(pieChart, {
         type: 'doughnut', data: {
-            labels: labels,
-            datasets: [{
-                backgroundColor: colors,
-                hoverBackgroundColor: colors,
-                data: times,
-                borderWidth: [1, 1, 1, 1, 1]
+            labels: labels, datasets: [{
+                backgroundColor: colors, hoverBackgroundColor: colors, data: times, borderWidth: [1, 1, 1, 1, 1]
             }]
         }, options: {
-            maintainAspectRatio: false,
-            cutout: 100,
-            plugins: {
+            maintainAspectRatio: false, cutout: 100, plugins: {
                 legend: {
                     display: false,
-                },
-                tooltip: {
+                }, tooltip: {
                     callbacks: {
                         label: function (context) {
                             let label = context.label || ''
@@ -253,14 +248,7 @@ function topTimeBreakdown(response) {
 
     // update legend
     let legend = document.getElementById("topTimesBreakdownLegend")
-    /*
-    <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">T-Shirts <span class="badge bg-danger rounded-pill">10</span>
-							</li>
-							<li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Shoes <span class="badge bg-primary rounded-pill">65</span>
-							</li>
-							<li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Pants <span class="badge bg-warning text-dark rounded-pill">14</span>
-							</li>
-     */
+
 
     for (let i = 0; i < length; i++) {
         let li = document.createElement("li")
@@ -292,6 +280,10 @@ function topTimeBreakdown(response) {
         li.innerHTML = labels[i] + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>"
         legend.appendChild(li)
     }
+}
+
+function topWebsites(response) {
+
 }
 
 /*EXAMPLE DATA

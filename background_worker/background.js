@@ -126,7 +126,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 "tabList": tabList,
                 "specificList": specificList,
                 "sortedSpecificArray": sortedSpecificArray,
-                "timeSinceInstall": Date.now()-installTime
+                "timeSinceInstall": Date.now() - installTime
             }
             sendResponse(sentData)
             console.log("sentData sent")

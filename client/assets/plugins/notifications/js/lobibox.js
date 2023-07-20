@@ -195,7 +195,7 @@ var Lobibox = Lobibox || {};
             lobibox.attr('data-is-modal', me.$options.modal);
             var header = $('<div class="lobibox-header"></div>')
                 .append('<span class="lobibox-title"></span>')
-                ;
+            ;
             var body = $('<div class="lobibox-body"></div>');
             lobibox.append(header);
             lobibox.append(body);
@@ -332,12 +332,12 @@ var Lobibox = Lobibox || {};
             var me = this;
             Lobibox.counter++;
             me.$el.attr('data-nth', Lobibox.counter);
-            if (!me.$options.draggable){
-                $(window).on('resize.lobibox-'+me.$el.attr('data-nth'), function(){
+            if (!me.$options.draggable) {
+                $(window).on('resize.lobibox-' + me.$el.attr('data-nth'), function () {
                     me.refreshWidth();
                     me.refreshHeight();
-                    me.$el.css('left', '50%').css('margin-left', '-'+(me.$el.width()/2)+'px');
-                    me.$el.css('top', '50%').css('margin-top', '-'+(me.$el.height()/2)+'px');
+                    me.$el.css('left', '50%').css('margin-left', '-' + (me.$el.width() / 2) + 'px');
+                    me.$el.css('top', '50%').css('margin-top', '-' + (me.$el.height() / 2) + 'px');
                 });
             }
 
@@ -351,8 +351,8 @@ var Lobibox = Lobibox || {};
 
         _afterClose: function () {
             var me = this;
-            if (!me.$options.draggable){
-                $(window).off('resize.lobibox-'+me.$el.attr('data-nth'));
+            if (!me.$options.draggable) {
+                $(window).off('resize.lobibox-' + me.$el.attr('data-nth'));
             }
             me._triggerEvent('closed');
         },
@@ -376,6 +376,7 @@ var Lobibox = Lobibox || {};
             } else {
                 callback();
             }
+
             function callback() {
                 me.$el.addClass('lobibox-hidden');
                 if ($('.lobibox[data-is-modal=true]:not(.lobibox-hidden)').length === 0) {
@@ -403,6 +404,7 @@ var Lobibox = Lobibox || {};
             } else {
                 callback();
             }
+
             function callback() {
                 me.$el.remove();
                 if ($('.lobibox[data-is-modal=true]').length === 0) {
@@ -427,11 +429,11 @@ var Lobibox = Lobibox || {};
             return me;
         },
 
-        refreshWidth: function(){
+        refreshWidth: function () {
             this.setWidth(this.$el.width());
         },
 
-        refreshHeight: function(){
+        refreshHeight: function () {
             this.setHeight(this.$el.height());
         },
 
@@ -703,10 +705,10 @@ var Lobibox = Lobibox || {};
             var me = this,
                 $error = me.$el.find('.lobibox-input-error-message');
 
-            if (me.$options.required && !me.getValue()){
+            if (me.$options.required && !me.getValue()) {
                 me.$input.addClass('invalid');
-                if ($error.length === 0){
-                    me.$el.find('.lobibox-body').append('<p class="lobibox-input-error-message">'+me.$options.errorMessage+'</p>');
+                if ($error.length === 0) {
+                    me.$el.find('.lobibox-body').append('<p class="lobibox-input-error-message">' + me.$options.errorMessage + '</p>');
                     me._position();
                     me.$input.focus();
                 }
@@ -912,7 +914,7 @@ var Lobibox = Lobibox || {};
             var me = this;
             var outer = $('<div class="lobibox-progress-bar-wrapper lobibox-progress-outer"></div>')
                 .append('<div class="lobibox-progress-bar lobibox-progress-element"></div>')
-                ;
+            ;
             if (me.$options.showProgressLabel) {
                 outer.append('<span class="lobibox-progress-text" data-role="progress-text"></span>');
             }

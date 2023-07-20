@@ -62,8 +62,6 @@ $(function () {
 // chart 2
 
 
-
-
 // chart3
 
     var ctx = document.getElementById('chart3').getContext('2d');
