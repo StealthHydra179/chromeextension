@@ -1,42 +1,22 @@
 {
-  "manifest_version": 3,
-  "name": "Anti-Distractor",
-  "description": "This extension will block distracting websites while in focus mode",
-  "version": "0.1.0",
-  "permissions": [
-    "scripting",
-    "tabs",
-    "storage",
-    "unlimitedStorage",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "<all_urls>",
-    "http://*/*",
-    "https://*/*",
-    "ftp://*/*",
-    "file://*/*",
-    "*://*/*"
-  ],
-  "options_page": "options/options.html",
-  "action": {
-    "default_popup": "popup/popup.html",
-    "default_icon": "images/icon/anti-distractor.png"
-  },
-  "content_scripts": [
-    {
-      "js": ["scripts/page_visibility.js"],
-      "matches": [
-        "<all_urls>",
-        "http://*/*",
-        "https://*/*",
-        "ftp://*/*",
-        "file://*/*",
-        "*://*/*"
-      ]
+    "manifest_version": 3,
+    "name": "Anti-Distractor",
+    "description": "This extension will block distracting websites while in focus mode",
+    "version": "0.1.0",
+    "permissions": ["scripting", "tabs", "storage", "unlimitedStorage", "activeTab"],
+    "host_permissions": ["<all_urls>", "http://*/*", "https://*/*", "ftp://*/*", "file://*/*", "*://*/*"],
+    "options_page": "options/options.html",
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": "images/icon/anti-distractor.png"
+    },
+    "content_scripts": [
+        {
+            "js": ["scripts/page_visibility.js"],
+            "matches": ["<all_urls>", "http://*/*", "https://*/*", "ftp://*/*", "file://*/*", "*://*/*"]
+        }
+    ],
+    "background": {
+        "service_worker": "background_worker/background.js"
     }
-  ],
-  "background": {
-    "service_worker": "background_worker/background.js"
-  }
 }
