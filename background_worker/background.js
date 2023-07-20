@@ -355,10 +355,11 @@ function generateSpecifics() {
             }
         })
 
-        console.log(specificList)
-        console.log("deb1")
-        console.log(Object.entries(specificList))
+        // console.log(specificList)
+        // console.log("deb1")
+        // console.log(Object.entries(specificList))
         //for each key value pair in specific list
+
         for (const [key, origin] of Object.entries(specificList)) {
             // console.log("run", key)
             let total_time = -1
