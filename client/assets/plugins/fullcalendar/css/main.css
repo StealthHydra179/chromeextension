@@ -1544,7 +1544,7 @@ A VERTICAL event
 }
 
 .fc .fc-list-table th {
-    padding: 0; /* uses an inner-wrapper instead... */
+    padding: 0; /* uses an inner-nav-wrapper instead... */
 }
 
 .fc .fc-list-table td,

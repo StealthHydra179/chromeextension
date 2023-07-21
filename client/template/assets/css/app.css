@@ -17,7 +17,7 @@ a {
     text-decoration: none;
 }
 
-.wrapper {
+.nav-wrapper {
     width: 100%;
     position: relative;
 }
@@ -119,15 +119,15 @@ a {
     z-index: 3;
 }
 
-.wrapper.toggled .topbar {
+.nav-wrapper.toggled .topbar {
     left: 70px;
 }
 
-.wrapper.toggled .page-wrapper {
+.nav-wrapper.toggled .page-wrapper {
     margin-left: 70px;
 }
 
-.wrapper.toggled .page-footer {
+.nav-wrapper.toggled .page-footer {
     left: 70px;
 }
 
@@ -255,47 +255,47 @@ a {
 }
 
 @media screen and (min-width: 1025px) {
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header .logo-text {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header .logo-text {
         display: none;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper {
         width: 70px;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
         width: 70px;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header .toggle-icon {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header .toggle-icon {
         display: none;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
         justify-content: center;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .sidebar-header {
         width: 70px;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu a {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu a {
         justify-content: center;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu .menu-title {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu .menu-title {
         display: none;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu li ul {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu li ul {
         display: none;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu li.menu-label {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu li.menu-label {
         display: none;
     }
 
-    .wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu .has-arrow:after {
+    .nav-wrapper.toggled:not(.sidebar-hovered) .sidebar-wrapper .metismenu .has-arrow:after {
         display: none;
     }
 
@@ -2506,15 +2506,15 @@ input.search-control-2::placeholder {
         padding-left: 2.5rem;
     }
 
-    .wrapper.toggled .sidebar-wrapper {
+    .nav-wrapper.toggled .sidebar-wrapper {
         left: 0;
     }
 
-    .wrapper.toggled .page-wrapper {
+    .nav-wrapper.toggled .page-wrapper {
         margin-left: 0;
     }
 
-    .wrapper.toggled .overlay {
+    .nav-wrapper.toggled .overlay {
         position: fixed;
         top: 0;
         right: 0;

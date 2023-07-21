@@ -981,7 +981,7 @@ html.dark-theme .product-discount {
 }
 
 @media screen and (max-width: 1024px) {
-    html.dark-theme .wrapper.toggled .overlay {
+    html.dark-theme .nav-wrapper.toggled .overlay {
         background: #fff;
         opacity: 0.4;
     }

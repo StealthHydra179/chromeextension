@@ -9103,7 +9103,7 @@ var FullCalendar = (function (exports) {
             };
             _this.handleSegEnter = function (ev, segEl) {
                 if (getElSeg(segEl)) {
-                    // TODO: better way to make sure not hovering over more+ link or its wrapper
+                    // TODO: better way to make sure not hovering over more+ link or its nav-wrapper
                     _this.currentSegEl = segEl;
                     _this.triggerEvent("eventMouseEnter", ev, segEl);
                 }
@@ -13852,7 +13852,7 @@ var FullCalendar = (function (exports) {
         var segTops = {}; // always populated for each seg
         var segMarginTops = {}; // simetimes populated for each seg
         var moreTops = {};
-        var paddingBottoms = {}; // for each cell's inner-wrapper div
+        var paddingBottoms = {}; // for each cell's inner-nav-wrapper div
         for (var i = 0; i < colCnt; i++) {
             colPlacements.push([]);
             moreCnts.push(0);
@@ -14761,7 +14761,7 @@ var FullCalendar = (function (exports) {
                     className: classNames.join(" "),
                     ref: this.handleRootEl,
                     style: {
-                        // these props are important to give this wrapper correct dimensions for interactions
+                        // these props are important to give this nav-wrapper correct dimensions for interactions
                         // TODO: if we set it here, can we avoid giving to inner tables?
                         width: props.clientWidth,
                         minWidth: props.tableMinWidth,
@@ -16604,7 +16604,7 @@ var FullCalendar = (function (exports) {
                     className: "fc-timegrid-body",
                     ref: props.rootElRef,
                     style: {
-                        // these props are important to give this wrapper correct dimensions for interactions
+                        // these props are important to give this nav-wrapper correct dimensions for interactions
                         // TODO: if we set it here, can we avoid giving to inner tables?
                         width: props.clientWidth,
                         minWidth: props.tableMinWidth,

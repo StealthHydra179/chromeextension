@@ -36,7 +36,7 @@
             SETTINGS = COMPONENT ? $.extend(true, {}, COMPONENT.defaults, OPTIONS) : OPTIONS || {},
             // Merge the default classes with the settings classes.
             CLASSES = $.extend({}, PickerConstructor.klasses(), SETTINGS.klass),
-            // The element node wrapper into a jQuery object.
+            // The element node nav-wrapper into a jQuery object.
             $ELEMENT = $(ELEMENT),
             // Pseudo picker constructor.
             PickerInstance = function () {
@@ -503,11 +503,11 @@
          * Wrap the picker holder components together.
          */
         function createWrappedComponent() {
-            // Create a picker wrapper holder
+            // Create a picker nav-wrapper holder
             return PickerConstructor._.node(
                 "div",
 
-                // Create a picker wrapper node
+                // Create a picker nav-wrapper node
                 PickerConstructor._.node(
                     "div",
 

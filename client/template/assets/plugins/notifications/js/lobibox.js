@@ -769,10 +769,10 @@ var Lobibox = Lobibox || {};
             var d = $("<div></div>");
             if (me.$options.iconClass) {
                 d.append(
-                    $('<div class="lobibox-icon-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
+                    $('<div class="lobibox-icon-nav-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
                 );
             }
-            d.append('<div class="lobibox-body-text-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
+            d.append('<div class="lobibox-body-text-nav-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
             me._setContent(d.html());
 
             me._position();
@@ -827,10 +827,10 @@ var Lobibox = Lobibox || {};
             var d = $("<div></div>");
             if (me.$options.iconClass) {
                 d.append(
-                    $('<div class="lobibox-icon-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
+                    $('<div class="lobibox-icon-nav-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
                 );
             }
-            d.append('<div class="lobibox-body-text-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
+            d.append('<div class="lobibox-body-text-nav-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
             me._setContent(d.html());
             me._position();
 
@@ -905,7 +905,7 @@ var Lobibox = Lobibox || {};
 
         _createProgressbar: function () {
             var me = this;
-            var outer = $('<div class="lobibox-progress-bar-wrapper lobibox-progress-outer"></div>').append(
+            var outer = $('<div class="lobibox-progress-bar-nav-wrapper lobibox-progress-outer"></div>').append(
                 '<div class="lobibox-progress-bar lobibox-progress-element"></div>',
             );
             if (me.$options.showProgressLabel) {
@@ -1200,7 +1200,7 @@ var Lobibox = Lobibox || {};
             } else if (me.$options.size === "large") {
                 var tabPane = _createTabPane().append($el);
                 var $li = _createTabControl(tabPane.attr("id"));
-                $wrapper.find(".lb-notify-wrapper").append(tabPane);
+                $wrapper.find(".lb-notify-nav-wrapper").append(tabPane);
                 $wrapper.find(".lb-notify-tabs").append($li);
                 _activateTab($li);
                 $li.find(">a").click(function () {
@@ -1212,7 +1212,7 @@ var Lobibox = Lobibox || {};
             $li.closest(".lb-notify-tabs").find(">li").removeClass("active");
             $li.addClass("active");
             var $current = $($li.find(">a").attr("href"));
-            $current.closest(".lb-notify-wrapper").find(">.lb-tab-pane").removeClass("active");
+            $current.closest(".lb-notify-nav-wrapper").find(">.lb-tab-pane").removeClass("active");
             $current.addClass("active");
         };
         var _createTabControl = function (tabPaneId) {
@@ -1234,7 +1234,7 @@ var Lobibox = Lobibox || {};
         };
         var _createNotifyWrapper = function () {
             var selector =
-                    (me.$options.size === "large" ? ".lobibox-notify-wrapper-large" : ".lobibox-notify-wrapper") +
+                    (me.$options.size === "large" ? ".lobibox-notify-nav-wrapper-large" : ".lobibox-notify-nav-wrapper") +
                     "." +
                     me.$options.position.replace(/\s/gi, "."),
                 $wrapper;
@@ -1244,7 +1244,7 @@ var Lobibox = Lobibox || {};
             if ($wrapper.length === 0) {
                 $wrapper = $("<div></div>").addClass(selector.replace(/\./g, " ").trim()).appendTo($("body"));
                 if (me.$options.size === "large") {
-                    $wrapper.append($('<ul class="lb-notify-tabs"></ul>')).append($('<div class="lb-notify-wrapper"></div>'));
+                    $wrapper.append($('<ul class="lb-notify-tabs"></ul>')).append($('<div class="lb-notify-nav-wrapper"></div>'));
                 }
             }
             return $wrapper;
@@ -1260,7 +1260,7 @@ var Lobibox = Lobibox || {};
                     class: "lobibox-notify " + OPTS[me.$type]["class"] + " " + OPTS["class"] + " " + me.$options.showClass,
                 });
 
-            $iconWrapper = $('<div class="lobibox-notify-icon-wrapper"></div>').appendTo($notify);
+            $iconWrapper = $('<div class="lobibox-notify-icon-nav-wrapper"></div>').appendTo($notify);
             $iconEl = $('<div class="lobibox-notify-icon"></div>').appendTo($iconWrapper);
             $innerIconEl = $("<div></div>").appendTo($iconEl);
 
@@ -1383,7 +1383,7 @@ var Lobibox = Lobibox || {};
         this.remove = function () {
             me.$el.removeClass(me.$options.showClass).addClass(me.$options.hideClass);
             var parent = me.$el.parent();
-            var wrapper = parent.closest(".lobibox-notify-wrapper-large");
+            var wrapper = parent.closest(".lobibox-notify-nav-wrapper-large");
 
             var href = "#" + parent.attr("id");
 

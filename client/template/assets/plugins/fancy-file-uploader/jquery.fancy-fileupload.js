@@ -648,11 +648,11 @@
 
             form.append(fileinput);
 
-            // Insert the widget wrapper.
+            // Insert the widget nav-wrapper.
             var fileuploadwrap = $("<div>").addClass("ff_fileupload_wrap");
             $this.after(fileuploadwrap);
 
-            // Insert a new dropzone.  Using a button allows for standard keyboard and mouse navigation to the element.  The wrapper is for paste support.
+            // Insert a new dropzone.  Using a button allows for standard keyboard and mouse navigation to the element.  The nav-wrapper is for paste support.
             var dropzonewrap = $("<div>").addClass("ff_fileupload_dropzone_wrap");
             var dropzone = $("<button>")
                 .addClass("ff_fileupload_dropzone")

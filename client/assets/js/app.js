@@ -8,18 +8,18 @@ $(function () {
             $(".search-bar").removeClass("full-search-bar");
         }),
         $(".mobile-toggle-menu").on("click", function () {
-            $(".wrapper").addClass("toggled");
+            $(".nav-wrapper").addClass("toggled");
         }),
         $(".toggle-icon").click(function () {
-            $(".wrapper").hasClass("toggled")
-                ? ($(".wrapper").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover"))
-                : ($(".wrapper").addClass("toggled"),
-                  $(".sidebar-wrapper").hover(
+            $(".nav-wrapper").hasClass("toggled")
+                ? ($(".nav-wrapper").removeClass("toggled"), $(".sidebar-nav-wrapper").unbind("hover"))
+                : ($(".nav-wrapper").addClass("toggled"),
+                  $(".sidebar-nav-wrapper").hover(
                       function () {
-                          $(".wrapper").addClass("sidebar-hovered");
+                          $(".nav-wrapper").addClass("sidebar-hovered");
                       },
                       function () {
-                          $(".wrapper").removeClass("sidebar-hovered");
+                          $(".nav-wrapper").removeClass("sidebar-hovered");
                       },
                   ));
         }),
@@ -58,16 +58,16 @@ $(function () {
             $("#menu").metisMenu();
         }),
         $(".chat-toggle-btn").on("click", function () {
-            $(".chat-wrapper").toggleClass("chat-toggled");
+            $(".chat-nav-wrapper").toggleClass("chat-toggled");
         }),
         $(".chat-toggle-btn-mobile").on("click", function () {
-            $(".chat-wrapper").removeClass("chat-toggled");
+            $(".chat-nav-wrapper").removeClass("chat-toggled");
         }),
         $(".email-toggle-btn").on("click", function () {
-            $(".email-wrapper").toggleClass("email-toggled");
+            $(".email-nav-wrapper").toggleClass("email-toggled");
         }),
         $(".email-toggle-btn-mobile").on("click", function () {
-            $(".email-wrapper").removeClass("email-toggled");
+            $(".email-nav-wrapper").removeClass("email-toggled");
         }),
         $(".compose-mail-btn").on("click", function () {
             $(".compose-mail-popup").show();
@@ -76,10 +76,10 @@ $(function () {
             $(".compose-mail-popup").hide();
         }),
         $(".switcher-btn").on("click", function () {
-            $(".switcher-wrapper").toggleClass("switcher-toggled");
+            $(".switcher-nav-wrapper").toggleClass("switcher-toggled");
         }),
         $(".close-switcher").on("click", function () {
-            $(".switcher-wrapper").removeClass("switcher-toggled");
+            $(".switcher-nav-wrapper").removeClass("switcher-toggled");
         }),
         $("#lightmode").on("click", function () {
             $("html").attr("class", "light-theme");

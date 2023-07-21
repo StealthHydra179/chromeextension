@@ -769,10 +769,10 @@ var Lobibox = Lobibox || {};
             var d = $("<div></div>");
             if (me.$options.iconClass) {
                 d.append(
-                    $('<div class="lobibox-icon-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
+                    $('<div class="lobibox-icon-nav-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
                 );
             }
-            d.append('<div class="lobibox-body-text-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
+            d.append('<div class="lobibox-body-text-nav-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
             me._setContent(d.html());
 
             me._position();
@@ -827,10 +827,10 @@ var Lobibox = Lobibox || {};
             var d = $("<div></div>");
             if (me.$options.iconClass) {
                 d.append(
-                    $('<div class="lobibox-icon-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
+                    $('<div class="lobibox-icon-nav-wrapper"></div>').append('<i class="lobibox-icon ' + me.$options.iconClass + '"></i>'),
                 );
             }
-            d.append('<div class="lobibox-body-text-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
+            d.append('<div class="lobibox-body-text-nav-wrapper"><span class="lobibox-body-text">' + me.$options.msg + "</span></div>");
             me._setContent(d.html());
             me._position();
 
@@ -905,7 +905,7 @@ var Lobibox = Lobibox || {};
 
         _createProgressbar: function () {
             var me = this;
-            var outer = $('<div class="lobibox-progress-bar-wrapper lobibox-progress-outer"></div>').append(
+            var outer = $('<div class="lobibox-progress-bar-nav-wrapper lobibox-progress-outer"></div>').append(
                 '<div class="lobibox-progress-bar lobibox-progress-element"></div>',
             );
             if (me.$options.showProgressLabel) {

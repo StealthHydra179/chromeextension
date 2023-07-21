@@ -25095,7 +25095,7 @@
             create: function create(element) {
                 if (element) {
                     // ensure the presence of a dom element
-                    element = typeof element === 'string' ? document.getElementById(element) : element; // If the target is an svg element, use that element as the main wrapper.
+                    element = typeof element === 'string' ? document.getElementById(element) : element; // If the target is an svg element, use that element as the main nav-wrapper.
                     // This allows svg.js to work with svg documents as well.
 
                     if (element.nodeName == 'svg') {
