@@ -385,7 +385,6 @@ function generateSpecifics() {
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
                         // console.log("hidden to visible")
                         specificList[tab.origin][tab.documentId].total_time_hidden += update.time - currentLoopTime;
-                        specificList[tab.origin][tab.documentId].total_visits++;
                     } else if (currentLoopState === "visible" && update.visibility === "hidden") {
                         // console.log("visible to hidden")
                         specificList[tab.origin][tab.documentId].total_time_visible += update.time - currentLoopTime;
