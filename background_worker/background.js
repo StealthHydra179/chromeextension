@@ -316,12 +316,14 @@ function updateStorage() {
 }
 
 function generateSpecifics() {
-    chrome.storage.local.get("specificList", function (result) {
-        if (result.specificList !== undefined && changedSchema === false) {
-            specificList = result.specificList;
-        }
-        calculateSpecifics();
-    });
+    // chrome.storage.local.get("specificList", function (result) {
+    //     if (result.specificList !== undefined && changedSchema === false) {
+    //         specificList = result.specificList;
+    //     }
+    //
+    // });
+
+    calculateSpecifics();
 
     function calculateSpecifics() {
         specificList = {};
@@ -336,6 +338,8 @@ function generateSpecifics() {
             */
 
         //for each tab in tablist
+
+        console.log("Calculating specifics...")
         let index = 0;
         tabList.forEach((tab) => {
             //if the origin is not in the specific list, add it
@@ -571,6 +575,7 @@ function generateSpecifics() {
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
             // console.log(specificList[key])
+            console.log("specifics calculated.")
         }
 
         saveSpecifics();
