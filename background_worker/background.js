@@ -167,13 +167,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 return b.total_time_visible - a.total_time_visible;
             });
 
-
             let sentData = {
                 tabList: tabList,
+                sortedTabList: sortedTabList,
                 specificList: specificList,
                 sortedSpecificArray: sortedSpecificArray,
+
                 timeSinceInstall: Date.now() - installTime,
-                sortedTabList: sortedTabList,
                 timeOnline: timeOnline + (Date.now() - startUpTime)
             };
             sendResponse(sentData);
@@ -181,7 +181,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             console.log(sentData);
         });
 
-        //i think visible still is broken?
         return true;
     }
     //why is this run like 55 times?
@@ -191,7 +190,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         //if object doesn't exist, add it
         let tabExists = false;
         tabList.forEach((tab) => {
-            if (tab.url === sender.url) {
+            if (tab.documentId === sender.documentId) {
                 tabExists = true;
                 tab.visibility = "hidden";
                 tab.update_time.push({
@@ -208,7 +207,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         if (!tabExists) {
             tabList.push({
-                document_id: sender.documentId,
+                documentId: sender.documentId,
                 origin: sender.origin,
                 url: sender.url,
                 // "document_url": sender.origin,
@@ -228,7 +227,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "closed") {
         //update tabList
         tabList.forEach((tab) => {
-            if (tab.url === sender.url) {
+            if (tab.documentId === sender.documentId) {
                 tab.open = false;
                 tab.last_update_time = request.message.update_time;
                 tab.update_time.push({
@@ -247,7 +246,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "visible") {
         // console.log("ifvisible")
         tabList.forEach((tab) => {
-            if (tab.url === sender.url) {
+            if (tab.documentId === sender.documentId) {
                 //&& request.message.update_time >= tab.last_update_time
                 // console.log("visible")
                 tab.visibility = "visible";
@@ -261,7 +260,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message.state === "hidden") {
         // console.log("ifhidden")
         tabList.forEach((tab) => {
-            if (tab.url === sender.url) {
+            if (tab.documentId === sender.documentId) {
                 // && request.message.update_time >= tab.last_update_time
                 // console.log("hidden")
                 tab.visibility = "hidden";
@@ -345,10 +344,11 @@ function generateSpecifics() {
                 specificList[tab.origin] = {};
             }
             //if the url is not in the specific list, add it
-            if (specificList[tab.origin][tab.url] === undefined) {
-                specificList[tab.origin][tab.url] = {
+            if (specificList[tab.origin][tab.documentId] === undefined) {
+                specificList[tab.origin][tab.documentId] = {
                     title: tab.title,
                     url: tab.url,
+                    documentId: tab.documentId,
                     origin: tab.origin,
                     total_time: -1,
                     total_visits: 0,
@@ -368,7 +368,7 @@ function generateSpecifics() {
                 //update total_visible and hidden time
                 let currentLoopState = tab.update_time[0].visibility;
                 if (currentLoopState === "visible") {
-                    specificList[tab.origin][tab.url].total_visits++;
+                    specificList[tab.origin][tab.documentId].total_visits++;
                 }
                 let currentLoopTime = tab.update_time[0].time;
                 let first = true;
@@ -379,22 +379,22 @@ function generateSpecifics() {
                     }
 
                     if (update.visibility === "visible") {
-                        specificList[tab.origin][tab.url].total_visits++;
+                        specificList[tab.origin][tab.documentId].total_visits++;
                     }
 
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
                         // console.log("hidden to visible")
-                        specificList[tab.origin][tab.url].total_time_hidden += update.time - currentLoopTime;
-                        specificList[tab.origin][tab.url].total_visits++;
+                        specificList[tab.origin][tab.documentId].total_time_hidden += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_visits++;
                     } else if (currentLoopState === "visible" && update.visibility === "hidden") {
                         // console.log("visible to hidden")
-                        specificList[tab.origin][tab.url].total_time_visible += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_visible += update.time - currentLoopTime;
                     } else if (currentLoopState === "visible" && update.visibility === "visible") {
                         // console.log("visible to visible")
-                        specificList[tab.origin][tab.url].total_time_visible += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_visible += update.time - currentLoopTime;
                     } else if (currentLoopState === "hidden" && update.visibility === "hidden") {
                         // console.log("hidden to hidden")
-                        specificList[tab.origin][tab.url].total_time_hidden += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_hidden += update.time - currentLoopTime;
                     } else {
                         console.log("error in visibility loop", currentLoopState, update.visibility);
                     }
@@ -403,9 +403,9 @@ function generateSpecifics() {
                     currentLoopState = update.visibility;
                 });
                 if (currentLoopState === "visible") {
-                    specificList[tab.origin][tab.url].total_time_visible += Date.now() - currentLoopTime;
+                    specificList[tab.origin][tab.documentId].total_time_visible += Date.now() - currentLoopTime;
                 } else if (currentLoopState === "hidden") {
-                    specificList[tab.origin][tab.url].total_time_hidden += Date.now() - currentLoopTime;
+                    specificList[tab.origin][tab.documentId].total_time_hidden += Date.now() - currentLoopTime;
                 }
 
                 //update total_loaded and closed time
@@ -420,17 +420,17 @@ function generateSpecifics() {
 
                     if (currentLoopState === "closed" && update.state === "loaded") {
                         // console.log("loaded to closed")
-                        specificList[tab.origin][tab.url].total_time_closed += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_closed += update.time - currentLoopTime;
 
                     } else if (currentLoopState === "loaded" && update.state === "closed") {
                         // console.log("closed to loaded")
-                        specificList[tab.origin][tab.url].total_time_loaded += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_loaded += update.time - currentLoopTime;
                     } else if (currentLoopState === "loaded" && update.state === "loaded") {
                         // console.log("loaded to loaded")
-                        specificList[tab.origin][tab.url].total_time_loaded += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_loaded += update.time - currentLoopTime;
                     } else if (currentLoopState === "closed" && update.state === "closed") {
                         // console.log("closed to closed")
-                        specificList[tab.origin][tab.url].total_time_closed += update.time - currentLoopTime;
+                        specificList[tab.origin][tab.documentId].total_time_closed += update.time - currentLoopTime;
                     } else {
                         console.log(currentLoopState + " to " + update.state + " not implemented");
                     }
@@ -438,66 +438,34 @@ function generateSpecifics() {
                     currentLoopState = update.state;
                 });
                 if (currentLoopState === "loaded") {
-                    specificList[tab.origin][tab.url].total_time_loaded += Date.now() - currentLoopTime;
+                    specificList[tab.origin][tab.documentId].total_time_loaded += Date.now() - currentLoopTime;
                 } else if (currentLoopState === "closed") {
-                    specificList[tab.origin][tab.url].total_time_closed += Date.now() - currentLoopTime;
+                    specificList[tab.origin][tab.documentId].total_time_closed += Date.now() - currentLoopTime;
                 }
 
 
                 //update total_time
-                specificList[tab.origin][tab.url].total_time =
-                    specificList[tab.origin][tab.url].total_time_visible + specificList[tab.origin][tab.url].total_time_hidden;
-                // console.log("ttimeupdated" + specificList[tab.origin][tab.url].total_time)
+                specificList[tab.origin][tab.documentId].total_time =
+                    specificList[tab.origin][tab.documentId].total_time_visible + specificList[tab.origin][tab.documentId].total_time_hidden;
                 //pass through update and loaded time
-                specificList[tab.origin][tab.url].update_time = tab.update_time;
-                specificList[tab.origin][tab.url].loaded_time = tab.loaded_time;
+                specificList[tab.origin][tab.documentId].update_time = tab.update_time;
+                specificList[tab.origin][tab.documentId].loaded_time = tab.loaded_time;
 
-                tabList[index].total_time = specificList[tab.origin][tab.url].total_time;
-                tabList[index].total_visits = specificList[tab.origin][tab.url].total_visits;
-                tabList[index].total_time_visible = specificList[tab.origin][tab.url].total_time_visible;
-                tabList[index].total_time_hidden = specificList[tab.origin][tab.url].total_time_hidden;
-                tabList[index].total_time_loaded = specificList[tab.origin][tab.url].total_time_loaded;
-                tabList[index].total_time_closed = specificList[tab.origin][tab.url].total_time_closed;
-                tabList[index].total_time_active = specificList[tab.origin][tab.url].total_time_active;
-                tabList[index].total_time_inactive = specificList[tab.origin][tab.url].total_time_inactive;
-                tabList[index].total_time_audible = specificList[tab.origin][tab.url].total_time_audible;
-                tabList[index].total_time_muted = specificList[tab.origin][tab.url].total_time_muted;
-                tabList[index].total_time_unmuted = specificList[tab.origin][tab.url].total_time_unmuted;
-
-                // if (tab.url === "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/switch.html") {
-                //     console.log("tab:", tab.url);
-                //     console.log("index:", index);
-                //     console.log("totaltime", tabList[index].total_time, specificList[tab.origin][tab.url].total_time);
-                //     console.log("totalvisits", tabList[index].total_visits, specificList[tab.origin][tab.url].total_visits);
-                //     console.log("totaltimevisible", tabList[index].total_time_visible, specificList[tab.origin][tab.url].total_time_visible);
-                //     console.log("totaltimehidden", tabList[index].total_time_hidden, specificList[tab.origin][tab.url].total_time_hidden);
-                //     console.log("totaltimeloaded", tabList[index].total_time_loaded, specificList[tab.origin][tab.url].total_time_loaded);
-                //     console.log("totaltimeclosed", tabList[index].total_time_closed, specificList[tab.origin][tab.url].total_time_closed);
-                //     console.log("totaltimeactive", tabList[index].total_time_active, specificList[tab.origin][tab.url].total_time_active);
-                //     console.log("totaltimeinactive", tabList[index].total_time_inactive, specificList[tab.origin][tab.url].total_time_inactive);
-                //     console.log("totaltimeaudible", tabList[index].total_time_audible, specificList[tab.origin][tab.url].total_time_audible);
-                //     console.log("totaltimemuted", tabList[index].total_time_muted, specificList[tab.origin][tab.url].total_time_muted);
-                //     console.log("totaltimeunmuted", tabList[index].total_time_unmuted, specificList[tab.origin][tab.url].total_time_unmuted);
-                // }
-
+                tabList[index].total_time = specificList[tab.origin][tab.documentId].total_time;
+                tabList[index].total_visits = specificList[tab.origin][tab.documentId].total_visits;
+                tabList[index].total_time_visible = specificList[tab.origin][tab.documentId].total_time_visible;
+                tabList[index].total_time_hidden = specificList[tab.origin][tab.documentId].total_time_hidden;
+                tabList[index].total_time_loaded = specificList[tab.origin][tab.documentId].total_time_loaded;
+                tabList[index].total_time_closed = specificList[tab.origin][tab.documentId].total_time_closed;
+                tabList[index].total_time_active = specificList[tab.origin][tab.documentId].total_time_active;
+                tabList[index].total_time_inactive = specificList[tab.origin][tab.documentId].total_time_inactive;
+                tabList[index].total_time_audible = specificList[tab.origin][tab.documentId].total_time_audible;
+                tabList[index].total_time_muted = specificList[tab.origin][tab.documentId].total_time_muted;
+                tabList[index].total_time_unmuted = specificList[tab.origin][tab.documentId].total_time_unmuted;
 
             }
             index++;
         });
-
-        // let count = 0;
-        // for (let i = 0; i < tabList.length; i++) {
-        //     if (tabList[i].url === "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/switch.html") {
-        //         console.log("1234: ", tabList[i].total_time_visible);
-        //         count++;
-        //     }
-        // }
-        // console.log("count: ", count);
-
-        // console.log(specificList)
-        // console.log("deb1")
-        // console.log(Object.entries(specificList))
-        //for each key value pair in specific list
 
         for (const [key, origin] of Object.entries(specificList)) {
             // console.log("run", key)
