@@ -234,7 +234,7 @@ $(function () {
         },
     });
 
-    $(".chart9").easyPieChart({
+    $(".timeActiveSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#fd3550",
         lineWidth: 8,

@@ -75,7 +75,7 @@ $(function () {
 
     // easy pie chart
 
-    $(".chart9").easyPieChart({
+    $(".timeActiveSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#008cff",
         lineWidth: 8,

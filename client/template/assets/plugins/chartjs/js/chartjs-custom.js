@@ -275,7 +275,7 @@ $(function () {
         },
     });
     // chart 9
-    new Chart(document.getElementById("chart9"), {
+    new Chart(document.getElementById("timeActiveSummary"), {
         type: "bar",
         data: {
             labels: ["1900", "1950", "1999", "2050"],

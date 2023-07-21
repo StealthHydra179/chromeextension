@@ -24,13 +24,18 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
     document.getElementById("total_time_used_row_1").innerHTML = millisecondsToTimeString(totalTimeUsedVisible);
 
-    // top 10 websites used
+    // website history
     //TODO EDIT CODE TO HAVE HISTORY
+    websiteHistory(response);
 
     // top 4 time breakdown, the rest of the time goes to
     topTimeBreakdown(response);
 
+
     // row 3?
+    // top10WebsitesHistory(response)
+
+    updateSummaryUIElements(response);
 
     // row 4
     // top websites
@@ -131,6 +136,28 @@ function millisecondsToTimeString(milliseconds) {
     }
 
     return timeString;
+}
+
+function websiteHistory(response) {
+    let tabList = response.tabList;
+
+    // todo update graph
+
+
+    // update graph additional information
+    let historyTotalPages = document.getElementById("historyTotalPages");
+    let totalPageVisits = 0
+    for (let i = 0; i < tabList.length; i++) {
+        totalPageVisits += tabList[i]["total_visits"] >= 0 ? tabList[i]["total_visits"] : 0;
+    }
+    historyTotalPages.innerHTML = "" + totalPageVisits;
+
+
+
+    let historyPagesPerHour = document.getElementById("historyPagesPerHour");
+    let timeOnline = response.timeOnline
+    let pagesPerHour = Math.round(totalPageVisits / (timeOnline / 3600000));
+    historyPagesPerHour.innerHTML = "" + pagesPerHour;
 }
 
 function topTimeBreakdown(response) {
@@ -317,6 +344,45 @@ function topTimeBreakdown(response) {
     }
 }
 
+function updateSummaryUIElements(response) {
+    let tabList = response.tabList
+
+
+
+    //calculate total time active
+    let totalTimeVisible = 0
+    for (let i = 0; i < tabList.length; i++) {
+        if (tabList[i]["total_time_visible"] === undefined || tabList[i]["total_time_visible"] === null || tabList[i]["total_time_visible"] === -1) {
+            continue;
+        }
+        totalTimeVisible += tabList[i]["total_time_visible"];
+    }
+
+    let totalTimeLoaded = 0
+    for (let i = 0; i < tabList.length; i++) {
+        if (tabList[i]["total_time_loaded"] === undefined || tabList[i]["total_time_loaded"] === null || tabList[i]["total_time_loaded"] === -1) {
+            continue;
+        }
+        totalTimeLoaded += tabList[i]["total_time_loaded"];
+    }
+
+    let percentageUsed = Math.floor((totalTimeVisible / totalTimeLoaded) * 100);
+    console.log(document.getElementById("timeActiveSummary"));
+    document.getElementById("timeActiveSummary").setAttribute("data-percent", percentageUsed.toString());
+    console.log("Percentage Used: ", percentageUsed);
+
+    $(".timeActiveSummary").easyPieChart({ //time active *TODO refactor later
+        easing: "easeOutBounce",
+        barColor: "#fd3550",
+        lineWidth: 8,
+        trackColor: "rgba(0, 0, 0, 0.12)",
+        scaleColor: false,
+        onStep: function (from, to, percent) {
+            $(this.el).find(".w_percent").text(Math.round(percent));
+        },
+    });
+}
+
 function topWebsites(response) {
     /*
     <tr>
@@ -402,7 +468,7 @@ function allPages(response) {
         let tr = document.createElement("tr");
         let webpageLink = document.createElement("td");
         //update with actuall link
-        webpageLink.innerHTML = "<a href=\"" + sortedTabList[i]["url"] + "\">" + sortedTabList[i]["title"] + "</a>";
+        webpageLink.innerHTML = "<a href=\"" + sortedTabList[i]["url"] + "\">" + sortedTabList[i]["title"].substring(0,80) + (sortedTabList[i]["title"].substring(0,80) !== sortedTabList[i]["title"] ? "..." : "") + "</a>";
         tr.appendChild(webpageLink);
 
         // add logo

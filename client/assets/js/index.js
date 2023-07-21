@@ -192,16 +192,7 @@ $(function () {
         },
     });
 
-    $(".chart9").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#fd3550",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
+
 
     $(".chart10").easyPieChart({
         easing: "easeOutBounce",

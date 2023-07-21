@@ -543,7 +543,7 @@ $(function () {
             },
         ],
     };
-    var chart = new ApexCharts(document.querySelector("#chart9"), options);
+    var chart = new ApexCharts(document.querySelector("#timeActiveSummary"), options);
     chart.render();
 
     // chart 10

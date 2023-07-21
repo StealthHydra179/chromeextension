@@ -2,6 +2,9 @@ let tabList = [];
 let specificList = {};
 let changedSchema = true;
 let installTime;
+let timeOnline;
+let startUpTime;
+
 
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function() {
@@ -37,6 +40,15 @@ chrome.runtime.onInstalled.addListener(function() {
         });
 
         installTime = Date.now();
+        chrome.storage.local.get("timeOnline", function(result) {
+            if (result.timeOnline) {
+                timeOnline = result.timeOnline;
+                console.log("timeOnline loaded from storage: " + timeOnline);
+            } else {
+                timeOnline = 0;
+            }
+        })
+        startUpTime = Date.now();
         //set installed time
         chrome.storage.local.set({ installTime: installTime }, function(result) {
             console.log("installTime set to " + installTime);
@@ -77,9 +89,24 @@ chrome.runtime.onStartup.addListener(function() {
         installTime = result.installTime;
         console.log("installTime loaded from storage: " + installTime);
     });
+
+    chrome.storage.local.get("timeOnline", function(result) {
+        if (result.timeOnline) {
+            timeOnline = result.timeOnline;
+            console.log("timeOnline loaded from storage: " + timeOnline);
+        } else {
+            timeOnline = 0;
+        }
+    })
+    startUpTime = Date.now();
 });
 
 chrome.runtime.onSuspend.addListener(function() {
+    let sessionOnline = Date.now() - startUpTime;
+    timeOnline += sessionOnline;
+    chrome.storage.local.set({ timeOnline: timeOnline }, function(result) {
+        console.log("timeOnline set to " + timeOnline);
+    })
 });
 
 //when new tab is created
@@ -146,7 +173,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 specificList: specificList,
                 sortedSpecificArray: sortedSpecificArray,
                 timeSinceInstall: Date.now() - installTime,
-                sortedTabList: sortedTabList
+                sortedTabList: sortedTabList,
+                timeOnline: timeOnline + (Date.now() - startUpTime)
             };
             sendResponse(sentData);
             console.log("sentData sent");

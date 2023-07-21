@@ -696,7 +696,7 @@ $(function () {
         ],
     });
     // chart 9
-    Highcharts.chart("chart9", {
+    Highcharts.chart("timeActiveSummary", {
         chart: {
             type: "bar",
             styledMode: true,
