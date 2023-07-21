@@ -31,7 +31,6 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
     // top 4 time breakdown, the rest of the time goes to
     topTimeBreakdown(response);
 
-
     // row 3?
     // top10WebsitesHistory(response)
 
@@ -143,19 +142,16 @@ function websiteHistory(response) {
 
     // todo update graph
 
-
     // update graph additional information
     let historyTotalPages = document.getElementById("historyTotalPages");
-    let totalPageVisits = 0
+    let totalPageVisits = 0;
     for (let i = 0; i < tabList.length; i++) {
         totalPageVisits += tabList[i]["total_visits"] >= 0 ? tabList[i]["total_visits"] : 0;
     }
     historyTotalPages.innerHTML = "" + totalPageVisits;
 
-
-
     let historyPagesPerHour = document.getElementById("historyPagesPerHour");
-    let timeOnline = response.timeOnline
+    let timeOnline = response.timeOnline;
     let pagesPerHour = Math.round(totalPageVisits / (timeOnline / 3600000));
     historyPagesPerHour.innerHTML = "" + pagesPerHour;
 }
@@ -227,7 +223,7 @@ function topTimeBreakdown(response) {
                 times = [
                     sortedSpecificArray[0]["value"]["total_time_visible"],
                     sortedSpecificArray[1]["value"]["total_time_visible"],
-                    sortedSpecificArray[2]["value"]["total_time_visible"]
+                    sortedSpecificArray[2]["value"]["total_time_visible"],
                 ];
                 labels = [sortedSpecificArray[0]["key"], sortedSpecificArray[1]["key"], sortedSpecificArray[2]["key"]];
                 break;
@@ -237,13 +233,13 @@ function topTimeBreakdown(response) {
                     sortedSpecificArray[0]["value"]["total_time_visible"],
                     sortedSpecificArray[1]["value"]["total_time_visible"],
                     sortedSpecificArray[2]["value"]["total_time_visible"],
-                    sortedSpecificArray[3]["value"]["total_time_visible"]
+                    sortedSpecificArray[3]["value"]["total_time_visible"],
                 ];
                 labels = [
                     sortedSpecificArray[0]["key"],
                     sortedSpecificArray[1]["key"],
                     sortedSpecificArray[2]["key"],
-                    sortedSpecificArray[3]["key"]
+                    sortedSpecificArray[3]["key"],
                 ];
                 break;
         }
@@ -254,14 +250,14 @@ function topTimeBreakdown(response) {
             sortedSpecificArray[1]["value"]["total_time_visible"],
             sortedSpecificArray[2]["value"]["total_time_visible"],
             sortedSpecificArray[3]["value"]["total_time_visible"],
-            calculate_totalTimeVisible(response) - totalTimeUsed
+            calculate_totalTimeVisible(response) - totalTimeUsed,
         ];
         labels = [
             sortedSpecificArray[0]["key"],
             sortedSpecificArray[1]["key"],
             sortedSpecificArray[2]["key"],
             sortedSpecificArray[3]["key"],
-            "Others"
+            "Others",
         ];
     }
 
@@ -277,20 +273,20 @@ function topTimeBreakdown(response) {
                     backgroundColor: colors,
                     hoverBackgroundColor: colors,
                     data: times,
-                    borderWidth: [1, 1, 1, 1, 1]
-                }
-            ]
+                    borderWidth: [1, 1, 1, 1, 1],
+                },
+            ],
         },
         options: {
             maintainAspectRatio: false,
             cutout: 100,
             plugins: {
                 legend: {
-                    display: false
+                    display: false,
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let label = context.label || "";
 
                             if (label) {
@@ -302,11 +298,11 @@ function topTimeBreakdown(response) {
                                 label += millisecondsToTimeString(context.parsed);
                             }
                             return label;
-                        }
-                    }
-                }
-            }
-        }
+                        },
+                    },
+                },
+            },
+        },
     });
 
     // update legend
@@ -339,28 +335,34 @@ function topTimeBreakdown(response) {
             case 5:
                 pill_class = "bg-secondary";
         }
-        li.innerHTML = labels[i] + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>";
+        li.innerHTML = labels[i] + ' <span class="badge ' + pill_class + ' rounded-pill">' + millisecondsToTimeString(times[i]) + "</span>";
         legend.appendChild(li);
     }
 }
 
 function updateSummaryUIElements(response) {
-    let tabList = response.tabList
-
-
+    let tabList = response.tabList;
 
     //calculate total time active
-    let totalTimeVisible = 0
+    let totalTimeVisible = 0;
     for (let i = 0; i < tabList.length; i++) {
-        if (tabList[i]["total_time_visible"] === undefined || tabList[i]["total_time_visible"] === null || tabList[i]["total_time_visible"] === -1) {
+        if (
+            tabList[i]["total_time_visible"] === undefined ||
+            tabList[i]["total_time_visible"] === null ||
+            tabList[i]["total_time_visible"] === -1
+        ) {
             continue;
         }
         totalTimeVisible += tabList[i]["total_time_visible"];
     }
 
-    let totalTimeLoaded = 0
+    let totalTimeLoaded = 0;
     for (let i = 0; i < tabList.length; i++) {
-        if (tabList[i]["total_time_loaded"] === undefined || tabList[i]["total_time_loaded"] === null || tabList[i]["total_time_loaded"] === -1) {
+        if (
+            tabList[i]["total_time_loaded"] === undefined ||
+            tabList[i]["total_time_loaded"] === null ||
+            tabList[i]["total_time_loaded"] === -1
+        ) {
             continue;
         }
         totalTimeLoaded += tabList[i]["total_time_loaded"];
@@ -371,7 +373,8 @@ function updateSummaryUIElements(response) {
     document.getElementById("timeActiveSummary").setAttribute("data-percent", percentageUsed.toString());
     console.log("Percentage Used: ", percentageUsed);
 
-    $(".timeActiveSummary").easyPieChart({ //time active *TODO refactor later
+    $(".timeActiveSummary").easyPieChart({
+        //time active *TODO refactor later
         easing: "easeOutBounce",
         barColor: "#fd3550",
         lineWidth: 8,
@@ -456,24 +459,30 @@ function allPages(response) {
 
     for (let i = 0; i < sortedTabList.length; i++) {
         if (sortedTabList[i]["total_visits"] === undefined) {
-            console.log("skipping: ", sortedTabList[i], sortedTabList[i]["total_time_visible"], sortedTabList[i]["total_visits"])
-            continue
+            console.log("skipping: ", sortedTabList[i], sortedTabList[i]["total_time_visible"], sortedTabList[i]["total_visits"]);
+            continue;
         }
 
         if (sortedTabList[i]["total_time_visible"] <= 0) {
-            sortedTabList[i]["total_time_visible"]  = 0;
+            sortedTabList[i]["total_time_visible"] = 0;
         }
 
         // add row
         let tr = document.createElement("tr");
         let webpageLink = document.createElement("td");
         //update with actuall link
-        webpageLink.innerHTML = "<a href=\"" + sortedTabList[i]["url"] + "\">" + sortedTabList[i]["title"].substring(0,80) + (sortedTabList[i]["title"].substring(0,80) !== sortedTabList[i]["title"] ? "..." : "") + "</a>";
+        webpageLink.innerHTML =
+            '<a href="' +
+            sortedTabList[i]["url"] +
+            '">' +
+            sortedTabList[i]["title"].substring(0, 80) +
+            (sortedTabList[i]["title"].substring(0, 80) !== sortedTabList[i]["title"] ? "..." : "") +
+            "</a>";
         tr.appendChild(webpageLink);
 
         // add logo
         let logo = document.createElement("td");
-        logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
+        logo.innerHTML = '<img alt="product img" class="product-img-2" src="' + sortedTabList[i]["favicon"] + '" />';
         tr.appendChild(logo);
 
         // add time visible
@@ -484,11 +493,11 @@ function allPages(response) {
         // add state
         let state = document.createElement("td");
         if (sortedTabList[i]["open"] === false) {
-            state.innerHTML = "<span class=\"badge bg-light-danger text-danger w-100\">Closed</span>";
+            state.innerHTML = '<span class="badge bg-light-danger text-danger w-100">Closed</span>';
         } else if (sortedTabList[i]["visibility"] === "visible") {
-            state.innerHTML = "<span class=\"badge bg-light-success text-success w-100\">Visible</span>";
+            state.innerHTML = '<span class="badge bg-light-success text-success w-100">Visible</span>';
         } else {
-            state.innerHTML = "<span class=\"badge bg-light-warning text-warning w-100\">Hidden</span>";
+            state.innerHTML = '<span class="badge bg-light-warning text-warning w-100">Hidden</span>';
         }
         tr.appendChild(state);
 
@@ -505,12 +514,27 @@ function allPages(response) {
 
         // add active time
         let activeTime = document.createElement("td");
-        if (sortedTabList[i]["total_time_visible"]/sortedTabList[i]["total_time_loaded"] > 0.67) {
-            activeTime.innerHTML += " <div class=\"progress\" style=\"height: 4px\">" + "<div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: " + Math.floor(sortedTabList[i]["total_time_visible"]/sortedTabList[i]["total_time_loaded"]*100) + "%\"></div>" + "</div>";
-        } else if (sortedTabList[i]["total_time_visible"]/sortedTabList[i]["total_time_loaded"] > 0.33) {
-            activeTime.innerHTML += " <div class=\"progress\" style=\"height: 4px\">" + "<div class=\"progress-bar bg-warning\" role=\"progressbar\" style=\"width: " + Math.floor(sortedTabList[i]["total_time_visible"]/sortedTabList[i]["total_time_loaded"]*100) + "%\"></div>" + "</div>";
+        if (sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"] > 0.67) {
+            activeTime.innerHTML +=
+                ' <div class="progress" style="height: 4px">' +
+                '<div class="progress-bar bg-success" role="progressbar" style="width: ' +
+                Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +
+                '%"></div>' +
+                "</div>";
+        } else if (sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"] > 0.33) {
+            activeTime.innerHTML +=
+                ' <div class="progress" style="height: 4px">' +
+                '<div class="progress-bar bg-warning" role="progressbar" style="width: ' +
+                Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +
+                '%"></div>' +
+                "</div>";
         } else {
-            activeTime.innerHTML += " <div class=\"progress\" style=\"height: 4px\">" + "<div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: " + Math.floor(sortedTabList[i]["total_time_visible"]/sortedTabList[i]["total_time_loaded"]*100) + "%\"></div>" + "</div>";
+            activeTime.innerHTML +=
+                ' <div class="progress" style="height: 4px">' +
+                '<div class="progress-bar bg-danger" role="progressbar" style="width: ' +
+                Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +
+                '%"></div>' +
+                "</div>";
         }
         tr.appendChild(activeTime);
 

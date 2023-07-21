@@ -192,8 +192,6 @@ $(function () {
         },
     });
 
-
-
     $(".chart10").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#15ca20",
