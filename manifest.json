@@ -23,21 +23,6 @@
     "default_popup": "popup/popup.html",
     "default_icon": "images/icon/anti-distractor.png"
   },
-  "content_scripts": [
-    {
-      "js": [
-        "scripts/page_visibility.js"
-      ],
-      "matches": [
-        "<all_urls>",
-        "http://*/*",
-        "https://*/*",
-        "ftp://*/*",
-        "file://*/*",
-        "*://*/*"
-      ]
-    }
-  ],
   "background": {
     "service_worker": "background_worker/background.js"
   }

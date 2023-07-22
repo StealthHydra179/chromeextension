@@ -6,88 +6,107 @@ let timeOnline;
 let startUpTime;
 let initialized = false;
 
-//
-// chrome.runtime.onSuspend.addListener(
-//     function () {
-//         console.log("Unloading.");
-//     }
-// )
-
+chrome.scripting
+    .getRegisteredContentScripts()
+    .then(scripts => console.log("registered content scripts", scripts));
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.local.get("tabList", function(result) {
-        if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
-            tabList = result.tabList;
-            console.log("tabList loaded from storage: ");
-            console.log(tabList);
-        } else {
-            console.log("tabList not loaded from storage");
-        }
-        //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
+    chrome.scripting
+        .unregisterContentScripts({ ids: ["session-script"] })
+        .then(() => {
+            console.log("un-registration complete");
+            chrome.storage.local.get("tabList", function(result) {
+                if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
+                    tabList = result.tabList;
+                    console.log("tabList loaded from storage: ");
+                    console.log(tabList);
+                } else {
+                    console.log("tabList not loaded from storage");
+                }
+
                 chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err, tab.url);
-                        // memory saved tabs that are open but are not loaded dont work
-                    });
+                    .registerContentScripts([{
+                        id: "session-script",
+                        js: ["background_worker/injected_content.js"],
+                        persistAcrossSessions: false,
+                        matches: ["<all_urls>"],
+                        runAt: "document_start"
+                    }])
+                    .then(() => console.log("registration complete"))
+                    .catch((err) => console.warn("unexpected error", err));
+
+
+                installTime = Date.now();
+                chrome.storage.local.get("timeOnline", function(result) {
+                    if (result.timeOnline) {
+                        timeOnline = result.timeOnline;
+                        console.log("timeOnline loaded from storage: " + timeOnline);
+                    } else {
+                        timeOnline = 0;
+                    }
+                });
+                startUpTime = Date.now();
+                //set installed time
+                chrome.storage.local.set({ installTime: installTime }, function(result) {
+                    console.log("installTime set to " + installTime);
+                });
+
+                initialized = true;
             });
+
         });
 
-        installTime = Date.now();
-        chrome.storage.local.get("timeOnline", function(result) {
-            if (result.timeOnline) {
-                timeOnline = result.timeOnline;
-                console.log("timeOnline loaded from storage: " + timeOnline);
-            } else {
-                timeOnline = 0;
-            }
-        });
-        startUpTime = Date.now();
-        //set installed time
-        chrome.storage.local.set({ installTime: installTime }, function(result) {
-            console.log("installTime set to " + installTime);
-        });
-
-        initialized = true;
-    });
 });
 
 chrome.runtime.onStartup.addListener(function() {
     //same as installed
-    chrome.storage.local.get("tabList", function(result) {
-        if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
-            tabList = result.tabList;
-            console.log("tabList loaded from storage: ");
-            console.log(tabList);
-        } else {
-            console.log("tabList not loaded from storage");
-        }
-        //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
+
+    chrome.scripting
+        .unregisterContentScripts({ ids: ["session-script"] })
+        .then(() => {
+            console.log("un-registration complete");
+
+            chrome.storage.local.get("tabList", function(result) {
+                if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
+                    tabList = result.tabList;
+                    console.log("tabList loaded from storage: ");
+                    console.log(tabList);
+                } else {
+                    console.log("tabList not loaded from storage");
+                }
+                //update tabList with current tab info
+                // chrome.tabs.query({}, function(tabArray) {
+                //     tabArray.forEach((tab) => {
+                //         chrome.scripting
+                //             .executeScript({
+                //                 target: { tabId: tab.id },
+                //                 files: ["background_worker/injected_content.js"]
+                //             })
+                //             .then(() => {
+                //                 console.log("injected content script into all tabs");
+                //             })
+                //             .catch((err) => {
+                //                 console.log(err);
+                //                 console.log(tab.url);
+                //             });
+                //     });
+                // });
+
+
                 chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        console.log(tab.url);
-                    });
+                    .registerContentScripts([{
+                        id: "session-script",
+                        js: ["background_worker/injected_content.js"],
+                        persistAcrossSessions: false,
+                        matches: ["<all_urls>"],
+                        runAt: "document_start"
+                    }])
+                    .then(() => console.log("registration complete"))
+                    .catch((err) => console.warn("unexpected error", err));
+
             });
         });
-    });
+
 
     chrome.storage.local.get("installTime", function(result) {
         installTime = result.installTime;
@@ -113,6 +132,9 @@ chrome.runtime.onSuspend.addListener(function() {
         console.log("timeOnline set to " + timeOnline);
     });
     console.log("unloading");
+    chrome.scripting
+        .unregisterContentScripts({ ids: ["session-script"] })
+        .then(() => console.log("un-registration complete"));
 });
 
 chrome.runtime.onSuspendCanceled.addListener(function() {
@@ -131,22 +153,34 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
             console.log("tabList not loaded from storage");
         }
         //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
-                chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        console.log(tab.url);
-                    });
-            });
-        });
+        // chrome.tabs.query({}, function(tabArray) {
+        //     tabArray.forEach((tab) => {
+        //         chrome.scripting
+        //             .executeScript({
+        //                 target: { tabId: tab.id },
+        //                 files: ["background_worker/injected_content.js"]
+        //             })
+        //             .then(() => {
+        //                 console.log("injected content script into all tabs");
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err);
+        //                 console.log(tab.url);
+        //             });
+        //     });
+        // });
+
+        chrome.scripting
+            .registerContentScripts([{
+                id: "session-script",
+                js: ["background_worker/injected_content.js"],
+                persistAcrossSessions: false,
+                matches: ["<all_urls>"],
+                runAt: "document_start"
+            }])
+            .then(() => console.log("registration complete"))
+            .catch((err) => console.warn("unexpected error", err));
+
     });
 
     chrome.storage.local.get("installTime", function(result) {
@@ -450,7 +484,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 //update history
 function updateStorage() {
-    // if tab hasnt sent update in past 5 minutes, it is definitely closed
+    // if tab hasn't sent update in past 5 minutes, it is definitely closed
     for (let i = 0; i < tabList.length; i++) {
         if (Date.now() - tabList[i].last_update_time > 300000) {
             tabList[i].open = false;
@@ -463,7 +497,7 @@ function updateStorage() {
             tabList[i].update_time.push({
                 visibility: "hidden",
                 time: Date.now()
-            })
+            });
         }
     }
 
@@ -572,7 +606,7 @@ function generateSpecifics() {
                         specificList[tab.origin][tab.documentId].total_visits++;
                         visitTimes.push(update.time);
                     }
-                })
+                });
 
 
                 //update total_loaded and closed time

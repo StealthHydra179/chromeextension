@@ -500,7 +500,7 @@ function onLoad() {
 
             // add logo
             let logo = document.createElement("td");
-            logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
+            logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" style = \"background-color: lightgrey\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
             tr.appendChild(logo);
 
             // add time visible

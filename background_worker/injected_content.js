@@ -1,7 +1,11 @@
-let validExtentionContext = true;
-
+//# sourceURL=injected_content.js
+validExtentionContext = true;
+console.log("injected_content.js loaded");
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
 document.addEventListener("visibilitychange", function() {
+    if (!validExtentionContext) {
+        return;
+    }
     if (document.hidden) {
         // console.log("hidden")
         try {
@@ -12,7 +16,7 @@ document.addEventListener("visibilitychange", function() {
                 }
             });
         } catch (err) {
-            validExtentionContext = false;
+            // validExtentionContext = false;
         }
     } else {
         // console.log("visible")
@@ -24,7 +28,7 @@ document.addEventListener("visibilitychange", function() {
                 }
             });
         } catch (err) {
-            validExtentionContext = false;
+            // validExtentionContext = false;
         }
     }
 });
@@ -42,7 +46,7 @@ window.addEventListener("beforeunload", function() {
             }
         });
     } catch (err) {
-        validExtentionContext = false;
+        // validExtentionContext = false;
     }
 
     try {
@@ -53,7 +57,7 @@ window.addEventListener("beforeunload", function() {
             }
         });
     } catch (err) {
-        validExtentionContext = false;
+        // validExtentionContext = false;
     }
 });
 
@@ -101,7 +105,7 @@ try {
         }
     });
 } catch (err) {
-    validExtentionContext = false;
+    // validExtentionContext = false;
 }
 // console.log("loaded") //change to extension loaded and add a extension unload part as well
 
@@ -115,7 +119,7 @@ if (!document.hidden) {
             }
         });
     } catch (err) {
-        validExtentionContext = false;
+        // validExtentionContext = false;
     }
 } else {
     // console.log("hidden")
@@ -127,7 +131,7 @@ if (!document.hidden) {
             }
         });
     } catch (err) {
-        validExtentionContext = false;
+        // validExtentionContext = false;
     }
 }
 
@@ -146,7 +150,7 @@ setInterval(function() {
                 }
             });
         } catch (err) {
-            validExtentionContext = false;
+            // validExtentionContext = false;
         }
     } else {
         // console.log("visible")
@@ -158,7 +162,7 @@ setInterval(function() {
                 }
             });
         } catch (err) {
-            validExtentionContext = false;
+            // validExtentionContext = false;
         }
     }
 
