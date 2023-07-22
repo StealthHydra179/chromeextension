@@ -1,15 +1,15 @@
 let validExtentionContext = true;
 
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
-document.addEventListener("visibilitychange", function() {
+document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
         // console.log("hidden")
         try {
             chrome.runtime.sendMessage({
                 message: {
                     state: "hidden",
-                    update_time: Date.now()
-                }
+                    update_time: Date.now(),
+                },
             });
         } catch (err) {
             validExtentionContext = false;
@@ -20,8 +20,8 @@ document.addEventListener("visibilitychange", function() {
             chrome.runtime.sendMessage({
                 message: {
                     state: "visible",
-                    update_time: Date.now()
-                }
+                    update_time: Date.now(),
+                },
             });
         } catch (err) {
             validExtentionContext = false;
@@ -30,7 +30,7 @@ document.addEventListener("visibilitychange", function() {
 });
 
 //on page close?
-window.addEventListener("beforeunload", function() {
+window.addEventListener("beforeunload", function () {
     if (!validExtentionContext) {
         return;
     }
@@ -38,8 +38,8 @@ window.addEventListener("beforeunload", function() {
         chrome.runtime.sendMessage({
             message: {
                 state: "hidden",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
@@ -49,16 +49,15 @@ window.addEventListener("beforeunload", function() {
         chrome.runtime.sendMessage({
             message: {
                 state: "closed",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
     }
 });
 
-
-addEventListener("focus", function() {
+addEventListener("focus", function () {
     if (!validExtentionContext) {
         return;
     }
@@ -67,15 +66,15 @@ addEventListener("focus", function() {
         chrome.runtime.sendMessage({
             message: {
                 state: "active",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
     }
 });
 
-addEventListener("blur", function() {
+addEventListener("blur", function () {
     if (!validExtentionContext) {
         return;
     }
@@ -84,8 +83,8 @@ addEventListener("blur", function() {
         chrome.runtime.sendMessage({
             message: {
                 state: "inactive",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
@@ -97,8 +96,8 @@ try {
     chrome.runtime.sendMessage({
         message: {
             state: "loaded",
-            update_time: Date.now()
-        }
+            update_time: Date.now(),
+        },
     });
 } catch (err) {
     validExtentionContext = false;
@@ -111,8 +110,8 @@ if (!document.hidden) {
         chrome.runtime.sendMessage({
             message: {
                 state: "visible",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
@@ -123,8 +122,8 @@ if (!document.hidden) {
         chrome.runtime.sendMessage({
             message: {
                 state: "hidden",
-                update_time: Date.now()
-            }
+                update_time: Date.now(),
+            },
         });
     } catch (err) {
         validExtentionContext = false;
@@ -132,7 +131,7 @@ if (!document.hidden) {
 }
 
 //every minute, poll the tab for its visiblity state
-setInterval(function() {
+setInterval(function () {
     if (!validExtentionContext) {
         return;
     }
@@ -142,8 +141,8 @@ setInterval(function() {
             chrome.runtime.sendMessage({
                 message: {
                     state: "hidden",
-                    update_time: Date.now()
-                }
+                    update_time: Date.now(),
+                },
             });
         } catch (err) {
             validExtentionContext = false;
@@ -154,8 +153,8 @@ setInterval(function() {
             chrome.runtime.sendMessage({
                 message: {
                     state: "visible",
-                    update_time: Date.now()
-                }
+                    update_time: Date.now(),
+                },
             });
         } catch (err) {
             validExtentionContext = false;
