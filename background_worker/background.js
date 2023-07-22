@@ -14,8 +14,8 @@ let initialized = false;
 // )
 
 //script on all tabs when extension is created
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.local.get("tabList", function(result) {
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.storage.local.get("tabList", function (result) {
         if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
             tabList = result.tabList;
             console.log("tabList loaded from storage: ");
@@ -24,12 +24,12 @@ chrome.runtime.onInstalled.addListener(function() {
             console.log("tabList not loaded from storage");
         }
         //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
+        chrome.tabs.query({}, function (tabArray) {
             tabArray.forEach((tab) => {
                 chrome.scripting
                     .executeScript({
                         target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
+                        files: ["background_worker/injected_content.js"],
                     })
                     .then(() => {
                         console.log("injected content script into all tabs");
@@ -42,7 +42,7 @@ chrome.runtime.onInstalled.addListener(function() {
         });
 
         installTime = Date.now();
-        chrome.storage.local.get("timeOnline", function(result) {
+        chrome.storage.local.get("timeOnline", function (result) {
             if (result.timeOnline) {
                 timeOnline = result.timeOnline;
                 console.log("timeOnline loaded from storage: " + timeOnline);
@@ -52,7 +52,7 @@ chrome.runtime.onInstalled.addListener(function() {
         });
         startUpTime = Date.now();
         //set installed time
-        chrome.storage.local.set({ installTime: installTime }, function(result) {
+        chrome.storage.local.set({ installTime: installTime }, function (result) {
             console.log("installTime set to " + installTime);
         });
 
@@ -60,9 +60,9 @@ chrome.runtime.onInstalled.addListener(function() {
     });
 });
 
-chrome.runtime.onStartup.addListener(function() {
+chrome.runtime.onStartup.addListener(function () {
     //same as installed
-    chrome.storage.local.get("tabList", function(result) {
+    chrome.storage.local.get("tabList", function (result) {
         if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
             tabList = result.tabList;
             console.log("tabList loaded from storage: ");
@@ -71,12 +71,12 @@ chrome.runtime.onStartup.addListener(function() {
             console.log("tabList not loaded from storage");
         }
         //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
+        chrome.tabs.query({}, function (tabArray) {
             tabArray.forEach((tab) => {
                 chrome.scripting
                     .executeScript({
                         target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
+                        files: ["background_worker/injected_content.js"],
                     })
                     .then(() => {
                         console.log("injected content script into all tabs");
@@ -89,12 +89,12 @@ chrome.runtime.onStartup.addListener(function() {
         });
     });
 
-    chrome.storage.local.get("installTime", function(result) {
+    chrome.storage.local.get("installTime", function (result) {
         installTime = result.installTime;
         console.log("installTime loaded from storage: " + installTime);
     });
 
-    chrome.storage.local.get("timeOnline", function(result) {
+    chrome.storage.local.get("timeOnline", function (result) {
         if (result.timeOnline) {
             timeOnline = result.timeOnline;
             console.log("timeOnline loaded from storage: " + timeOnline);
@@ -106,23 +106,22 @@ chrome.runtime.onStartup.addListener(function() {
     initialized = true;
 });
 
-chrome.runtime.onSuspend.addListener(function() {
+chrome.runtime.onSuspend.addListener(function () {
     let sessionOnline = Date.now() - startUpTime;
     timeOnline += sessionOnline;
-    chrome.storage.local.set({ timeOnline: timeOnline }, function(result) {
+    chrome.storage.local.set({ timeOnline: timeOnline }, function (result) {
         console.log("timeOnline set to " + timeOnline);
     });
     console.log("unloading");
 });
 
-chrome.runtime.onSuspendCanceled.addListener(function() {
+chrome.runtime.onSuspendCanceled.addListener(function () {
     startUpTime = Date.now();
     console.log("loading");
     //run the startup code
 
-
     //same as installed
-    chrome.storage.local.get("tabList", function(result) {
+    chrome.storage.local.get("tabList", function (result) {
         if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
             tabList = result.tabList;
             console.log("tabList loaded from storage: ");
@@ -131,12 +130,12 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
             console.log("tabList not loaded from storage");
         }
         //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
+        chrome.tabs.query({}, function (tabArray) {
             tabArray.forEach((tab) => {
                 chrome.scripting
                     .executeScript({
                         target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
+                        files: ["background_worker/injected_content.js"],
                     })
                     .then(() => {
                         console.log("injected content script into all tabs");
@@ -149,12 +148,12 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
         });
     });
 
-    chrome.storage.local.get("installTime", function(result) {
+    chrome.storage.local.get("installTime", function (result) {
         installTime = result.installTime;
         console.log("installTime loaded from storage: " + installTime);
     });
 
-    chrome.storage.local.get("timeOnline", function(result) {
+    chrome.storage.local.get("timeOnline", function (result) {
         if (result.timeOnline) {
             timeOnline = result.timeOnline;
             console.log("timeOnline loaded from storage: " + timeOnline);
@@ -167,13 +166,12 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
     initialized = true;
 });
 
-
 //when new tab is created
-chrome.tabs.onCreated.addListener(function(tab) {
+chrome.tabs.onCreated.addListener(function (tab) {
     chrome.scripting
         .executeScript({
             target: { tabId: tab.id },
-            files: ["background_worker/injected_content.js"]
+            files: ["background_worker/injected_content.js"],
         })
         .then(() => {
             // console.log("injected content script into new tab")
@@ -182,12 +180,12 @@ chrome.tabs.onCreated.addListener(function(tab) {
 });
 
 //when tab is updated
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === "complete") {
         chrome.scripting
             .executeScript({
                 target: { tabId: tab.id },
-                files: ["background_worker/injected_content.js"]
+                files: ["background_worker/injected_content.js"],
             })
             .then(() => {
                 // console.log("injected content script into updated tab")
@@ -199,12 +197,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 //chrome:// tabs don't work
 
 //get current state of the tabs and store it in tabList
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("Message!" + request.message);
     if (!initialized) {
         console.log("Not Initialized");
         sendResponse("Not Initialized");
-        chrome.storage.local.get("tabList", function(result) {
+        chrome.storage.local.get("tabList", function (result) {
             if (result.tabList !== [] && !changedSchema && result.tabList !== undefined && result.tabList !== null) {
                 tabList = result.tabList;
                 console.log("tabList loaded from storage: ");
@@ -217,12 +215,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 console.log("tabList not loaded from storage");
             }
             //update tabList with current tab info
-            chrome.tabs.query({}, function(tabArray) {
+            chrome.tabs.query({}, function (tabArray) {
                 tabArray.forEach((tab) => {
                     chrome.scripting
                         .executeScript({
                             target: { tabId: tab.id },
-                            files: ["background_worker/injected_content.js"]
+                            files: ["background_worker/injected_content.js"],
                         })
                         .then(() => {
                             console.log("injected content script into all tabs");
@@ -235,12 +233,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
         });
 
-        chrome.storage.local.get("installTime", function(result) {
+        chrome.storage.local.get("installTime", function (result) {
             installTime = result.installTime;
             console.log("installTime loaded from storage: " + installTime);
         });
 
-        chrome.storage.local.get("timeOnline", function(result) {
+        chrome.storage.local.get("timeOnline", function (result) {
             if (result.timeOnline) {
                 timeOnline = result.timeOnline;
                 console.log("timeOnline loaded from storage: " + timeOnline);
@@ -252,7 +250,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } else {
         if (request.message === "requestData") {
             console.log("requestData received");
-            chrome.storage.local.get("specificList", function(result) {
+            chrome.storage.local.get("specificList", function (result) {
                 specificList = result.specificList;
                 updateStorage();
                 generateSpecifics();
@@ -262,7 +260,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     sortedSpecificArray.push({ key: key, value: value });
                 }
 
-                sortedSpecificArray.sort(function(a, b) {
+                sortedSpecificArray.sort(function (a, b) {
                     return b.value.total_time_visible - a.value.total_time_visible;
                 });
 
@@ -272,7 +270,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     sortedTabList.push(tab);
                 });
 
-                sortedTabList.sort(function(a, b) {
+                sortedTabList.sort(function (a, b) {
                     return b.total_time_visible - a.total_time_visible;
                 });
                 console.log("sortedTabList: ", sortedTabList);
@@ -283,7 +281,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     sortedSpecificArray: sortedSpecificArray,
 
                     timeSinceInstall: Date.now() - installTime,
-                    timeOnline: timeOnline + (Date.now() - startUpTime)
+                    timeOnline: timeOnline + (Date.now() - startUpTime),
                 };
                 sendResponse(sentData);
                 console.log("sentData sent");
@@ -304,11 +302,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.visibility = "hidden";
                     tab.update_time.push({
                         visibility: "hidden",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                     tab.loaded_time.push({
                         state: "loaded",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                     tab.open = true;
                     tab.last_update_time = request.message.update_time;
@@ -329,7 +327,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     loaded_time: [{ state: "loaded", time: request.message.update_time }],
                     open: true,
                     last_update_time: request.message.update_time,
-                    favicon: sender.tab.favIconUrl
+                    favicon: sender.tab.favIconUrl,
                 });
             }
         }
@@ -341,11 +339,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.last_update_time = request.message.update_time;
                     tab.update_time.push({
                         visibility: "hidden",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                     tab.loaded_time.push({
                         state: "closed",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                     tab.open = false;
                 }
@@ -360,7 +358,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.visibility = "visible";
                     tab.update_time.push({
                         visibility: "visible",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                 }
             });
@@ -374,7 +372,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.visibility = "hidden";
                     tab.update_time.push({
                         visibility: "hidden",
-                        time: request.message.update_time
+                        time: request.message.update_time,
                     });
                 }
             });
@@ -418,10 +416,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-
 //update history
 function updateStorage() {
-    chrome.storage.local.set({ "tabList": tabList }, function() {
+    chrome.storage.local.set({ tabList: tabList }, function () {
         // console.log(tabList)
     });
 }
@@ -477,7 +474,7 @@ function generateSpecifics() {
                     total_time_closed: -1,
                     update_time: [],
                     loaded_time: [],
-                    visit_hisotry: []
+                    visit_hisotry: [],
                 };
 
                 //update total_visible and hidden time
@@ -697,7 +694,7 @@ function generateSpecifics() {
     }
 
     function saveSpecifics() {
-        chrome.storage.local.set({ specificList: specificList }, function() {
+        chrome.storage.local.set({ specificList: specificList }, function () {
             // console.log(specificList)
         });
     }
