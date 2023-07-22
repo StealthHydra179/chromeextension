@@ -327,6 +327,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     muted: sender.tab.mutedInfo.muted,
                     update_time: [{ visibility: "hidden", time: request.message.update_time }],
                     loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                    active_time: [{ active: false, time: request.message.update_time }],
                     open: true,
                     last_update_time: request.message.update_time,
                     favicon: sender.tab.favIconUrl
@@ -379,6 +380,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 }
             });
         }
+        if (request.message.state === "active") {
+            // console.log("ifactive")
+            tabList.forEach((tab) => {
+                if (tab.documentId === sender.documentId) {
+                    // && request.message.update_time >= tab.last_update_time
+                    // console.log("active")
+                    tab.active = true;
+                    tab.active_time.push({
+                        active: true,
+                        time: request.message.update_time
+                    });
+                }
+            });
+        }
+        if (request.message.state === "inactive") {
+            // console.log("ifinactive")
+            tabList.forEach((tab) => {
+                if (tab.documentId === sender.documentId) {
+                    // && request.message.update_time >= tab.last_update_time
+                    // console.log("inactive")
+                    tab.active = false;
+                    tab.active_time.push({
+                        active: false,
+                        time: request.message.update_time
+                    });
+                }
+            });
+        }
         // console.log(tabList)
         // console.log(request.message)
 
@@ -421,6 +450,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 //update history
 function updateStorage() {
+    // if tab hasnt sent update in past 5 minutes, it is definitely closed
+    for (let i = 0; i < tabList.length; i++) {
+        if (Date.now() - tabList[i].last_update_time > 300000) {
+            tabList[i].open = false;
+            tabList[i].active = false;
+            tabList[i].loaded_time.push({
+                state: "closed",
+                time: Date.now()
+            });
+
+            tabList[i].update_time.push({
+                visibility: "hidden",
+                time: Date.now()
+            })
+        }
+    }
+
     chrome.storage.local.set({ "tabList": tabList }, function() {
         // console.log(tabList)
     });
@@ -481,7 +527,6 @@ function generateSpecifics() {
                 };
 
                 //update total_visible and hidden time
-                let visitTimes = [];
                 let currentLoopState = tab.update_time[0].visibility;
                 if (currentLoopState === "visible") {
                     specificList[tab.origin][tab.documentId].total_visits++;
@@ -492,11 +537,6 @@ function generateSpecifics() {
                     if (first) {
                         first = false;
                         return;
-                    }
-
-                    if (update.visibility === "visible") {
-                        specificList[tab.origin][tab.documentId].total_visits++;
-                        visitTimes.push(update.time);
                     }
 
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
@@ -523,6 +563,17 @@ function generateSpecifics() {
                 } else if (currentLoopState === "hidden") {
                     specificList[tab.origin][tab.documentId].total_time_hidden += Date.now() - currentLoopTime;
                 }
+
+                //update visit times by using active
+
+                let visitTimes = [];
+                tab.update_time.forEach((update) => {
+                    if (update.active) {
+                        specificList[tab.origin][tab.documentId].total_visits++;
+                        visitTimes.push(update.time);
+                    }
+                })
+
 
                 //update total_loaded and closed time
                 currentLoopState = tab.loaded_time[0].state;

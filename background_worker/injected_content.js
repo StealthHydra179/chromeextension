@@ -35,6 +35,27 @@ window.addEventListener("beforeunload", function () {
     });
 });
 
+
+addEventListener("focus", function () {
+    // console.log("focused")
+    chrome.runtime.sendMessage({
+        message: {
+            state: "active",
+            update_time: Date.now(),
+        },
+    });
+});
+
+addEventListener("blur", function () {
+    // console.log("blurred")
+    chrome.runtime.sendMessage({
+        message: {
+            state: "inactive",
+            update_time: Date.now(),
+        },
+    });
+});
+
 //on page load
 chrome.runtime.sendMessage({
     message: {
@@ -81,4 +102,6 @@ setInterval(function () {
             },
         });
     }
+
+    // active is not sent in order to maintain higher accuracy
 }, 60000);
