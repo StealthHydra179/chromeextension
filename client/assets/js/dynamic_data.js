@@ -38,7 +38,7 @@ chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
 
     // row 4
     // top websites
-    topWebsites(response);
+    allWebsites(response);
 
     // row 5
     // all webpages
@@ -131,7 +131,7 @@ function millisecondsToTimeString(milliseconds) {
         }
     }
     if (timeString === "") {
-        timeString = "> 0 seconds";
+        timeString = "0 seconds";
     }
 
     return timeString;
@@ -261,8 +261,8 @@ function topTimeBreakdown(response) {
         ];
     }
 
-    console.log("Colors: ", colors);
-    console.log("Times: ", times);
+    // console.log("Colors: ", colors);
+    // console.log("Times: ", times);
 
     new Chart(pieChart, {
         type: "doughnut",
@@ -292,7 +292,7 @@ function topTimeBreakdown(response) {
                             if (label) {
                                 label += ": ";
                             }
-                            console.log("CONTEXT:", context);
+                            // console.log("CONTEXT:", context);
                             if (context.parsed !== null) {
                                 // console.log(context.parsed.y)
                                 label += millisecondsToTimeString(context.parsed);
@@ -369,9 +369,9 @@ function updateSummaryUIElements(response) {
     }
 
     let percentageUsed = Math.floor((totalTimeVisible / totalTimeLoaded) * 100);
-    console.log(document.getElementById("timeActiveSummary"));
+    // console.log(document.getElementById("timeActiveSummary"));
     document.getElementById("timeActiveSummary").setAttribute("data-percent", percentageUsed.toString());
-    console.log("Percentage Used: ", percentageUsed);
+    // console.log("Percentage Used: ", percentageUsed);
 
     $(".timeActiveSummary").easyPieChart({
         //time active *TODO refactor later
@@ -386,37 +386,49 @@ function updateSummaryUIElements(response) {
     });
 }
 
-function topWebsites(response) {
+function allWebsites(response) {
     /*
-    <tr>
-        <td>Iphone 5</td>
-        <td>
-            <img alt="product img" class="product-img-2" src="assets/images/products/01.png" />
-        </td>
-        <td>#9405822</td>
-        <td>
-            <span class="badge bg-light-success text-success w-100">Paid</span>
-        </td>
-        <td>$1250.00</td>
-        <td>03 Feb 2020</td>
-        <td>
-            <div class="progress" style="height: 4px">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-            </div>
-        </td>
-    </tr>
+    <thead class="table-light">
+        <tr>
+            <th>Website</th>
+            <th>Logo</th>
+            <th>Page ID</th>
+            <th>Times Visited</th>
+            <th>Date Accessed</th>
+            <th>Active Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Iphone 5</td>
+            <td>
+                <img alt="product img" class="product-img-2" src="assets/images/products/01.png" />
+            </td>
+            <td>#9405822</td>
+            <td>$1250.00</td>
+            <td>03 Feb 2020</td>
+            <td>
+                <div class="progress" style="height: 4px">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                </div>
+            </td>
+        </tr>
      */
-    let table = document.getElementById("topWebsitesTableBody");
+    let table = document.getElementById("allWebsitesTableBody");
 
     let sortedSpecificArray = response.sortedSpecificArray;
     //top 10
-    for (let i = 0; i < 10; i++) {
-        if (i >= sortedSpecificArray.length || sortedSpecificArray[i]["value"]["total_time_visible"] <= 0) {
-            break;
-        }
+    for (let i = 0; i < sortedSpecificArray.length; i++) {
+        let row = table.insertRow(i);
+        let website = row.insertCell(0);
+        let logo = row.insertCell(1);
+        let pageID = row.insertCell(2);
+        let timesVisited = row.insertCell(3);
+        let dateAccessed = row.insertCell(4);
+        let activeTime = row.insertCell(5);
 
-        // let tr = document.createElement("tr");
-        // let td1 = document.createElement("td");
+        website.innerHTML = sortedSpecificArray[i]["key"];
+        logo.innerHTML = '<img alt="product img" class="product-img-2" src="' + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[0]]["favicon"] + '" />';
     }
 }
 

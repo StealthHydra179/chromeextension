@@ -1,9 +1,16 @@
 let tabList = [];
 let specificList = {};
-let changedSchema = true;
+let changedSchema = false;
 let installTime;
 let timeOnline;
 let startUpTime;
+
+//
+// chrome.runtime.onSuspend.addListener(
+//     function () {
+//         console.log("Unloading.");
+//     }
+// )
 
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function () {
@@ -14,11 +21,6 @@ chrome.runtime.onInstalled.addListener(function () {
             console.log(tabList);
         } else {
             console.log("tabList not loaded from storage");
-            // chrome.storage.local.get("tabList", function (result) {
-            //     if (result.tabList !== undefined && result.tabList !== null && result.tabList !== []) {
-            //         tabList = result.tabList;
-            //     }
-            // });
         }
         //update tabList with current tab info
         chrome.tabs.query({}, function (tabArray) {
@@ -33,7 +35,7 @@ chrome.runtime.onInstalled.addListener(function () {
                     })
                     .catch((err) => {
                         console.log(err, tab.url);
-                        // memory saved/ tabs that are open but are not loaded dont work
+                        // memory saved tabs that are open but are not loaded dont work
                     });
             });
         });
@@ -165,7 +167,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             sortedTabList.sort(function (a, b) {
                 return b.total_time_visible - a.total_time_visible;
             });
-
+            console.log("sortedTabList: ", sortedTabList);
             let sentData = {
                 tabList: tabList,
                 sortedTabList: sortedTabList,
@@ -183,7 +185,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         return true;
     }
     //why is this run like 55 times?
-    console.log(request.message.state, sender.url);
+    // console.log(request.message.state, sender.url);
     if (request.message.state === "loaded") {
         //if object exists, update it
         //if object doesn't exist, add it
@@ -310,7 +312,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 //update history
 function updateStorage() {
-    chrome.storage.local.set({ tabList: tabList }, function () {
+    chrome.storage.local.set({ "tabList": tabList }, function () {
         // console.log(tabList)
     });
 }
@@ -339,7 +341,7 @@ function generateSpecifics() {
 
         //for each tab in tablist
 
-        console.log("Calculating specifics...")
+        // console.log("Calculating specifics...")
         let index = 0;
         tabList.forEach((tab) => {
             //if the origin is not in the specific list, add it
@@ -483,7 +485,6 @@ function generateSpecifics() {
 
             //for each key value pair in origin
             for (const [pkey, page] of Object.entries(specificList[key])) {
-                //             specificList[key].forEach(page => {
                 if (page.total_time > 0) {
                     if (total_time === -1) {
                         total_time = page.total_time;
