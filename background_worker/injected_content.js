@@ -1,3 +1,5 @@
+let validExtentionContext = true;
+
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
 document.addEventListener("visibilitychange", function() {
     if (document.hidden) {
@@ -10,6 +12,7 @@ document.addEventListener("visibilitychange", function() {
                 }
             });
         } catch (err) {
+            validExtentionContext = false;
         }
     } else {
         // console.log("visible")
@@ -21,12 +24,16 @@ document.addEventListener("visibilitychange", function() {
                 }
             });
         } catch (err) {
+            validExtentionContext = false;
         }
     }
 });
 
 //on page close?
 window.addEventListener("beforeunload", function() {
+    if (!validExtentionContext) {
+        return;
+    }
     try {
         chrome.runtime.sendMessage({
             message: {
@@ -35,6 +42,7 @@ window.addEventListener("beforeunload", function() {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 
     try {
@@ -45,11 +53,15 @@ window.addEventListener("beforeunload", function() {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 });
 
 
 addEventListener("focus", function() {
+    if (!validExtentionContext) {
+        return;
+    }
     // console.log("focused")
     try {
         chrome.runtime.sendMessage({
@@ -59,10 +71,14 @@ addEventListener("focus", function() {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 });
 
 addEventListener("blur", function() {
+    if (!validExtentionContext) {
+        return;
+    }
     // console.log("blurred")
     try {
         chrome.runtime.sendMessage({
@@ -72,6 +88,7 @@ addEventListener("blur", function() {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 });
 
@@ -84,6 +101,7 @@ try {
         }
     });
 } catch (err) {
+    validExtentionContext = false;
 }
 // console.log("loaded") //change to extension loaded and add a extension unload part as well
 
@@ -97,6 +115,7 @@ if (!document.hidden) {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 } else {
     // console.log("hidden")
@@ -108,11 +127,15 @@ if (!document.hidden) {
             }
         });
     } catch (err) {
+        validExtentionContext = false;
     }
 }
 
 //every minute, poll the tab for its visiblity state
 setInterval(function() {
+    if (!validExtentionContext) {
+        return;
+    }
     if (document.hidden) {
         // console.log("hidden")
         try {
@@ -123,6 +146,7 @@ setInterval(function() {
                 }
             });
         } catch (err) {
+            validExtentionContext = false;
         }
     } else {
         // console.log("visible")
@@ -134,6 +158,7 @@ setInterval(function() {
                 }
             });
         } catch (err) {
+            validExtentionContext = false;
         }
     }
 
