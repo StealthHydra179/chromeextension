@@ -35,7 +35,6 @@ window.addEventListener("beforeunload", function () {
     });
 });
 
-
 addEventListener("focus", function () {
     // console.log("focused")
     chrome.runtime.sendMessage({
