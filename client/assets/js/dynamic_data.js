@@ -398,80 +398,46 @@ function onLoad() {
             <tr>
                 <th>Website</th>
                 <th>Logo</th>
-                <th>Page ID</th>
                 <th>Times Visited</th>
                 <th>Date Accessed</th>
                 <th>Active Time</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>Iphone 5</td>
-                <td>
-                    <img alt="product img" class="product-img-2" src="assets/images/products/01.png" />
-                </td>
-                <td>#9405822</td>
-                <td>$1250.00</td>
-                <td>03 Feb 2020</td>
-                <td>
-                    <div class="progress" style="height: 4px">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                    </div>
-                </td>
-            </tr>
          */
         let table = document.getElementById("allWebsitesTableBody");
 
         let sortedSpecificArray = response.sortedSpecificArray;
-        //top 10
         for (let i = 0; i < sortedSpecificArray.length; i++) {
             let row = table.insertRow(i);
             let website = row.insertCell(0);
             let logo = row.insertCell(1);
-            let pageID = row.insertCell(2);
-            let timesVisited = row.insertCell(3);
-            let dateAccessed = row.insertCell(4);
-            let activeTime = row.insertCell(5);
+            let timesVisited = row.insertCell(2);
+            let dateAccessed = row.insertCell(3);
+            let activeTime = row.insertCell(4);
 
             website.innerHTML = sortedSpecificArray[i]["key"];
-            logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[0]]["favicon"] + "\" />";
+
+
+            let currentIndex = 0;
+            let found = false
+            for (let currentIndex = 0; currentIndex < Object.keys(sortedSpecificArray[i]["value"]).length; currentIndex++) {
+                if (sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] !== undefined) {
+                    logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] + "\" />";
+                    found = true
+                    break
+                }
+            }
+            if (!found) {
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
+            }
+
+
+            timesVisited.innerHTML = sortedSpecificArray[i]["value"]["total_visits"];
         }
     }
 
     function allPages(response) {
         let table = document.getElementById("allPagesTableBody");
-        /*context
-        <thead class="table-light">
-            <tr>
-                <th>Website</th>
-                <th>Logo</th>
-                <th>Page ID</th>
-                <th>State</th>
-                <th>Visit Count</th>
-                <th>Date Last Accessed</th>
-                <th>Active Time</th>
-            </tr>
-        </thead>
-        <tbody id="allPagesTableBody">
-            <tr>
-                <td>Iphone 5</td>
-                <td>
-                    <img alt="product img" class="product-img-2" src="assets/images/products/01.png" />
-                </td>
-                <td>#9405822</td>
-                <td>
-                    <span class="badge bg-light-success text-success w-100">Paid</span>
-                </td>
-                <td>$1250.00</td>
-                <td>03 Feb 2020</td>
-                <td>
-                    <div class="progress" style="height: 4px">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                    </div>
-                </td>
-            </tr>
-               ...
-         */
 
         let sortedTabList = response.sortedTabList;
 
@@ -500,7 +466,11 @@ function onLoad() {
 
             // add logo
             let logo = document.createElement("td");
-            logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
+            if (sortedTabList[i]["favicon"] === undefined) {
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
+            } else {
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
+            }
             tr.appendChild(logo);
 
             // add time visible
@@ -11010,4 +10980,4 @@ function onLoad() {
 }
 
 
-onLoad()
+onLoad();

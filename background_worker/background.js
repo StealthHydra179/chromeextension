@@ -463,7 +463,7 @@ function updateStorage() {
             tabList[i].update_time.push({
                 visibility: "hidden",
                 time: Date.now()
-            })
+            });
         }
     }
 
@@ -523,14 +523,16 @@ function generateSpecifics() {
                     total_time_closed: -1,
                     update_time: [],
                     loaded_time: [],
-                    visit_hisotry: []
+                    visit_history: [],
+                    favicon: ""
                 };
+
+                if (tab.favicon !== undefined) {
+                    specificList[tab.origin][tab.documentId].favicon = tab.favicon;
+                }
 
                 //update total_visible and hidden time
                 let currentLoopState = tab.update_time[0].visibility;
-                if (currentLoopState === "visible") {
-                    specificList[tab.origin][tab.documentId].total_visits++;
-                }
                 let currentLoopTime = tab.update_time[0].time;
                 let first = true;
                 tab.update_time.forEach((update) => {
@@ -567,12 +569,12 @@ function generateSpecifics() {
                 //update visit times by using active
 
                 let visitTimes = [];
-                tab.update_time.forEach((update) => {
+                tab.active_time.forEach((update) => {
                     if (update.active) {
                         specificList[tab.origin][tab.documentId].total_visits++;
                         visitTimes.push(update.time);
                     }
-                })
+                });
 
 
                 //update total_loaded and closed time
@@ -611,12 +613,11 @@ function generateSpecifics() {
 
                 //update total_time
                 specificList[tab.origin][tab.documentId].total_time =
-                    specificList[tab.origin][tab.documentId].total_time_visible +
-                    specificList[tab.origin][tab.documentId].total_time_hidden;
+                    specificList[tab.origin][tab.documentId].total_time_visible + specificList[tab.origin][tab.documentId].total_time_hidden;
                 //pass through update and loaded time
                 specificList[tab.origin][tab.documentId].update_time = tab.update_time;
                 specificList[tab.origin][tab.documentId].loaded_time = tab.loaded_time;
-                specificList[tab.origin][tab.documentId].visit_hisotry = visitTimes;
+                specificList[tab.origin][tab.documentId].visit_history = visitTimes;
 
                 tabList[index].total_time = specificList[tab.origin][tab.documentId].total_time;
                 tabList[index].total_visits = specificList[tab.origin][tab.documentId].total_visits;

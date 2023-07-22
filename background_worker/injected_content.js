@@ -101,6 +101,18 @@ if (!document.hidden) {
     } catch (err) {}
 }
 
+if (document.hasFocus()) {
+    // console.log("focused")
+    try {
+        chrome.runtime.sendMessage({
+            message: {
+                state: "active",
+                update_time: Date.now(),
+            },
+        });
+    } catch (err) {}
+}
+
 //every minute, poll the tab for its visiblity state
 setInterval(function () {
     if (document.hidden) {
