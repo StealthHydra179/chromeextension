@@ -200,7 +200,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 //get current state of the tabs and store it in tabList
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log("Message!");
+    console.log("Message!" + request.message);
     if (!initialized) {
         console.log("Not Initialized");
         sendResponse("Not Initialized");
@@ -250,7 +250,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         startUpTime = Date.now();
     } else {
-
         if (request.message === "requestData") {
             console.log("requestData received");
             chrome.storage.local.get("specificList", function(result) {
@@ -352,7 +351,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 }
             });
         }
-
         if (request.message.state === "visible") {
             // console.log("ifvisible")
             tabList.forEach((tab) => {
@@ -692,7 +690,7 @@ function generateSpecifics() {
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
             // console.log(specificList[key])
-            console.log("specifics calculated.");
+            // console.log("specifics calculated.");
         }
 
         saveSpecifics();

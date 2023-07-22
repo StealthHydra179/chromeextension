@@ -3,9 +3,9 @@ function onLoad() {
     chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
         console.log(response);
         if (response === "Not Initialized") {
+            console.log("Not Initialized");
             setTimeout(onLoad, 1000);
         } else {
-
             let specificList = response.specificList;
 
             //update the website
