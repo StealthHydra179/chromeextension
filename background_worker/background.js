@@ -442,7 +442,7 @@ function generateSpecifics() {
 
                     if (update.visibility === "visible") {
                         specificList[tab.origin][tab.documentId].total_visits++;
-                        visitTimes.append(update.time)
+                        visitTimes.push(update.time)
                     }
 
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
