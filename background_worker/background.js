@@ -108,7 +108,62 @@ chrome.runtime.onSuspend.addListener(function () {
     chrome.storage.local.set({ timeOnline: timeOnline }, function (result) {
         console.log("timeOnline set to " + timeOnline);
     });
+    console.log("unloading")
 });
+
+chrome.runtime.onSuspendCanceled.addListener(function () {
+    startUpTime = Date.now();
+    console.log("loading")
+    //run the startup code
+
+
+    //same as installed
+    chrome.storage.local.get("tabList", function (result) {
+        if (result.tabList && !changedSchema) {
+            tabList = result.tabList;
+            console.log("tabList loaded from storage: ");
+            console.log(tabList);
+        } else {
+            console.log("tabList not loaded from storage");
+        }
+        //update tabList with current tab info
+        chrome.tabs.query({}, function (tabArray) {
+            tabArray.forEach((tab) => {
+                chrome.scripting
+                    .executeScript({
+                        target: { tabId: tab.id },
+                        files: ["background_worker/injected_content.js"],
+                    })
+                    .then(() => {
+                        console.log("injected content script into all tabs");
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        console.log(tab.url);
+                    });
+            });
+        });
+    });
+
+    chrome.storage.local.get("installTime", function (result) {
+        installTime = result.installTime;
+        console.log("installTime loaded from storage: " + installTime);
+    });
+
+    chrome.storage.local.get("timeOnline", function (result) {
+        if (result.timeOnline) {
+            timeOnline = result.timeOnline;
+            console.log("timeOnline loaded from storage: " + timeOnline);
+        } else {
+            timeOnline = 0;
+        }
+    });
+    startUpTime = Date.now();
+
+
+});
+
+
 
 //when new tab is created
 chrome.tabs.onCreated.addListener(function (tab) {
@@ -368,9 +423,11 @@ function generateSpecifics() {
                     total_time_closed: -1,
                     update_time: [],
                     loaded_time: [],
+                    visit_hisotry: [],
                 };
 
                 //update total_visible and hidden time
+                let visitTimes = []
                 let currentLoopState = tab.update_time[0].visibility;
                 if (currentLoopState === "visible") {
                     specificList[tab.origin][tab.documentId].total_visits++;
@@ -385,6 +442,7 @@ function generateSpecifics() {
 
                     if (update.visibility === "visible") {
                         specificList[tab.origin][tab.documentId].total_visits++;
+                        visitTimes.append(update.time)
                     }
 
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
@@ -453,6 +511,7 @@ function generateSpecifics() {
                 //pass through update and loaded time
                 specificList[tab.origin][tab.documentId].update_time = tab.update_time;
                 specificList[tab.origin][tab.documentId].loaded_time = tab.loaded_time;
+                specificList[tab.origin][tab.documentId].visit_hisotry = visitTimes;
 
                 tabList[index].total_time = specificList[tab.origin][tab.documentId].total_time;
                 tabList[index].total_visits = specificList[tab.origin][tab.documentId].total_visits;
@@ -465,6 +524,7 @@ function generateSpecifics() {
                 tabList[index].total_time_audible = specificList[tab.origin][tab.documentId].total_time_audible;
                 tabList[index].total_time_muted = specificList[tab.origin][tab.documentId].total_time_muted;
                 tabList[index].total_time_unmuted = specificList[tab.origin][tab.documentId].total_time_unmuted;
+                tabList[index].visit_history = specificList[tab.origin][tab.documentId].visit_history;
             }
             index++;
         });
