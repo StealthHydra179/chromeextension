@@ -108,14 +108,13 @@ chrome.runtime.onSuspend.addListener(function () {
     chrome.storage.local.set({ timeOnline: timeOnline }, function (result) {
         console.log("timeOnline set to " + timeOnline);
     });
-    console.log("unloading")
+    console.log("unloading");
 });
 
 chrome.runtime.onSuspendCanceled.addListener(function () {
     startUpTime = Date.now();
-    console.log("loading")
+    console.log("loading");
     //run the startup code
-
 
     //same as installed
     chrome.storage.local.get("tabList", function (result) {
@@ -159,11 +158,7 @@ chrome.runtime.onSuspendCanceled.addListener(function () {
         }
     });
     startUpTime = Date.now();
-
-
 });
-
-
 
 //when new tab is created
 chrome.tabs.onCreated.addListener(function (tab) {
@@ -367,7 +362,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 //update history
 function updateStorage() {
-    chrome.storage.local.set({ "tabList": tabList }, function () {
+    chrome.storage.local.set({ tabList: tabList }, function () {
         // console.log(tabList)
     });
 }
@@ -427,7 +422,7 @@ function generateSpecifics() {
                 };
 
                 //update total_visible and hidden time
-                let visitTimes = []
+                let visitTimes = [];
                 let currentLoopState = tab.update_time[0].visibility;
                 if (currentLoopState === "visible") {
                     specificList[tab.origin][tab.documentId].total_visits++;
@@ -442,7 +437,7 @@ function generateSpecifics() {
 
                     if (update.visibility === "visible") {
                         specificList[tab.origin][tab.documentId].total_visits++;
-                        visitTimes.push(update.time)
+                        visitTimes.push(update.time);
                     }
 
                     if (currentLoopState === "hidden" && update.visibility === "visible") {
@@ -636,7 +631,7 @@ function generateSpecifics() {
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
             // console.log(specificList[key])
-            console.log("specifics calculated.")
+            console.log("specifics calculated.");
         }
 
         saveSpecifics();
