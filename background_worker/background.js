@@ -383,7 +383,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.message.state === "active") {
             // console.log("ifactive")
             tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
+                if (tab.documentId === sender.documentId && tab.active === false) {
                     // && request.message.update_time >= tab.last_update_time
                     // console.log("active")
                     tab.active = true;
@@ -397,7 +397,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.message.state === "inactive") {
             // console.log("ifinactive")
             tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
+                if (tab.documentId === sender.documentId && tab.active === true) {
                     // && request.message.update_time >= tab.last_update_time
                     // console.log("inactive")
                     tab.active = false;
