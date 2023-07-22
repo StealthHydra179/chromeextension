@@ -312,7 +312,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 //update history
 function updateStorage() {
-    chrome.storage.local.set({ "tabList": tabList }, function () {
+    chrome.storage.local.set({ tabList: tabList }, function () {
         // console.log(tabList)
     });
 }
@@ -576,7 +576,7 @@ function generateSpecifics() {
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
             // console.log(specificList[key])
-            console.log("specifics calculated.")
+            console.log("specifics calculated.");
         }
 
         saveSpecifics();

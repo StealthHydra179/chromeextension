@@ -428,7 +428,10 @@ function allWebsites(response) {
         let activeTime = row.insertCell(5);
 
         website.innerHTML = sortedSpecificArray[i]["key"];
-        logo.innerHTML = '<img alt="product img" class="product-img-2" src="' + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[0]]["favicon"] + '" />';
+        logo.innerHTML =
+            '<img alt="product img" class="product-img-2" src="' +
+            sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[0]]["favicon"] +
+            '" />';
     }
 }
 
