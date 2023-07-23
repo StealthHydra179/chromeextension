@@ -77,10 +77,10 @@ $(function () {
             $(".compose-mail-popup").hide();
         }),
         $(".switcher-btn").on("click", function () {
-            $(".switcher-nav-wrapper").toggleClass("switcher-toggled");
+            $(".switcher-wrapper").toggleClass("switcher-toggled");
         }),
         $(".close-switcher").on("click", function () {
-            $(".switcher-nav-wrapper").removeClass("switcher-toggled");
+            $(".switcher-wrapper").removeClass("switcher-toggled");
         }),
         $("#lightmode").on("click", function () {
             $("html").attr("class", "light-theme");

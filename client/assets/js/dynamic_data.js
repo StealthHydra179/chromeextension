@@ -10,42 +10,20 @@ function onLoad() {
         } else {
             let specificList = response.specificList;
 
+            //row 1
             //update the website
+            first_row_statistics(response);
 
-            //unique websites visited
-            document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length;
-
-            //unique webpages visited
-            let webpageCount = 0;
-            for (let website in specificList) {
-                webpageCount += Object.keys(specificList[website]).length - specificListExtraKeys;
-            }
-            document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
-
-            //Average Time Per Day
-            let totalTime = calculate_totalTimeVisible(response);
-            let totalDays = Math.ceil(response.timeOnline / 86400000);
-            let averageTimePerDay = totalTime / totalDays;
-            console.log("atpd:", averageTimePerDay);
-            document.getElementById("average_time_per_day_row_1").innerHTML = millisecondsToTimeString(averageTimePerDay);
-
-            //total time used
-            let totalTimeUsedVisible = calculate_totalTimeVisible(response);
-            console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible);
-            //document.getElementById("total_time_used_row_1").innerHTML = totalTime
-            // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
-            document.getElementById("total_time_used_row_1").innerHTML = millisecondsToTimeString(totalTimeUsedVisible);
-
+            // row2
             // website history
-            //TODO EDIT CODE TO HAVE HISTORY
             websiteHistory(response);
-
-            // top 4 time breakdown, the rest of the time goes to
+            // top 4 time breakdown
             topTimeBreakdown(response);
 
-            // row 3?
-            // top10WebsitesHistory(response)
-
+            // row 3
+            //graph summary
+            websiteViewTime(response);
+            // percentage summaries
             updateSummaryUIElements(response);
 
             // row 4
@@ -57,24 +35,6 @@ function onLoad() {
             allPages(response);
         }
     });
-
-    function calculate_totalTimeVisible(response) {
-        let specificList = response.specificList;
-        let totalTimeVisible = 0;
-        for (let website in specificList) {
-            for (let webpage in specificList[website]) {
-                // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
-                if (
-                    specificList[website][webpage]["total_time_visible"] === undefined ||
-                    specificList[website][webpage]["total_time_visible"] <= -1
-                ) {
-                    continue;
-                }
-                totalTimeVisible += specificList[website][webpage]["total_time_visible"];
-            }
-        }
-        return totalTimeVisible;
-    }
 
     function millisecondsToTimeString(milliseconds) {
         let years = Math.floor(milliseconds / 31536000000);
@@ -150,7 +110,6 @@ function onLoad() {
         return timeString;
     }
 
-
     function generateBorderColor(index) {
         let colors = [
             "#6078ea",
@@ -167,42 +126,55 @@ function onLoad() {
         ];
         return colors[index % colors.length];
     }
-
-    function getTextWidth(text, font) {
-        // re-use canvas object for better performance
-        const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-        const context = canvas.getContext("2d");
-        context.font = font;
-        const metrics = context.measureText(text);
-        return metrics.width;
-    }
-
-    console.log(getTextWidth("hello there!", "bold 12pt arial"));
-
-    function titleFormatter(title) {
-        // make each and every title 80 characters long, fill extra with space, if too long add elipses
-
-        let spaceWidth = getTextWidth(" ", "12pt arial");
-        let currentWidth = getTextWidth(title, "12pt arial");
-        let elipsesWidth = getTextWidth("...", "12pt arial");
-
-        let newTitle = "";
-        if (currentWidth > 40-elipsesWidth) {
-            newTitle = title.substring(0, 40-elipsesWidth) + "...";
-        } else {
-            newTitle = title;
-
-            for (let i = 0; i < (40 - currentWidth)/spaceWidth; i++) {
-                newTitle += " ";
+    function calculate_totalTimeVisible(response) {
+        let specificList = response.specificList;
+        let totalTimeVisible = 0;
+        for (let website in specificList) {
+            for (let webpage in specificList[website]) {
+                // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
+                if (
+                    specificList[website][webpage]["total_time_visible"] === undefined ||
+                    specificList[website][webpage]["total_time_visible"] <= -1
+                ) {
+                    continue;
+                }
+                totalTimeVisible += specificList[website][webpage]["total_time_visible"];
             }
         }
-        return newTitle
+        return totalTimeVisible;
+    }
+
+
+    function first_row_statistics(response) {
+        specificList = response.specificList;
+        //unique websites visited
+        document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length;
+
+        //unique webpages visited
+        let webpageCount = 0;
+        for (let website in specificList) {
+            webpageCount += Object.keys(specificList[website]).length - specificListExtraKeys;
+        }
+        document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
+
+        //Average Time Per Day
+        let totalTime = calculate_totalTimeVisible(response);
+        let totalDays = Math.ceil(response.timeOnline / 86400000);
+        let averageTimePerDay = totalTime / totalDays;
+        console.log("atpd:", averageTimePerDay);
+        document.getElementById("average_time_per_day_row_1").innerHTML = millisecondsToTimeString(averageTimePerDay);
+
+        //total time used
+        let totalTimeUsedVisible = calculate_totalTimeVisible(response);
+        console.log("TOTAL TIME VISIBLE", totalTimeUsedVisible);
+        //document.getElementById("total_time_used_row_1").innerHTML = totalTime
+        // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
+        document.getElementById("total_time_used_row_1").innerHTML = millisecondsToTimeString(totalTimeUsedVisible);
+
     }
 
     function websiteHistory(response) {
         let tabList = response.tabList;
-
-        // todo update graph
 
         // update graph additional information
         let historyTotalPages = document.getElementById("historyTotalPages");
@@ -595,6 +567,46 @@ function onLoad() {
             li.innerHTML = '<span style="max-width:70%">'+labels[i]+'</span>' + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>";
             legend.appendChild(li);
         }
+    }
+
+    function websiteViewTime(response) {
+        //averagePagesStatistic average pages per website
+        let averagePagesStatistic = document.getElementById("averagePagesStatistic");
+        // calculate ratio of tab pages : specific website
+        let ratio = response.tabList.length / response.sortedSpecificArray.length;
+        averagePagesStatistic.innerHTML = ratio.toFixed(2);
+
+
+        //averageTimePerWebsiteStatistic average time per website
+        let averageTimePerWebsiteStatistic = document.getElementById("averageTimePerWebsiteStatistic");
+        // calculate ratio of overall visible time : number of websites
+        let ratio2 = calculate_totalTimeVisible(response) / response.sortedSpecificArray.length;
+        averageTimePerWebsiteStatistic.innerHTML = millisecondsToTimeString(ratio2);
+
+
+        //averageTimePerPageStatistic average time per page
+        let averageTimePerPageStatistic = document.getElementById("averageTimePerPageStatistic");
+        // calculate ratio of overall visible time : number of tabs
+        let ratio3 = calculate_totalTimeVisible(response) / response.tabList.length;
+        averageTimePerPageStatistic.innerHTML = millisecondsToTimeString(ratio3);
+
+
+        //averageVisitsPerPageStatistic average views per page
+        let averageVisitsPerPageStatistic = document.getElementById("averageVisitsPerPageStatistic");
+        // calculate ratio of overall view count : number of tabs
+        let totalViews = 0;
+        for (let i = 0; i < response.tabList.length; i++) {
+            if (response.tabList[i]["total_visits"] === undefined || response.tabList[i]["total_visits"] === null || response.tabList[i]["total_visits"] < 0) {
+                continue;
+            }
+            totalViews += response.tabList[i]["total_visits"];
+        }
+        let ratio4 = totalViews / response.tabList.length;
+        averageVisitsPerPageStatistic.innerHTML = ratio4.toFixed(2);
+
+
+        //update chart
+
     }
 
     function updateSummaryUIElements(response) {
