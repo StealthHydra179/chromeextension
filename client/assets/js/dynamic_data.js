@@ -150,6 +150,55 @@ function onLoad() {
         return timeString;
     }
 
+
+    function generateBorderColor(index) {
+        let colors = [
+            "#6078ea",
+            "#17c5ea",
+            "#ffce00",
+            "#ff6c00",
+            "#ff0000",
+            "#00ff00",
+            "#0000ff",
+            "#ff00ff",
+            "#00ffff",
+            "#ffff00",
+            "#000000"
+        ];
+        return colors[index % colors.length];
+    }
+
+    function getTextWidth(text, font) {
+        // re-use canvas object for better performance
+        const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+        const context = canvas.getContext("2d");
+        context.font = font;
+        const metrics = context.measureText(text);
+        return metrics.width;
+    }
+
+    console.log(getTextWidth("hello there!", "bold 12pt arial"));
+
+    function titleFormatter(title) {
+        // make each and every title 80 characters long, fill extra with space, if too long add elipses
+
+        let spaceWidth = getTextWidth(" ", "12pt arial");
+        let currentWidth = getTextWidth(title, "12pt arial");
+        let elipsesWidth = getTextWidth("...", "12pt arial");
+
+        let newTitle = "";
+        if (currentWidth > 40-elipsesWidth) {
+            newTitle = title.substring(0, 40-elipsesWidth) + "...";
+        } else {
+            newTitle = title;
+
+            for (let i = 0; i < (40 - currentWidth)/spaceWidth; i++) {
+                newTitle += " ";
+            }
+        }
+        return newTitle
+    }
+
     function websiteHistory(response) {
         let tabList = response.tabList;
 
@@ -167,79 +216,135 @@ function onLoad() {
         let timeOnline = response.timeOnline;
         let timeTracked = document.getElementById("historyTracked");
         timeTracked.innerHTML = millisecondsToTimeString(timeOnline);
-        let pagesPerHour = Math.round(totalPageVisits / (timeOnline / 3600000));
+        let pagesPerHour = Math.round(totalPageVisits / Math.ceil(timeOnline / 3600000));
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
 
         //update graph
         // create datasets
         // convert tablist visit_history into a frequency table by hour if extention time < 1 day, other wise split by day, but if less than 1 hour split by minutes
         let frequencyTable = {};
-        let timeOnlineInDays = response.timeOnline / 86400000;
-        let timeOnlineInHours = response.timeOnline / 3600000;
-        let timeOnlineInMinutes = response.timeOnline / 60000;
+        let timeOnlineInDays = response.timeSinceInstall / 86400000;
+        let timeOnlineInHours = response.timeSinceInstall / 3600000;
+        let timeOnlineInMinutes = response.timeSinceInstall / 60000;
         let datasets;
-        let timeLabels= [];
+        let timeLabels = [];
         if (timeOnlineInHours < 1) {
-            for (let i = 0; i < timeOnlineInMinutes; i++) {
-                timeLabels.push(i);
+            for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
+                timeLabels.push((i+1) + " min");
             }
             for (let i = 0; i < tabList.length; i++) {
                 let times = [];
-                for (let j = 0; j < timeOnlineInMinutes; j++) {
+                for (let j = 0; j < timeOnlineInMinutes - 1; j++) {
                     times.push(0);
                 }
                 let visitHistory = tabList[i]["visit_history"];
                 for (let j = 0; j < visitHistory.length; j++) {
                     let visitTime = visitHistory[j];
                     let visitTimeInMinutes = (Date.now() - visitTime) / 60000;
-                    let index = Math.min(Math.max(Math.floor(timeOnlineInMinutes-visitTimeInMinutes), 0), timeOnlineInMinutes-1);
-                    // console.log("index:", Math.floor(index));
-                    // console.log("vt:", visitTime)
-                    // console.log(visitTimeInMinutes)
-                    // console.log(timeOnlineInMinutes)
-                    // console.log(Math.floor(timeOnlineInMinutes-visitTimeInMinutes))
+                    let index = Math.min(Math.max(Math.floor(timeOnlineInMinutes - visitTimeInMinutes), 0), timeOnlineInMinutes - 1);
                     times[Math.floor(index)] += 1;
                 }
+                // //remove trailing zeros
+                // for (let j = times.length - 1; j >= 0; j--) {
+                //     if (times[j] === 0 && j > 0 && times[j-1] === 0) {
+                //         times.pop();
+                //     } else {
+                //         break;
+                //     }
+                // }
+                // //replace leading zeros with undefined
+                // for (let j = 0; j < times.length; j++) {
+                //     if (times[j] === 0 && j < times.length - 1 && times[j+1] === 0) {
+                //         times[j] = undefined;
+                //     } else {
+                //         break;
+                //     }
+                // }
 
-                frequencyTable[tabList[i]["title"]] = times;
-            }
-
-            function generateBorderColor(index) {
-                let colors = [
-                    "#6078ea",
-                    "#17c5ea",
-                    "#ffce00",
-                    "#ff6c00",
-                    "#ff0000",
-                    "#00ff00",
-                    "#0000ff",
-                    "#ff00ff",
-                    "#00ffff",
-                    "#ffff00",
-                    "#000000",
-                    "#ffffff",
-                ];
-                return colors[index % colors.length];
+                frequencyTable[tabList[i]["documentId"]] = times;
             }
 
 
             datasets = [];
             for (let i = 0; i < tabList.length; i++) {
                 let dataset = {
-                        label: tabList[i]["title"],
-                        data: frequencyTable[tabList[i]["title"]],
-                        backgroundColor: "transparent",
-                        borderColor: generateBorderColor(i),
-                        pointRadius: "0",
-                        borderWidth: 4,
-                        tension: 0.4,
-                    }
+                    label: tabList[i]["title"],
+                    data: frequencyTable[tabList[i]["documentId"]],
+                    backgroundColor: "transparent",
+                    borderColor: generateBorderColor(i),
+                    pointRadius: "0",
+                    borderWidth: 4,
+                    tension: 0.4
+                };
                 datasets.push(dataset);
             }
         } else if (timeOnlineInHours < 24) {
+            for (let i = 0; i < timeOnlineInHours - 1; i++) {
+                timeLabels.push((i+1) + " hr");
+            }
+            for (let i = 0; i < tabList.length; i++) {
+                let times = [];
+                for (let j = 0; j < timeOnlineInHours - 1; j++) {
+                    times.push(0);
+                }
+                let visitHistory = tabList[i]["visit_history"];
+                for (let j = 0; j < visitHistory.length; j++) {
+                    let visitTime = visitHistory[j];
+                    let visitTimeInHours = (Date.now() - visitTime) / 3600000;
+                    let index = Math.min(Math.max(Math.floor(timeOnlineInHours - visitTimeInHours), 0), timeOnlineInHours - 1);
+                    times[Math.floor(index)] += 1;
+                }
 
+                frequencyTable[tabList[i]["documentId"]] = times;
+            }
+
+            datasets = [];
+            for (let i = 0; i < tabList.length; i++) {
+                let dataset = {
+                    label: tabList[i]["title"],
+                    data: frequencyTable[tabList[i]["documentId"]],
+                    backgroundColor: "transparent",
+                    borderColor: generateBorderColor(i),
+                    pointRadius: "0",
+                    borderWidth: 4,
+                    tension: 0.4
+
+                };
+                datasets.push(dataset);
+            }
         } else {
+            for (let i = 0; i < timeOnlineInDays - 1; i++) {
+                timeLabels.push((i+1) + " day");
+            }
+            for (let i = 0; i < tabList.length; i++) {
+                let times = [];
+                for (let j = 0; j < timeOnlineInDays - 1; j++) {
+                    times.push(0);
+                }
+                let visitHistory = tabList[i]["visit_history"];
+                for (let j = 0; j < visitHistory.length; j++) {
+                    let visitTime = visitHistory[j];
+                    let visitTimeInDays = (Date.now() - visitTime) / 86400000;
+                    let index = Math.min(Math.max(Math.floor(timeOnlineInDays - visitTimeInDays), 0), timeOnlineInDays - 1);
+                    times[Math.floor(index)] += 1;
+                }
 
+                frequencyTable[tabList[i]["documentId"]] = times;
+            }
+
+            datasets = [];
+            for (let i = 0; i < tabList.length; i++) {
+                let dataset = {
+                    label: tabList[i]["title"],
+                    data: frequencyTable[tabList[i]["documentId"]],
+                    backgroundColor: "transparent",
+                    borderColor: generateBorderColor(i),
+                    pointRadius: "0",
+                    borderWidth: 4,
+                    tension: 0.4
+
+                };
+            }
         }
 
 
@@ -257,47 +362,53 @@ function onLoad() {
             type: "line",
             data: {
                 labels: timeLabels,
-                datasets: datasets,
+                datasets: datasets
             },
             options: {
                 maintainAspectRatio: false,
-                legend: {
-                    display: true,
-                    labels: {
-                        fontColor: "#585757",
-                        boxWidth: 40,
-                    },
+
+                plugins: {
+                    legend: {
+                        display: false,
+                        labels: {
+                            fontColor: "#5f5f5f",
+                            boxWidth: 40
+                        },
+                        position: "bottom"
+                    }
                 },
+
                 tooltips: {
-                    enabled: false,
+                    enabled: false
                 },
                 scales: {
                     xAxes: [
                         {
                             ticks: {
                                 beginAtZero: true,
-                                fontColor: "#585757",
+                                fontColor: "#585757"
                             },
                             gridLines: {
                                 display: true,
-                                color: "rgba(0, 0, 0, 0.07)",
-                            },
-                        },
+                                color: "rgba(0, 0, 0, 0.07)"
+                            }
+                        }
                     ],
                     yAxes: [
                         {
                             ticks: {
                                 beginAtZero: true,
                                 fontColor: "#585757",
+                                precision: 0
                             },
                             gridLines: {
                                 display: true,
-                                color: "rgba(0, 0, 0, 0.07)",
-                            },
-                        },
-                    ],
-                },
-            },
+                                color: "rgba(0, 0, 0, 0.07)"
+                            }
+                        }
+                    ]
+                }
+            }
         });
     }
 
@@ -589,9 +700,9 @@ function onLoad() {
             lineWidth: 8,
             trackColor: "rgba(0, 0, 0, 0.12)",
             scaleColor: false,
-            onStep: function (from, to, percent) {
+            onStep: function(from, to, percent) {
                 $(this.el).find(".w_percent").text(Math.round(percent));
-            },
+            }
         });
 
         //pagesVisitedOnceSummary
@@ -600,7 +711,7 @@ function onLoad() {
             if (website.total_visits === 1) {
                 pagesVisitedOnce++;
             }
-        })
+        });
 
         let percentagePagesVisitedOnce = (pagesVisitedOnce / Object.keys(response.tabList).length) * 100;
         document.getElementById("pagesVisitedOnceSummary").setAttribute("data-percent", percentagePagesVisitedOnce.toString());
@@ -611,9 +722,9 @@ function onLoad() {
             lineWidth: 8,
             trackColor: "rgba(0, 0, 0, 0.12)",
             scaleColor: false,
-            onStep: function (from, to, percent) {
+            onStep: function(from, to, percent) {
                 $(this.el).find(".w_percent").text(Math.round(percent));
-            },
+            }
         });
     }
 

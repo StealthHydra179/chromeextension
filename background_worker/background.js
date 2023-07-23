@@ -61,7 +61,7 @@ chrome.runtime.onInstalled.addListener(function() {
         });
         startUpTime = Date.now();
         //set installed time
-        chrome.storage.local.set({ installTime: installTime }, function(result) {
+        chrome.storage.local.set({ "installTime": installTime }, function(result) {
             console.log("installTime set to " + installTime);
         });
 
@@ -127,7 +127,7 @@ chrome.runtime.onStartup.addListener(function() {
 chrome.runtime.onSuspend.addListener(function() {
     let sessionOnline = Date.now() - startUpTime;
     timeOnline += sessionOnline;
-    chrome.storage.local.set({ timeOnline: timeOnline }, function(result) {
+    chrome.storage.local.set({ "installTime": timeOnline }, function(result) {
         console.log("timeOnline set to " + timeOnline);
     });
     console.log("unloading");
@@ -802,7 +802,7 @@ function generateSpecifics() {
     }
 
     function saveSpecifics() {
-        chrome.storage.local.set({ specificList: specificList }, function() {
+        chrome.storage.local.set({ "specificList": specificList }, function() {
             // console.log(specificList)
         });
     }
