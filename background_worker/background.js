@@ -14,6 +14,29 @@ let initialized = false;
 //     }
 // )
 
+function reset() {
+
+    tabList = [];
+    chrome.storage.local.set({ "tabList": tabList }, function() {
+        console.log("tabList saved to storage: ");
+        console.log(tabList);
+    });
+    updateStorage();
+    generateSpecifics();
+
+
+    chrome.tabs.query({}, function(tabArray) {
+        tabArray.forEach((tab) => {
+            chrome.tabs.reload(tab.id, { bypassCache: true }, function() {
+                console.log("reloaded tab " + tab.id);
+            });
+        });
+    });
+
+
+}
+
+
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.local.get("tabList", function(result) {
@@ -298,215 +321,363 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         startUpTime = Date.now();
     } else {
-        if (request.message === "requestData") {
-            console.log("requestData received");
-            chrome.storage.local.get("specificList", function(result) {
-                specificList = result.specificList;
-                updateStorage();
-                generateSpecifics();
+        if (request.message === "reloadTabs") {
+            reset();
 
-                let sortedSpecificArray = [];
-                for (const [key, value] of Object.entries(specificList)) {
-                    sortedSpecificArray.push({ key: key, value: value });
-                }
+        } else {
 
-                sortedSpecificArray.sort(function(a, b) {
-                    return b.value.total_time_visible - a.value.total_time_visible;
+            if (request.message === "requestData") {
+                console.log("requestData received");
+                chrome.storage.local.get("specificList", function(result) {
+                    specificList = result.specificList;
+                    updateStorage();
+                    generateSpecifics();
+
+                    let sortedSpecificArray = [];
+                    for (const [key, value] of Object.entries(specificList)) {
+                        sortedSpecificArray.push({ key: key, value: value });
+                    }
+
+                    sortedSpecificArray.sort(function(a, b) {
+                        return b.value.total_time_visible - a.value.total_time_visible;
+                    });
+
+                    let sortedTabList = [];
+
+                    tabList.forEach((tab) => {
+                        sortedTabList.push(tab);
+                    });
+
+                    sortedTabList.sort(function(a, b) {
+                        return b.total_time_visible - a.total_time_visible;
+                    });
+                    console.log("sortedTabList: ", sortedTabList);
+                    let sentData = {
+                        tabList: tabList,
+                        sortedTabList: sortedTabList,
+                        specificList: specificList,
+                        sortedSpecificArray: sortedSpecificArray,
+
+                        timeSinceInstall: Date.now() - installTime,
+                        timeOnline: timeOnline + (Date.now() - startUpTime)
+                    };
+                    sendResponse(sentData);
+                    console.log("sentData sent");
+                    console.log(sentData);
                 });
 
-                let sortedTabList = [];
+                return true;
+            }
 
+            if (request.message.state === "loaded") {
+                //if object exists, update it
+                //if object doesn't exist, add it
+                let tabExists = false;
                 tabList.forEach((tab) => {
-                    sortedTabList.push(tab);
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
+                        tab.visibility = "hidden";
+                        tab.update_time.push({
+                            visibility: "hidden",
+                            time: request.message.update_time
+                        });
+                        tab.loaded_time.push({
+                            state: "loaded",
+                            time: request.message.update_time
+                        });
+                        tab.open = true;
+                        tab.last_update_time = request.message.update_time;
+                        updateFavicon(tab, sender);
+                    }
                 });
-
-                sortedTabList.sort(function(a, b) {
-                    return b.total_time_visible - a.total_time_visible;
-                });
-                console.log("sortedTabList: ", sortedTabList);
-                let sentData = {
-                    tabList: tabList,
-                    sortedTabList: sortedTabList,
-                    specificList: specificList,
-                    sortedSpecificArray: sortedSpecificArray,
-
-                    timeSinceInstall: Date.now() - installTime,
-                    timeOnline: timeOnline + (Date.now() - startUpTime)
-                };
-                sendResponse(sentData);
-                console.log("sentData sent");
-                console.log(sentData);
-            });
-
-            return true;
-        }
-
-        if (request.message.state === "loaded") {
-            //if object exists, update it
-            //if object doesn't exist, add it
-            let tabExists = false;
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
-                    tabExists = true;
-                    tab.visibility = "hidden";
-                    tab.update_time.push({
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
                         visibility: "hidden",
-                        time: request.message.update_time
+                        active: false,
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
                     });
-                    tab.loaded_time.push({
-                        state: "loaded",
-                        time: request.message.update_time
-                    });
-                    tab.open = true;
-                    tab.last_update_time = request.message.update_time;
-                    updateFavicon(tab, sender);
                 }
-            });
-            if (!tabExists) {
-                tabList.push({
-                    documentId: sender.documentId,
-                    origin: sender.origin,
-                    url: sender.url,
-                    // "document_url": sender.origin,
-                    title: sender.tab.title,
-                    visibility: "hidden",
-                    active: false,
-                    audible: sender.tab.audible,
-                    muted: sender.tab.mutedInfo.muted,
-                    update_time: [{ visibility: "hidden", time: request.message.update_time }],
-                    loaded_time: [{ state: "loaded", time: request.message.update_time }],
-                    active_time: [{ active: false, time: request.message.update_time }],
-                    open: true,
-                    last_update_time: request.message.update_time,
-                    favicon: sender.tab.favIconUrl,
-                    tabId: sender.tab.id
+            }
+            if (request.message.state === "closed") {
+                let tabExists = false;
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
+                    }
+                });
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
+                        visibility: "hidden",
+                        active: false,
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
+                    });
+                }
+
+
+                //update tabList
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tab.open = false;
+                        tab.last_update_time = request.message.update_time;
+                        tab.update_time.push({
+                            visibility: "hidden",
+                            time: request.message.update_time
+                        });
+                        tab.loaded_time.push({
+                            state: "closed",
+                            time: request.message.update_time
+                        });
+                        tab.open = false;
+                        tab.last_update_time = request.message.update_time;
+
+                        updateFavicon(tab, sender);
+                    }
                 });
             }
-        }
-        if (request.message.state === "closed") {
-            //update tabList
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
-                    tab.open = false;
-                    tab.last_update_time = request.message.update_time;
-                    tab.update_time.push({
-                        visibility: "hidden",
-                        time: request.message.update_time
-                    });
-                    tab.loaded_time.push({
-                        state: "closed",
-                        time: request.message.update_time
-                    });
-                    tab.open = false;
-                    tab.last_update_time = request.message.update_time;
-
-                    updateFavicon(tab, sender);
-                }
-            });
-        }
-        if (request.message.state === "visible") {
-            // console.log("ifvisible")
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
-                    //&& request.message.update_time >= tab.last_update_time
-                    // console.log("visible")
-                    tab.visibility = "visible";
-                    tab.update_time.push({
-                        visibility: "visible",
-                        time: request.message.update_time
-                    });
-                    tab.last_update_time = request.message.update_time;
-                    updateFavicon(tab, sender);
-                }
-            });
-        }
-        if (request.message.state === "hidden") {
-            // console.log("ifhidden")
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId) {
-                    // && request.message.update_time >= tab.last_update_time
-                    // console.log("hidden")
-                    tab.visibility = "hidden";
-                    tab.update_time.push({
-                        visibility: "hidden",
-                        time: request.message.update_time
-                    });
-                    tab.last_update_time = request.message.update_time;
-                    updateFavicon(tab, sender);
-                }
-            });
-        }
-        if (request.message.state === "active") {
-            // console.log("ifactive")
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId && tab.active === false) {
-                    // && request.message.update_time >= tab.last_update_time
-                    // console.log("active")
-                    tab.active = true;
-                    tab.active_time.push({
-                        active: true,
-                        time: request.message.update_time
-                    });
-                    tab.last_update_time = request.message.update_time;
-                    updateFavicon(tab, sender);
-
-                    if (tab.url === sender.url) {
-                        if (tab.title !== sender.tab.title) {
-                            tab.title = sender.tab.title;
-                            tab.update_time.push({
-                                title: sender.tab.title,
-                                time: request.message.update_time
-                            });
-                        }
-                        if (tab.origin !== sender.origin) {
-                            tab.origin = sender.origin;
-                            tab.update_time.push({
-                                origin: sender.origin,
-                                time: request.message.update_time
-                            });
-                        }
+            if (request.message.state === "visible") {
+                let tabExists = false;
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
                     }
-                }
-            });
-        }
-        if (request.message.state === "inactive") {
-            // console.log("ifinactive")
-            tabList.forEach((tab) => {
-                if (tab.documentId === sender.documentId && tab.active === true) {
-                    // && request.message.update_time >= tab.last_update_time
-                    // console.log("inactive")
-                    tab.active = false;
-                    tab.active_time.push({
+                });
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
+                        visibility: "hidden",
                         active: false,
-                        time: request.message.update_time
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
                     });
-                    tab.last_update_time = request.message.update_time;
-                    updateFavicon(tab, sender);
+                }
 
-                    if (tab.url === sender.url) {
-                        if (tab.title !== sender.tab.title) {
-                            tab.title = sender.tab.title;
-                            tab.update_time.push({
-                                title: sender.tab.title,
-                                time: request.message.update_time
-                            });
-                        }
-                        if (tab.origin !== sender.origin) {
-                            tab.origin = sender.origin;
-                            tab.update_time.push({
-                                origin: sender.origin,
-                                time: request.message.update_time
-                            });
+
+                // console.log("ifvisible")
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        //&& request.message.update_time >= tab.last_update_time
+                        // console.log("visible")
+                        tab.visibility = "visible";
+                        tab.update_time.push({
+                            visibility: "visible",
+                            time: request.message.update_time
+                        });
+                        tab.last_update_time = request.message.update_time;
+                        updateFavicon(tab, sender);
+                    }
+                });
+            }
+            if (request.message.state === "hidden") {
+                let tabExists = false;
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
+                    }
+                });
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
+                        visibility: "hidden",
+                        active: false,
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
+                    });
+                }
+
+
+                // console.log("ifhidden")
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        // && request.message.update_time >= tab.last_update_time
+                        // console.log("hidden")
+                        tab.visibility = "hidden";
+                        tab.update_time.push({
+                            visibility: "hidden",
+                            time: request.message.update_time
+                        });
+                        tab.last_update_time = request.message.update_time;
+                        updateFavicon(tab, sender);
+                    }
+                });
+            }
+            if (request.message.state === "active") {
+                let tabExists = false;
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
+                    }
+                });
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
+                        visibility: "hidden",
+                        active: false,
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
+                    });
+                }
+
+
+                // console.log("ifactive")
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId && tab.active === false) {
+                        // && request.message.update_time >= tab.last_update_time
+                        // console.log("active")
+                        tab.active = true;
+                        tab.active_time.push({
+                            active: true,
+                            time: request.message.update_time
+                        });
+                        tab.last_update_time = request.message.update_time;
+                        updateFavicon(tab, sender);
+
+                        if (tab.url === sender.url) {
+                            if (tab.title !== sender.tab.title) {
+                                tab.title = sender.tab.title;
+                                tab.update_time.push({
+                                    title: sender.tab.title,
+                                    time: request.message.update_time
+                                });
+                            }
+                            if (tab.origin !== sender.origin) {
+                                tab.origin = sender.origin;
+                                tab.update_time.push({
+                                    origin: sender.origin,
+                                    time: request.message.update_time
+                                });
+                            }
                         }
                     }
+                });
+            }
+            if (request.message.state === "inactive") {
+                let tabExists = false;
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId) {
+                        tabExists = true;
+                    }
+                });
+                if (!tabExists) {
+                    tabList.push({
+                        documentId: sender.documentId,
+                        origin: sender.origin,
+                        url: sender.url,
+                        // "document_url": sender.origin,
+                        title: sender.tab.title,
+                        visibility: "hidden",
+                        active: false,
+                        audible: sender.tab.audible,
+                        muted: sender.tab.mutedInfo.muted,
+                        update_time: [{ visibility: "hidden", time: request.message.update_time }],
+                        loaded_time: [{ state: "loaded", time: request.message.update_time }],
+                        active_time: [{ active: false, time: request.message.update_time }],
+                        open: true,
+                        last_update_time: request.message.update_time,
+                        favicon: sender.tab.favIconUrl,
+                        tabId: sender.tab.id
+                    });
                 }
-            });
-        }
-        // console.log(tabList)
-        // console.log(request.message)
 
-        updateStorage();
-        generateSpecifics();
+
+                // console.log("ifinactive")
+                tabList.forEach((tab) => {
+                    if (tab.documentId === sender.documentId && tab.active === true) {
+                        // && request.message.update_time >= tab.last_update_time
+                        // console.log("inactive")
+                        tab.active = false;
+                        tab.active_time.push({
+                            active: false,
+                            time: request.message.update_time
+                        });
+                        tab.last_update_time = request.message.update_time;
+                        updateFavicon(tab, sender);
+
+                        if (tab.url === sender.url) {
+                            if (tab.title !== sender.tab.title) {
+                                tab.title = sender.tab.title;
+                                tab.update_time.push({
+                                    title: sender.tab.title,
+                                    time: request.message.update_time
+                                });
+                            }
+                            if (tab.origin !== sender.origin) {
+                                tab.origin = sender.origin;
+                                tab.update_time.push({
+                                    origin: sender.origin,
+                                    time: request.message.update_time
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+            // console.log(tabList)
+            // console.log(request.message)
+
+            updateStorage();
+            generateSpecifics();
+        }
+
+
         /*
           example sender object:
               documentId: "7DF44B79F740FEDBB3300A015FCA347D"
@@ -547,14 +718,19 @@ async function checkMissing(tabList) {
     //for each tab in tablist
     for (let i = 0; i < tabList.length; i++) {
         //send message to tab
-        let response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
-        if (response === undefined) {
-            // try to send message again
-            response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
-        }
+        try {
 
-        //if no response, tab is dead
-        if (response === undefined) {
+            let response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
+            if (response === undefined) {
+                // try to send message again
+                response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
+            }
+
+            //if no response, tab is dead
+            if (response === undefined) {
+                deadTabs.push(tabList[i].tabId);
+            }
+        } catch (e) {
             deadTabs.push(tabList[i].tabId);
         }
     }

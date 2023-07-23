@@ -1,9 +1,18 @@
 <html>
-    <body>
-        <h1>Anti-Distractor</h1>
-        <p>A program to only allow specific tabs while in focus sessions</p>
-        <!-- button with onclick triggered in js -->
-        <button id="open_in_new_tab">Open in new tab</button>
+<head>
+    <link href="../client/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../client/assets/css/bootstrap-extended.css" rel="stylesheet" />
+    <title>Web Activity Monitor</title>
+</head>
+    <body style="width: 250px; height: 300px">
+        <div class="p-3 text-center">
+        <img src="../client/assets/images/logo-icon.png" alt="logo" style="width: 20px; height: 20px; margin: 0 auto;"/>
+            <hr>
+            <h1>Web Activity Monitor</h1>
+            <p>This extension will track your web activity and provide you with a report of your activity.</p>
+            <!-- button with onclick triggered in js -->
+            <button type="button" class="btn btn-secondary mt-2" id="open_in_new_tab">View Report</button>
+        </div>
 
         <script src="popup.js"></script>
     </body>

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Anti-Distractor",
-  "description": "This extension will block distracting websites while in focus mode",
-  "version": "0.1.0",
+  "name": "Web Activity Monitor",
+  "description": "This extension will track your web activity and provide you with a report of your activity.",
+  "version": "1.0.0",
   "permissions": [
     "scripting",
     "tabs",
@@ -21,7 +21,7 @@
   "options_page": "options/options.html",
   "action": {
     "default_popup": "popup/popup.html",
-    "default_icon": "images/icon/anti-distractor.png"
+    "default_icon": "images/icon/webactivitymonitor.png"
   },
   "content_scripts": [
     {

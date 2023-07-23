@@ -115,7 +115,7 @@ if (document.hasFocus()) {
     } catch (err) {}
 }
 
-chrome.runtime.onMessage(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.message === "check_alive") {
         sendResponse({
             message: "alive",
@@ -149,3 +149,4 @@ setInterval(function () {
 
     // active is not sent in order to maintain higher accuracy
 }, 60000);
+

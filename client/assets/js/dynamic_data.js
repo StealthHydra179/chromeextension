@@ -213,8 +213,8 @@ function onLoad() {
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
                 // timeLabels.push((i + 1) + "m");
                 // timeLabels.push();
-                let time = new Date(Date.now() - (timeOnlineInMinutes-1 - i) * 60000);
-                timeLabels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, '0'));
+                let time = new Date(Date.now() - (timeOnlineInMinutes - 1 - i) * 60000);
+                timeLabels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, "0"));
             }
             for (let i = 0; i < tabList.length; i++) {
                 let times = [];
@@ -264,7 +264,7 @@ function onLoad() {
             }
         } else if (timeOnlineInDays < 4) {
             for (let i = 0; i < timeOnlineInHours - 1; i++) {
-                let time = new Date(Date.now() - (timeOnlineInHours-1 - i) * 3600000);
+                let time = new Date(Date.now() - (timeOnlineInHours - 1 - i) * 3600000);
                 timeLabels.push(time.getHours() + ":00");
             }
             for (let i = 0; i < tabList.length; i++) {
@@ -300,7 +300,7 @@ function onLoad() {
         } else {
             for (let i = 0; i < timeOnlineInDays - 1; i++) {
                 // timeLabels.push((i + 1) + "d");
-                let time = new Date(Date.now() - (timeOnlineInDays -1- i) * 86400000);
+                let time = new Date(Date.now() - (timeOnlineInDays - 1 - i) * 86400000);
                 timeLabels.push(time.getMonth() + "/" + time.getDate());
             }
             for (let i = 0; i < tabList.length; i++) {
@@ -636,8 +636,8 @@ function onLoad() {
                 // labels[i] = i + 1 + "m";
                 // let time = new Date(Date.now() - response.timeSinceInstall - ((timeOnlineInMinutes - i) * 60000));
 
-                let time = new Date(Date.now() - (timeOnlineInMinutes-1 - i) * 60000);
-                labels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, '0'));
+                let time = new Date(Date.now() - (timeOnlineInMinutes - 1 - i) * 60000);
+                labels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, "0"));
                 times.push(0);
             }
 
@@ -693,7 +693,7 @@ function onLoad() {
             // create labels
             for (let i = 0; i < timeOnlineInHours - 1; i++) {
                 // labels[i] = i + 1 + "h";
-                let time = new Date(Date.now() - (timeOnlineInHours-1 - i) * 3600000);
+                let time = new Date(Date.now() - (timeOnlineInHours - 1 - i) * 3600000);
                 labels.push(time.getHours() + ":00");
                 times.push(0);
             }
@@ -751,7 +751,7 @@ function onLoad() {
             // create labels
             for (let i = 0; i < timeOnlineInDays - 1; i++) {
                 // labels[i] = i + 1 + "d";
-                let time = new Date(Date.now() - (timeOnlineInDays-1 - i) * 86400000);
+                let time = new Date(Date.now() - (timeOnlineInDays - 1 - i) * 86400000);
                 labels.push(time.getDate() + "/" + (time.getMonth() + 1));
                 times.push(0);
             }
@@ -1378,3 +1378,16 @@ function filterPages() {
 }
 
 document.getElementById("filterPagesButton").addEventListener("click", filterPages);
+
+document.getElementById("clearData").addEventListener("click", function() {
+    if (confirm("Are you sure you want to clear all data?")) {
+        //reload page
+        location.reload();
+
+        //send message to reload all tabs
+        chrome.runtime.sendMessage({ message: "reloadTabs" }).then(function(response) {
+            // console.log(response.message);
+            window.alert("All data cleared, reloading all tabs...");
+        });
+    }
+});
