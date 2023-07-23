@@ -510,21 +510,48 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 //update history
 function updateStorage() {
     // if tab hasnt sent update in past 5 minutes, it is definitely closed
-    for (let i = 0; i < tabList.length; i++) {
-        if (Date.now() - tabList[i].last_update_time > 300000) {
-            tabList[i].open = false;
-            tabList[i].active = false;
-            tabList[i].loaded_time.push({
-                state: "closed",
-                time: tabList[i].last_update_time
-            });
+    // for (let i = 0; i < tabList.length; i++) {
+    //     if (Date.now() - tabList[i].last_update_time > 300000) {
+    //         tabList[i].open = false;
+    //         tabList[i].active = false;
+    //         tabList[i].loaded_time.push({
+    //             state: "closed",
+    //             time: tabList[i].last_update_time
+    //         });
+    //
+    //         tabList[i].update_time.push({
+    //             visibility: "hidden",
+    //             time: tabList[i].last_update_time
+    //         });
+    //     }
+    // }
 
-            tabList[i].update_time.push({
-                visibility: "hidden",
-                time: tabList[i].last_update_time
-            });
-        }
-    }
+    //get all chrome tabs and add them to a list
+    chrome.tabs.query({}, function(tabArray) {
+        tabList.forEach((tab) => {
+            //check if in tab array
+            let found = false;
+            for (let i = 0; i < tabArray.length; i++) {
+                if (tab.documentId === tabArray[i].id) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found === false) {
+                tab.open = false;
+                tab.active = false;
+                tab.loaded_time.push({
+                    state: "closed",
+                    time: Date.now()
+                });
+
+                tab.update_time.push({
+                    visibility: "hidden",
+                    time: Date.now()
+                });
+            }
+        })
+    });
 
     chrome.storage.local.set({ "tabList": tabList }, function() {
         // console.log(tabList)
