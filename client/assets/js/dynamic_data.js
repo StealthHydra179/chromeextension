@@ -1061,13 +1061,13 @@ function onLoad() {
             let found = false;
             for (let currentIndex = 0; currentIndex < Object.keys(sortedSpecificArray[i]["value"]).length; currentIndex++) {
                 if (sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] !== undefined) {
-                    logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] + "\" />";
+                    logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #dddddd\" class=\"product-img-2\" src=\"" + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] + "\" />";
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #dddddd\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
             }
 
             timesVisited.innerHTML = sortedSpecificArray[i]["value"]["total_visits"] < 0 ? 0 : sortedSpecificArray[i]["value"]["total_visits"];
@@ -1155,9 +1155,9 @@ function filterPages() {
             // add logo
             let logo = document.createElement("td");
             if (sortedTabList[i]["favicon"] === undefined) {
-                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #dddddd\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
             } else {
-                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
+                logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #dddddd\" class=\"product-img-2\" src=\"" + sortedTabList[i]["favicon"] + "\" />";
             }
             tr.appendChild(logo);
 
