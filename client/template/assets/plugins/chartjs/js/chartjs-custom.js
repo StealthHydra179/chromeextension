@@ -249,7 +249,7 @@ $(function () {
         },
     });
     // chart 8
-    new Chart(document.getElementById("chart8"), {
+    new Chart(document.getElementById("singlePageWebsiteSummary"), {
         type: "bar",
         data: {
             labels: ["1900", "1950", "1999", "2050"],
@@ -275,7 +275,7 @@ $(function () {
         },
     });
     // chart 9
-    new Chart(document.getElementById("timeActiveSummary"), {
+    new Chart(document.getElementById("timeVisibleSummary"), {
         type: "bar",
         data: {
             labels: ["1900", "1950", "1999", "2050"],
@@ -321,7 +321,7 @@ $(function () {
         },
     });
     // chart 10
-    new Chart(document.getElementById("chart10"), {
+    new Chart(document.getElementById("pagesMostUsedWebsiteSummary"), {
         type: "bubble",
         data: {
             labels: "Africa",

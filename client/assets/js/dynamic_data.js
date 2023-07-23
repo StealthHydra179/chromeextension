@@ -1,4 +1,6 @@
 function onLoad() {
+    let specificListExtraKeys = 12;
+
     //get specific data from the database
     chrome.runtime.sendMessage({ message: "requestData" }, (response) => {
         console.log(response);
@@ -16,7 +18,7 @@ function onLoad() {
             //unique webpages visited
             let webpageCount = 0;
             for (let website in specificList) {
-                webpageCount += Object.keys(specificList[website]).length - 12;
+                webpageCount += Object.keys(specificList[website]).length - specificListExtraKeys;
             }
             document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
 
@@ -167,6 +169,9 @@ function onLoad() {
         timeTracked.innerHTML = millisecondsToTimeString(timeOnline);
         let pagesPerHour = Math.round(totalPageVisits / (timeOnline / 3600000));
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
+
+        //update graph
+
     }
 
     function topTimeBreakdown(response) {
@@ -381,12 +386,13 @@ function onLoad() {
             totalTimeLoaded += tabList[i]["total_time_loaded"];
         }
 
-        let percentageUsed = Math.floor((totalTimeVisible / totalTimeLoaded) * 100);
-        // console.log(document.getElementById("timeActiveSummary"));
-        document.getElementById("timeActiveSummary").setAttribute("data-percent", percentageUsed.toString());
-        // console.log("Percentage Used: ", percentageUsed);
+        let percentageVisible = (totalTimeVisible / totalTimeLoaded) * 100;
+        // console.log(document.getElementById("timeVisibleSummary"));
+        document.getElementById("timeVisibleSummary").setAttribute("data-percent", percentageVisible.toString());
+        // console.log("Percentage Used: ", percentageVisible);
 
-        $(".timeActiveSummary").easyPieChart({
+        //create chart
+        $(".timeVisibleSummary").easyPieChart({
             //time active *TODO refactor later
             easing: "easeOutBounce",
             barColor: "#fd3550",
@@ -396,6 +402,91 @@ function onLoad() {
             onStep: function(from, to, percent) {
                 $(this.el).find(".w_percent").text(Math.round(percent));
             }
+        });
+
+
+        //calculate total time hidden (its the opposite of visible)
+        let percentageHidden = 100 - percentageVisible;
+        document.getElementById("timeHiddenSummary").setAttribute("data-percent", percentageHidden.toString());
+
+        //create chart
+        $(".timeHiddenSummary").easyPieChart({
+            easing: "easeOutBounce",
+            barColor: "#9c27b0",
+            lineWidth: 8,
+            trackColor: "rgba(0, 0, 0, 0.12)",
+            scaleColor: false,
+            onStep: function(from, to, percent) {
+                $(this.el).find(".w_percent").text(Math.round(percent));
+            }
+        });
+
+
+        //single page website summary
+        // number of websites with only one page
+        let singlePageWebsites = 0;
+        for (let website in response.specificList) {
+            if (Object.keys(response.specificList[website]).length === 1 + specificListExtraKeys) {
+                singlePageWebsites++;
+            }
+        }
+        // turn single page websites into a percentage
+        let percentageSinglePageWebsites = (singlePageWebsites / Object.keys(response.specificList).length) * 100;
+        document.getElementById("singlePageWebsiteSummary").setAttribute("data-percent", percentageSinglePageWebsites.toString());
+
+
+        $(".singlePageWebsiteSummary").easyPieChart({
+            easing: "easeOutBounce",
+            barColor: "#008cff",
+            lineWidth: 8,
+            trackColor: "rgba(0, 0, 0, 0.12)",
+            scaleColor: false,
+            onStep: function(from, to, percent) {
+                $(this.el).find(".w_percent").text(Math.round(percent));
+            }
+        });
+
+        //pages from most used website
+        if (response.sortedSpecificArray.length > 0) {
+            let mostUsedWebsite = response.sortedSpecificArray[0]["key"];
+            let mostUsedWebsitePages = Object.keys(response.specificList[mostUsedWebsite]).length - specificListExtraKeys;
+            let percentageMostUsedWebsitePages = (mostUsedWebsitePages / Object.keys(response.tabList).length) * 100;
+            document.getElementById("pagesMostUsedWebsiteSummary").setAttribute("data-percent", percentageMostUsedWebsitePages.toString());
+        } else {
+            document.getElementById("pagesMostUsedWebsiteSummary").setAttribute("data-percent", "0");
+        }
+
+        $(".pagesMostUsedWebsiteSummary").easyPieChart({
+            easing: "easeOutBounce",
+            barColor: "#15ca20",
+            lineWidth: 8,
+            trackColor: "rgba(0, 0, 0, 0.12)",
+            scaleColor: false,
+            onStep: function (from, to, percent) {
+                $(this.el).find(".w_percent").text(Math.round(percent));
+            },
+        });
+
+        //pagesVisitedOnceSummary
+        let pagesVisitedOnce = 0;
+        response.tabList.forEach(website => {
+            if (website.total_visits === 1) {
+                pagesVisitedOnce++;
+            }
+        })
+
+        let percentagePagesVisitedOnce = (pagesVisitedOnce / Object.keys(response.tabList).length) * 100;
+        document.getElementById("pagesVisitedOnceSummary").setAttribute("data-percent", percentagePagesVisitedOnce.toString());
+
+        $(".pagesVisitedOnceSummary").easyPieChart({
+            easing: "easeOutBounce",
+            barColor: "#ffc107",
+            lineWidth: 8,
+            trackColor: "rgba(0, 0, 0, 0.12)",
+            scaleColor: false,
+            onStep: function (from, to, percent) {
+                $(this.el).find(".w_percent").text(Math.round(percent));
+            },
         });
     }
 

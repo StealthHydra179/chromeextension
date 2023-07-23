@@ -181,38 +181,9 @@ $(function () {
 
     // easy pie chart
 
-    $(".chart8").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#008cff",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
 
-    $(".chart10").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#15ca20",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
 
-    $(".chart11").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#ffc107",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
+
 
     $(".chart12").easyPieChart({
         easing: "easeOutBounce",
@@ -225,16 +196,7 @@ $(function () {
         },
     });
 
-    $(".chart13").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#9c27b0",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
+
 
     // worl map
 

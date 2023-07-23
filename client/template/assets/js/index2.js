@@ -281,7 +281,7 @@ $(function () {
 
     // chart 8
 
-    $("#chart8").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
+    $("#singlePageWebsiteSummary").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
         type: "line",
         width: "100%",
         height: "40",
@@ -293,7 +293,7 @@ $(function () {
 
     // chart 9
 
-    $("#timeActiveSummary").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
+    $("#timeVisibleSummary").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
         type: "line",
         width: "100%",
         height: "40",
@@ -305,7 +305,7 @@ $(function () {
 
     // chart 10
 
-    $("#chart10").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
+    $("#pagesMostUsedWebsiteSummary").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8], {
         type: "line",
         width: "100%",
         height: "40",
@@ -318,7 +318,7 @@ $(function () {
     // chart 11
 
     Morris.Donut({
-        element: "chart11",
+        element: "pagesVisitedOnceSummary",
         data: [
             {
                 label: "Samsung",

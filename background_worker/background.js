@@ -399,7 +399,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         visibility: "visible",
                         time: request.message.update_time
                     });
-
+                    tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
                 }
             });
@@ -415,7 +415,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         visibility: "hidden",
                         time: request.message.update_time
                     });
-
+                    tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
                 }
             });
@@ -431,7 +431,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         active: true,
                         time: request.message.update_time
                     });
-
+                    tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
                 }
             });
@@ -447,7 +447,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         active: false,
                         time: request.message.update_time
                     });
-
+                    tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
                 }
             });

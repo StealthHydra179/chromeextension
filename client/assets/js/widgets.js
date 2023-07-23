@@ -64,7 +64,7 @@ $(function () {
         barColor: "#fff",
     });
 
-    $("#chart8").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 5, 8, 7, 10, 9, 10, 8, 6], {
+    $("#singlePageWebsiteSummary").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 5, 8, 7, 10, 9, 10, 8, 6], {
         type: "bar",
         height: "35",
         barWidth: "2",
@@ -75,7 +75,7 @@ $(function () {
 
     // easy pie chart
 
-    $(".timeActiveSummary").easyPieChart({
+    $(".timeVisibleSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#008cff",
         lineWidth: 8,
@@ -86,7 +86,7 @@ $(function () {
         },
     });
 
-    $(".chart10").easyPieChart({
+    $(".pagesMostUsedWebsiteSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#fd3550",
         lineWidth: 8,
@@ -97,7 +97,7 @@ $(function () {
         },
     });
 
-    $(".chart11").easyPieChart({
+    $(".pagesVisitedOnceSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#15ca20",
         lineWidth: 8,
@@ -119,7 +119,7 @@ $(function () {
         },
     });
 
-    $(".chart13").easyPieChart({
+    $(".timeHiddenSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#0dcaf0",
         lineWidth: 8,

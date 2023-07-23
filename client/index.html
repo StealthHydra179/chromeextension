@@ -280,25 +280,25 @@
                                         <div>
                                             <h6 class="mb-0">History</h6>
                                         </div>
-                                        <div class="dropdown ms-auto">
-                                            <a class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="#">
-                                                <i class="bx bx-dots-horizontal-rounded font-22 text-option"></i>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:">More Information</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:">Another action</a>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider" />
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:">Something else here</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+<!--                                        <div class="dropdown ms-auto">-->
+<!--                                            <a class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="#">-->
+<!--                                                <i class="bx bx-dots-horizontal-rounded font-22 text-option"></i>-->
+<!--                                            </a>-->
+<!--                                            <ul class="dropdown-menu">-->
+<!--                                                <li>-->
+<!--                                                    <a class="dropdown-item" href="javascript:">More Information</a>-->
+<!--                                                </li>-->
+<!--                                                <li>-->
+<!--                                                    <a class="dropdown-item" href="javascript:">Another action</a>-->
+<!--                                                </li>-->
+<!--                                                <li>-->
+<!--                                                    <hr class="dropdown-divider" />-->
+<!--                                                </li>-->
+<!--                                                <li>-->
+<!--                                                    <a class="dropdown-item" href="javascript:">Something else here</a>-->
+<!--                                                </li>-->
+<!--                                            </ul>-->
+<!--                                        </div>-->
                                     </div>
                                     <div class="chart-container-9">
                                         <canvas id="chart1"></canvas>
@@ -474,10 +474,10 @@
                                             <div class="card radius-10 shadow-none border mb-0">
                                                 <div class="card-body">
                                                     <div class="text-center">
-                                                        <div class="w_chart chart8 mb-1" data-percent="78">
+                                                        <div class="w_chart singlePageWebsiteSummary mb-1" data-percent="78" id="singlePageWebsiteSummary">
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Time Open</p>
+                                                        <p class="mb-0 text-secondary">Websites With Only One Page</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -487,13 +487,13 @@
                                                 <div class="card-body">
                                                     <div class="text-center">
                                                         <div
-                                                            class="w_chart timeActiveSummary mb-1"
-                                                            id="timeActiveSummary"
+                                                            class="w_chart timeVisibleSummary mb-1"
+                                                            id="timeVisibleSummary"
                                                             data-percent="10"
                                                         >
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Time Active</p>
+                                                        <p class="mb-0 text-secondary">Time Visible vs Time Loaded</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -502,10 +502,10 @@
                                             <div class="card radius-10 shadow-none border mb-0">
                                                 <div class="card-body">
                                                     <div class="text-center">
-                                                        <div class="w_chart chart10 mb-1" data-percent="75">
+                                                        <div class="w_chart pagesMostUsedWebsiteSummary mb-1" data-percent="75" id="pagesMostUsedWebsiteSummary">
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Time Focused</p>
+                                                        <p class="mb-0 text-secondary">Pages from Most Used Website</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -514,10 +514,10 @@
                                             <div class="card radius-10 shadow-none border mb-0">
                                                 <div class="card-body">
                                                     <div class="text-center">
-                                                        <div class="w_chart chart11 mb-1" data-percent="55">
+                                                        <div class="w_chart pagesVisitedOnceSummary mb-1" data-percent="55" id="pagesVisitedOnceSummary">
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Most Used Website Time</p>
+                                                        <p class="mb-0 text-secondary">Pages Visited Once</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -529,7 +529,7 @@
                                                         <div class="w_chart chart12 mb-1" data-percent="68">
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Time Idle</p>
+                                                        <p class="mb-0 text-secondary">TODO COMPLETE THIS <!--TODO COMPLETE THIS--></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -538,11 +538,10 @@
                                             <div class="card radius-10 shadow-none border mb-0">
                                                 <div class="card-body">
                                                     <div class="text-center">
-                                                        <div class="w_chart chart13 mb-1" data-percent="85">
+                                                        <div class="w_chart timeHiddenSummary mb-1" data-percent="85" id="timeHiddenSummary">
                                                             <span class="w_percent"></span>
                                                         </div>
-                                                        <p class="mb-0 text-secondary">Time Inactive</p>
-                                                        <!-- find something better for this -->
+                                                        <p class="mb-0 text-secondary">Time Hidden vs Time Loaded</p>
                                                     </div>
                                                 </div>
                                             </div>

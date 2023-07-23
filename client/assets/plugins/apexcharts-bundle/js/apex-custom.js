@@ -517,7 +517,7 @@ $(function () {
             },
         ],
     };
-    var chart = new ApexCharts(document.querySelector("#chart8"), options);
+    var chart = new ApexCharts(document.querySelector("#singlePageWebsiteSummary"), options);
     chart.render();
 
     // chart 9
@@ -543,7 +543,7 @@ $(function () {
             },
         ],
     };
-    var chart = new ApexCharts(document.querySelector("#timeActiveSummary"), options);
+    var chart = new ApexCharts(document.querySelector("#timeVisibleSummary"), options);
     chart.render();
 
     // chart 10
@@ -590,7 +590,7 @@ $(function () {
             categories: ["2011", "2012", "2013", "2014", "2015", "2016"],
         },
     };
-    var chart = new ApexCharts(document.querySelector("#chart10"), options);
+    var chart = new ApexCharts(document.querySelector("#pagesMostUsedWebsiteSummary"), options);
     chart.render();
 
     // chart 11
@@ -653,7 +653,7 @@ $(function () {
             },
         },
     };
-    var chart = new ApexCharts(document.querySelector("#chart11"), options);
+    var chart = new ApexCharts(document.querySelector("#pagesVisitedOnceSummary"), options);
     chart.render();
 
     // chart 12
@@ -711,6 +711,6 @@ $(function () {
         labels: ["Apples", "Oranges", "Bananas", "Berries"],
     };
 
-    var chart = new ApexCharts(document.querySelector("#chart13"), options);
+    var chart = new ApexCharts(document.querySelector("#timeHiddenSummary"), options);
     chart.render();
 });

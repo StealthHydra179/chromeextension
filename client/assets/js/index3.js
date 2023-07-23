@@ -258,7 +258,7 @@ $(function () {
     });
 
     // chart 8
-    $("#chart8").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#singlePageWebsiteSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",
@@ -269,7 +269,7 @@ $(function () {
     });
 
     // chart 9
-    $("#timeActiveSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#timeVisibleSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",
@@ -280,7 +280,7 @@ $(function () {
     });
 
     // chart 10
-    $("#chart10").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#pagesMostUsedWebsiteSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",
@@ -291,7 +291,7 @@ $(function () {
     });
 
     // chart 11
-    $("#chart11").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#pagesVisitedOnceSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",
@@ -313,7 +313,7 @@ $(function () {
     });
 
     // chart 13
-    $("#chart13").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#timeHiddenSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",

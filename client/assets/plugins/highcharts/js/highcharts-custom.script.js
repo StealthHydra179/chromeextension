@@ -637,7 +637,7 @@ $(function () {
         ],
     });
     // chart 8
-    Highcharts.chart("chart8", {
+    Highcharts.chart("singlePageWebsiteSummary", {
         chart: {
             type: "column",
             styledMode: true,
@@ -696,7 +696,7 @@ $(function () {
         ],
     });
     // chart 9
-    Highcharts.chart("timeActiveSummary", {
+    Highcharts.chart("timeVisibleSummary", {
         chart: {
             type: "bar",
             styledMode: true,
@@ -741,7 +741,7 @@ $(function () {
     });
     // chart 10
     // Create the chart
-    Highcharts.chart("chart10", {
+    Highcharts.chart("pagesMostUsedWebsiteSummary", {
         chart: {
             type: "column",
             styledMode: true,
@@ -914,7 +914,7 @@ $(function () {
         },
     });
     // chart 11
-    Highcharts.chart("chart11", {
+    Highcharts.chart("pagesVisitedOnceSummary", {
         chart: {
             type: "area",
             styledMode: true,
@@ -1227,7 +1227,7 @@ $(function () {
         ],
     });
     // chart 13
-    Highcharts.chart("chart13", {
+    Highcharts.chart("timeHiddenSummary", {
         chart: {
             zoomType: "xy",
             styledMode: true,

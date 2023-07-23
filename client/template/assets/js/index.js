@@ -223,7 +223,7 @@ $(function () {
 
     // easy pie chart
 
-    $(".chart8").easyPieChart({
+    $(".singlePageWebsiteSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#008cff",
         lineWidth: 8,
@@ -234,7 +234,7 @@ $(function () {
         },
     });
 
-    $(".timeActiveSummary").easyPieChart({
+    $(".timeVisibleSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#fd3550",
         lineWidth: 8,
@@ -245,7 +245,7 @@ $(function () {
         },
     });
 
-    $(".chart10").easyPieChart({
+    $(".pagesMostUsedWebsiteSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#15ca20",
         lineWidth: 8,
@@ -256,7 +256,7 @@ $(function () {
         },
     });
 
-    $(".chart11").easyPieChart({
+    $(".pagesVisitedOnceSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#ffc107",
         lineWidth: 8,
@@ -278,7 +278,7 @@ $(function () {
         },
     });
 
-    $(".chart13").easyPieChart({
+    $(".timeHiddenSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#9c27b0",
         lineWidth: 8,
