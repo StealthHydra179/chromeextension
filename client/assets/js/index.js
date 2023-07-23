@@ -51,17 +51,6 @@ $(function () {
 
 
 
-    $(".chart12").easyPieChart({
-        easing: "easeOutBounce",
-        barColor: "#0dcaf0",
-        lineWidth: 8,
-        trackColor: "rgba(0, 0, 0, 0.12)",
-        scaleColor: false,
-        onStep: function (from, to, percent) {
-            $(this.el).find(".w_percent").text(Math.round(percent));
-        },
-    });
-
 
 
     // check template to re-add world map later

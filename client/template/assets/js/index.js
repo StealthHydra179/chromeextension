@@ -267,7 +267,7 @@ $(function () {
         },
     });
 
-    $(".chart12").easyPieChart({
+    $(".ineffectivelyUsedWebsitesSummary").easyPieChart({
         easing: "easeOutBounce",
         barColor: "#0dcaf0",
         lineWidth: 8,

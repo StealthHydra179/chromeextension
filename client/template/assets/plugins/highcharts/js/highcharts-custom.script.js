@@ -1144,7 +1144,7 @@ $(function () {
         ],
     });
     // chart 12
-    Highcharts.chart("chart12", {
+    Highcharts.chart("ineffectivelyUsedWebsitesSummary", {
         chart: {
             styledMode: true,
         },

@@ -675,7 +675,7 @@ $(function () {
         labels: ["Cricket"],
     };
 
-    var chart = new ApexCharts(document.querySelector("#chart12"), options);
+    var chart = new ApexCharts(document.querySelector("#ineffectivelyUsedWebsitesSummary"), options);
     chart.render();
 
     // chart 13

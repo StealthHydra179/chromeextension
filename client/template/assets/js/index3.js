@@ -302,7 +302,7 @@ $(function () {
     });
 
     // chart 12
-    $("#chart12").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
+    $("#ineffectivelyUsedWebsitesSummary").sparkline([3, 5, 3, 7, 5, 10, 3, 6, 5, 0], {
         type: "line",
         width: "150",
         height: "45",

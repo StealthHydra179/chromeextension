@@ -110,7 +110,6 @@ function calculate_totalTimeVisible(response) {
 }
 
 
-
 function onLoad() {
     let specificListExtraKeys = 12;
 
@@ -204,7 +203,7 @@ function onLoad() {
         let timeOnlineInMinutes = response.timeSinceInstall / 60000;
         let datasets;
         let timeLabels = [];
-        if (timeOnlineInHours < 2) {
+        if (timeOnlineInHours < 4) {
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
                 timeLabels.push((i + 1) + "m");
             }
@@ -254,7 +253,7 @@ function onLoad() {
                 };
                 datasets.push(dataset);
             }
-        } else if (timeOnlineInHours < 48) {
+        } else if (timeOnlineInDays < 4) {
             for (let i = 0; i < timeOnlineInHours - 1; i++) {
                 timeLabels.push((i + 1) + "h");
             }
@@ -619,60 +618,7 @@ function onLoad() {
         let timeOnlineInHours = response.timeSinceInstall / 3600000;
         let timeOnlineInMinutes = response.timeSinceInstall / 60000;
 
-        if (timeOnlineInHours < 2) {
-            /*// create labels
-            for (let i = 0; i < timeOnlineInHours - 1; i++) {
-                labels[i] = i + 1 + "h";
-                times.push(0);
-            }
-
-            for (let i = 0; i < sortedTabList.length; i++) {
-                //calculate time since install for each tab update time and add correspond times to each relevant bucket in tab array
-                let updateTime = sortedTabList[i]["update_time"];
-                for (let j = 0; j < updateTime.length; j++) {
-                    let timeSinceInstall = updateTime[j].time - (Date.now() - response.timeSinceInstall);
-                    let index = Math.floor(timeSinceInstall / 3600000);
-                    // console.log(updateTime[j].time, index, (Date.now() - response.timeSinceInstall), timeSinceInstall);
-                    if (updateTime[j].visibility === "visible") {
-                        let time = updateTime[j].time;
-                        let time2;
-                        if (j + 1 >= updateTime.length) {
-                            time2 = Date.now();
-                        } else {
-                            time2 = updateTime[j + 1].time;
-                        }
-                        // check if it spans multiple time values
-                        if (Math.floor(time / 3600000) !== Math.floor(time2 / 3600000)) {
-                            // calculate time in each bucket
-                            //first bucket
-                            times[index] += (Math.floor(time / 3600000) + 1) * 3600000 - time;
-                            //last bucket
-                            times[index + Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1] += time2 - Math.floor(time2 / 3600000) * 3600000;
-
-                            for (let k = 1; k < Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1; k++) {
-                                times[index + k] += 3600000;
-                            }
-                        } else {
-                            times[index] += time2 - time;
-                        }
-                    }
-                }
-                //if last tab is visible
-                if (updateTime[updateTime.length - 1].visibility === "visible") {
-                    let time = updateTime[updateTime.length - 1].time;
-                    let time2 = Date.now();
-                    let index = Math.floor((time-(Date.now() - response.timeSinceInstall)) / 3600000);
-                    // check if it spans multiple time values
-                    if (Math.floor(time / 3600000) !== Math.floor(time2 / 3600000)) {
-                        // calculate time in each bucket
-                        //first bucket
-                        times[index] += (Math.floor(time / 3600000) + 1) * 3600000 - time;
-                        //last bucket
-                        times[index + Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1] += time2 - Math.floor(time2 / 3600000) * 3600000;
-
-                    }
-                }
-            }*/
+        if (timeOnlineInHours < 4) {
             // create labels
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
                 labels[i] = i + 1 + "m";
@@ -681,7 +627,7 @@ function onLoad() {
 
             for (let i = 0; i < sortedTabList.length; i++) {
 
-                console.log(times, labels, sortedTabList[i].title)
+                console.log(times, labels, sortedTabList[i].title);
                 //calculate time since install for each tab update time and add correspond times to each relevant bucket in tab array
                 let updateTime = sortedTabList[i]["update_time"];
                 for (let j = 0; j < updateTime.length; j++) {
@@ -716,7 +662,7 @@ function onLoad() {
                 if (updateTime[updateTime.length - 1].visibility === "visible") {
                     let time = updateTime[updateTime.length - 1].time;
                     let time2 = Date.now();
-                    let index = Math.floor((time-(Date.now() - response.timeSinceInstall)) / 60000);
+                    let index = Math.floor((time - (Date.now() - response.timeSinceInstall)) / 60000);
                     // check if it spans multiple time values
                     if (Math.floor(time / 60000) !== Math.floor(time2 / 60000)) {
                         // calculate time in each bucket
@@ -724,13 +670,121 @@ function onLoad() {
                         times[index] += (Math.floor(time / 60000) + 1) * 60000 - time;
                         //last bucket
                         times[index + Math.floor(time2 / 60000) - Math.floor(time / 60000) - 1] += time2 - Math.floor(time2 / 60000) * 60000;
-
-
                     }
                 }
             }
-        } else if (timeOnlineInDays < 2) {
+        } else if (timeOnlineInDays < 4) {
+            // create labels
+            for (let i = 0; i < timeOnlineInHours - 1; i++) {
+                labels[i] = i + 1 + "h";
+                times.push(0);
+            }
 
+            for (let i = 0; i < sortedTabList.length; i++) {
+                console.log(times, labels, sortedTabList[i].title);
+                //calculate time since install for each tab update time and add correspond times to each relevant bucket in tab array
+                let updateTime = sortedTabList[i]["update_time"];
+                for (let j = 0; j < updateTime.length; j++) {
+                    let timeSinceInstall = updateTime[j].time - (Date.now() - response.timeSinceInstall);
+                    let index = Math.floor(timeSinceInstall / 3600000);
+                    // console.log(updateTime[j].time, index, (Date.now() - response.timeSinceInstall), timeSinceInstall);
+                    if (updateTime[j].visibility === "visible") {
+                        let time = updateTime[j].time;
+                        let time2;
+                        if (j + 1 >= updateTime.length) {
+                            time2 = Date.now();
+                        } else {
+                            time2 = updateTime[j + 1].time;
+                        }
+                        // check if it spans multiple time values
+                        if (Math.floor(time / 3600000) !== Math.floor(time2 / 3600000)) {
+                            // calculate time in each bucket
+                            //first bucket
+                            times[index] += (Math.floor(time / 3600000) + 1) * 3600000 - time;
+                            //last bucket
+                            times[index + Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1] += time2 - Math.floor(time2 / 3600000) * 3600000;
+
+                            for (let k = 1; k < Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1; k++) {
+                                times[index + k] += 3600000;
+                            }
+                        } else {
+                            times[index] += time2 - time;
+                        }
+                    }
+                }
+                //if last tab is visible
+                if (updateTime[updateTime.length - 1].visibility === "visible") {
+                    let time = updateTime[updateTime.length - 1].time;
+                    let time2 = Date.now();
+                    let index = Math.floor((time - (Date.now() - response.timeSinceInstall)) / 3600000);
+                    // check if it spans multiple time values
+                    if (Math.floor(time / 3600000) !== Math.floor(time2 / 3600000)) {
+                        // calculate time in each bucket
+                        //first bucket
+                        times[index] += (Math.floor(time / 3600000) + 1) * 3600000 - time;
+                        //last bucket
+                        times[index + Math.floor(time2 / 3600000) - Math.floor(time / 3600000) - 1] += time2 - Math.floor(time2 / 3600000) * 3600000;
+                    } else {
+                        times[index] += time2 - time;
+                    }
+                }
+            }
+        } else {
+            // create labels
+            for (let i = 0; i < timeOnlineInDays - 1; i++) {
+                labels[i] = i + 1 + "d";
+                times.push(0);
+            }
+
+            for (let i = 0; i < sortedTabList.length; i++) {
+                console.log(times, labels, sortedTabList[i].title);
+                //calculate time since install for each tab update time and add correspond times to each relevant bucket in tab array
+                let updateTime = sortedTabList[i]["update_time"];
+                for (let j = 0; j < updateTime.length; j++) {
+                    let timeSinceInstall = updateTime[j].time - (Date.now() - response.timeSinceInstall);
+                    let index = Math.floor(timeSinceInstall / 86400000);
+                    // console.log(updateTime[j].time, index, (Date.now() - response.timeSinceInstall), timeSinceInstall);
+                    if (updateTime[j].visibility === "visible") {
+                        let time = updateTime[j].time;
+                        let time2;
+                        if (j + 1 >= updateTime.length) {
+                            time2 = Date.now();
+                        } else {
+                            time2 = updateTime[j + 1].time;
+                        }
+                        // check if it spans multiple time values
+                        if (Math.floor(time / 86400000) !== Math.floor(time2 / 86400000)) {
+                            // calculate time in each bucket
+                            //first bucket
+                            times[index] += (Math.floor(time / 86400000) + 1) * 86400000 - time;
+                            //last bucket
+                            times[index + Math.floor(time2 / 86400000) - Math.floor(time / 86400000) - 1] += time2 - Math.floor(time2 / 86400000) * 86400000;
+
+                            for (let k = 1; k < Math.floor(time2 / 86400000) - Math.floor(time / 86400000) - 1; k++) {
+                                times[index + k] += 86400000;
+                            }
+                        } else {
+                            times[index] += time2 - time;
+                        }
+                    }
+                }
+                //if last tab is visible
+                if (updateTime[updateTime.length - 1].visibility === "visible") {
+                    let time = updateTime[updateTime.length - 1].time;
+                    let time2 = Date.now();
+                    let index = Math.floor((time - (Date.now() - response.timeSinceInstall)) / 86400000);
+                    // check if it spans multiple time values
+                    if (Math.floor(time / 86400000) !== Math.floor(time2 / 86400000)) {
+                        // calculate time in each bucket
+                        //first bucket
+                        times[index] += (Math.floor(time / 86400000) + 1) * 86400000 - time;
+                        //last bucket
+                        times[index + Math.floor(time2 / 86400000) - Math.floor(time / 86400000) - 1] += time2 - Math.floor(time2 / 86400000) * 86400000;
+                    } else {
+                        times[index] += time2 - time;
+                    }
+                }
+            }
         }
 
 
@@ -739,7 +793,7 @@ function onLoad() {
         let gradientStroke1 = websiteViewTimeChart.createLinearGradient(0, 0, 0, 300);
         gradientStroke1.addColorStop(0, "#00b09b");
         gradientStroke1.addColorStop(1, "rgba(0 176 155 / 45%)");
-        console.log(times, labels)
+        console.log(times, labels);
         let myChart = new Chart(websiteViewTimeChart, {
             type: "line",
             data: {
@@ -942,6 +996,31 @@ function onLoad() {
                 $(this.el).find(".w_percent").text(Math.round(percent));
             }
         });
+
+
+        //pagesVisitedOnceSummary
+        // if webpage visible to loaded time is under 10%
+        let pagesLoadedUnder10 = 0;
+        response.tabList.forEach(website => {
+            if (website.total_time_visible / website.total_time_loaded < 0.1) {
+                pagesLoadedUnder10++;
+            }
+        });
+
+        let percentagePagesLoadedUnder10 = (pagesLoadedUnder10 / Object.keys(response.tabList).length) * 100;
+        document.getElementById("ineffectivelyUsedWebsitesSummary").setAttribute("data-percent", percentagePagesLoadedUnder10.toString());
+
+
+        $(".ineffectivelyUsedWebsitesSummary").easyPieChart({
+            easing: "easeOutBounce",
+            barColor: "#0dcaf0",
+            lineWidth: 8,
+            trackColor: "rgba(0, 0, 0, 0.12)",
+            scaleColor: false,
+            onStep: function(from, to, percent) {
+                $(this.el).find(".w_percent").text(Math.round(percent));
+            }
+        });
     }
 
     function allWebsites(response) {
@@ -1023,7 +1102,7 @@ function onLoad() {
     }
 
     function allPages(response) {
-        this.response = response
+        this.response = response;
         filterPages();
     }
 }
@@ -1033,9 +1112,9 @@ onLoad();
 
 
 function filterPages() {
-    console.log(response)
-    let startDate = document.getElementById("startDate").value
-    let endDate = document.getElementById("endDate").value
+    console.log(response);
+    let startDate = document.getElementById("startDate").value;
+    let endDate = document.getElementById("endDate").value;
     console.log("filtering pages");
     console.log(startDate, endDate);
 
@@ -1134,7 +1213,7 @@ function filterPages() {
 
             table.appendChild(tr);
         }
-        return
+        return;
     }
 
     // if (startDate === "" || endDate === "") {
@@ -1143,32 +1222,32 @@ function filterPages() {
     // }
 
     if (startDate === "") {
-        startDate = "0000-00-00"
+        startDate = "0000-00-00";
     }
 
     if (endDate === "") {
-        endDate = "9999-99-99"
+        endDate = "9999-99-99";
     }
 
     if (startDate > endDate) {
         window.alert("Please enter a valid date range");
-        return
+        return;
     }
 
 
-    let startYear = parseInt(startDate.split("-")[0])
-    let startMonth = parseInt(startDate.split("-")[1])
-    let startDay = parseInt(startDate.split("-")[2])
+    let startYear = parseInt(startDate.split("-")[0]);
+    let startMonth = parseInt(startDate.split("-")[1]);
+    let startDay = parseInt(startDate.split("-")[2]);
 
-    let endYear = parseInt(endDate.split("-")[0])
-    let endMonth = parseInt(endDate.split("-")[1])
-    let endDay = parseInt(endDate.split("-")[2])
+    let endYear = parseInt(endDate.split("-")[0]);
+    let endMonth = parseInt(endDate.split("-")[1]);
+    let endDay = parseInt(endDate.split("-")[2]);
 
 
     let table = document.getElementById("allPagesTableBody");
     table.innerHTML = "";
 
-    console.log(response)
+    console.log(response);
     let sortedTabList = response.sortedTabList;
 
     for (let i = 0; i < sortedTabList.length; i++) {
@@ -1189,7 +1268,7 @@ function filterPages() {
             continue;
         }
         if (dateLoaded.getMonth() + 1 < startMonth || dateLoaded.getMonth() + 1 > endMonth) {
-            console.log("month")
+            console.log("month");
             continue;
         }
         if (dateLoaded.getDate() < startDay || dateLoaded.getDate() > endDay) {
