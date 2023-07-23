@@ -96,55 +96,55 @@ function onLoad() {
         let timeString = "";
         if (years > 0) {
             if (years === 1) {
-                timeString += years + " year ";
+                timeString += years + "Y ";
             } else {
-                timeString += years + " years ";
+                timeString += years + "Y ";
             }
         }
         if (months > 0) {
             if (months === 1) {
-                timeString += months + " month ";
+                timeString += months + "M ";
             } else {
-                timeString += months + " months ";
+                timeString += months + "M ";
             }
         }
         if (weeks > 0) {
             if (weeks === 1) {
-                timeString += weeks + " week ";
+                timeString += weeks + "w ";
             } else {
-                timeString += weeks + " weeks ";
+                timeString += weeks + "w ";
             }
         }
         if (days > 0) {
             if (days === 1) {
-                timeString += days + " day ";
+                timeString += days + "d ";
             } else {
-                timeString += days + " days ";
+                timeString += days + "d ";
             }
         }
         if (hours > 0) {
             if (hours === 1) {
-                timeString += hours + " hour ";
+                timeString += hours + "h ";
             } else {
-                timeString += hours + " hours ";
+                timeString += hours + "h ";
             }
         }
         if (minutes > 0) {
             if (minutes === 1) {
-                timeString += minutes + " minute ";
+                timeString += minutes + "m ";
             } else {
-                timeString += minutes + " minutes ";
+                timeString += minutes + "m ";
             }
         }
         if (seconds > 0) {
             if (seconds === 1) {
-                timeString += seconds + " second ";
+                timeString += seconds + "s ";
             } else {
-                timeString += seconds + " seconds ";
+                timeString += seconds + "s ";
             }
         }
         if (timeString === "") {
-            timeString = "0 seconds";
+            timeString = "0s";
         }
 
         return timeString;
@@ -535,7 +535,7 @@ function onLoad() {
             },
             options: {
                 maintainAspectRatio: false,
-                cutout: 100,
+                cutout: "80%",
                 plugins: {
                     legend: {
                         display: false
@@ -567,6 +567,7 @@ function onLoad() {
         for (let i = 0; i < length; i++) {
             let li = document.createElement("li");
             li.className = "list-group-item d-flex bg-transparent justify-content-between align-items-center";
+
             if (i === 0) {
                 li.className += " border-top";
             }
@@ -591,7 +592,7 @@ function onLoad() {
                 case 5:
                     pill_class = "bg-secondary";
             }
-            li.innerHTML = labels[i] + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>";
+            li.innerHTML = '<span style="max-width:70%">'+labels[i]+'</span>' + " <span class=\"badge " + pill_class + " rounded-pill\">" + millisecondsToTimeString(times[i]) + "</span>";
             legend.appendChild(li);
         }
     }

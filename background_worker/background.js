@@ -3,7 +3,7 @@ let specificList = {};
 let changedSchema = false;
 let installTime;
 let timeOnline;
-let startUpTime;
+let startUpTime = Date.now();
 let initialized = false;
 //sender document id becomes sender tab.id
 
@@ -50,21 +50,29 @@ chrome.runtime.onInstalled.addListener(function() {
             });
         });
 
-        installTime = Date.now();
         chrome.storage.local.get("timeOnline", function(result) {
-            if (result.timeOnline) {
+            console.log(result);
+            if (result.timeOnline !== undefined) {
                 timeOnline = result.timeOnline;
                 console.log("timeOnline loaded from storage: " + timeOnline);
             } else {
                 timeOnline = 0;
+                console.log("time online failed to load")
             }
         });
         startUpTime = Date.now();
         //set installed time
-        chrome.storage.local.set({ "installTime": installTime }, function(result) {
-            console.log("installTime set to " + installTime);
+        chrome.storage.local.get("installTime", function(result) {
+            if (result.installTime) {
+                installTime = result.installTime;
+                console.log("installTime loaded from storage: " + installTime);
+            } else {
+                installTime = Date.now();
+                chrome.storage.local.set({ "installTime": installTime }, function() {
+                    console.log("installTime saved to storage: " + installTime);
+                });
+            }
         });
-
         initialized = true;
     });
 });
@@ -104,7 +112,7 @@ chrome.runtime.onStartup.addListener(function() {
                 });
             });
         });
-        initialized = true
+        initialized = true;
     });
 
     chrome.storage.local.get("installTime", function(result) {
@@ -113,7 +121,7 @@ chrome.runtime.onStartup.addListener(function() {
     });
 
     chrome.storage.local.get("timeOnline", function(result) {
-        if (result.timeOnline) {
+        if (result.timeOnline !== undefinedresult.timeOnline) {
             timeOnline = result.timeOnline;
             console.log("timeOnline loaded from storage: " + timeOnline);
         } else {
@@ -127,8 +135,13 @@ chrome.runtime.onStartup.addListener(function() {
 chrome.runtime.onSuspend.addListener(function() {
     let sessionOnline = Date.now() - startUpTime;
     timeOnline += sessionOnline;
-    chrome.storage.local.set({ "installTime": timeOnline }, function(result) {
+    chrome.storage.local.set({ "timeOnline": timeOnline + (Date.now()-startUpTime) }, function(result) {
         console.log("timeOnline set to " + timeOnline);
+    });
+
+
+    chrome.storage.local.set({ "installTime": installTime }, function() {
+        console.log("installTime saved to storage: " + installTime);
     });
     console.log("unloading");
 });
@@ -173,7 +186,7 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
                 });
             });
         });
-        initialized = true
+        initialized = true;
     });
 
     chrome.storage.local.get("installTime", function(result) {
@@ -182,7 +195,7 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
     });
 
     chrome.storage.local.get("timeOnline", function(result) {
-        if (result.timeOnline) {
+        if (result.timeOnline !== undefined) {
             timeOnline = result.timeOnline;
             console.log("timeOnline loaded from storage: " + timeOnline);
         } else {
@@ -275,11 +288,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
 
         chrome.storage.local.get("timeOnline", function(result) {
-            if (result.timeOnline) {
+            if (result.timeOnline !== undefined) {
                 timeOnline = result.timeOnline;
                 console.log("timeOnline loaded from storage: " + timeOnline);
             } else {
                 timeOnline = 0;
+                console.log("timeonline not loaded")
             }
         });
         startUpTime = Date.now();
@@ -501,12 +515,12 @@ function updateStorage() {
             tabList[i].active = false;
             tabList[i].loaded_time.push({
                 state: "closed",
-                time: Date.now()
+                time: tabList[i].last_update_time
             });
 
             tabList[i].update_time.push({
                 visibility: "hidden",
-                time: Date.now()
+                time: tabList[i].last_update_time
             });
         }
     }

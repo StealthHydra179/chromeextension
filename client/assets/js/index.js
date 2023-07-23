@@ -68,41 +68,41 @@ $(function () {
         },
     });
 
-    $("#chart4").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
-        type: "bar",
-        height: "30",
-        barWidth: "2",
-        resize: true,
-        barSpacing: "3",
-        barColor: "#008cff",
-    });
-
-    $("#chart5").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
-        type: "bar",
-        height: "30",
-        barWidth: "2",
-        resize: true,
-        barSpacing: "3",
-        barColor: "#fd3550",
-    });
-
-    $("#chart6").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
-        type: "bar",
-        height: "30",
-        barWidth: "2",
-        resize: true,
-        barSpacing: "3",
-        barColor: "#009688",
-    });
-
-    $("#chart7").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
-        type: "bar",
-        height: "30",
-        barWidth: "2",
-        resize: true,
-        barSpacing: "3",
-        barColor: "#ffc107",
-    });
+    // $("#chart4").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
+    //     type: "bar",
+    //     height: "30",
+    //     barWidth: "2",
+    //     resize: true,
+    //     barSpacing: "3",
+    //     barColor: "#008cff",
+    // });
+    //
+    // $("#chart5").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
+    //     type: "bar",
+    //     height: "30",
+    //     barWidth: "2",
+    //     resize: true,
+    //     barSpacing: "3",
+    //     barColor: "#fd3550",
+    // });
+    //
+    // $("#chart6").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
+    //     type: "bar",
+    //     height: "30",
+    //     barWidth: "2",
+    //     resize: true,
+    //     barSpacing: "3",
+    //     barColor: "#009688",
+    // });
+    //
+    // $("#chart7").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4], {
+    //     type: "bar",
+    //     height: "30",
+    //     barWidth: "2",
+    //     resize: true,
+    //     barSpacing: "3",
+    //     barColor: "#ffc107",
+    // });
 
     // easy pie chart
 
@@ -123,44 +123,5 @@ $(function () {
 
 
 
-    // worl map
-
-    jQuery("#geographic-map-2").vectorMap({
-        map: "world_mill_en",
-        backgroundColor: "transparent",
-        borderColor: "#818181",
-        borderOpacity: 0.25,
-        borderWidth: 1,
-        zoomOnScroll: false,
-        color: "#009efb",
-        regionStyle: {
-            initial: {
-                fill: "#008cff",
-            },
-        },
-        markerStyle: {
-            initial: {
-                r: 9,
-                fill: "#fff",
-                "fill-opacity": 1,
-                stroke: "#000",
-                "stroke-width": 5,
-                "stroke-opacity": 0.4,
-            },
-        },
-        enableZoom: true,
-        hoverColor: "#009efb",
-        markers: [
-            {
-                latLng: [21.0, 78.0],
-                name: "Lorem Ipsum Dollar",
-            },
-        ],
-        hoverOpacity: null,
-        normalizeFunction: "linear",
-        scaleColors: ["#b6d6ff", "#005ace"],
-        selectedColor: "#c9dfaf",
-        selectedRegions: [],
-        showTooltip: true,
-    });
+    // check template to re-add world map later
 });
