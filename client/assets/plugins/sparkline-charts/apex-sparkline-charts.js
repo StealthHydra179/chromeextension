@@ -485,7 +485,7 @@ $(function () {
 
     new ApexCharts(document.querySelector("#pagesVisitedChart"), options1).render();
     new ApexCharts(document.querySelector("#chart2"), options2).render();
-    new ApexCharts(document.querySelector("#chart3"), options3).render();
+    new ApexCharts(document.querySelector("#websiteViewTimeChart"), options3).render();
     new ApexCharts(document.querySelector("#chart4"), options4).render();
     new ApexCharts(document.querySelector("#chart5"), options5).render();
     new ApexCharts(document.querySelector("#chart6"), options6).render();

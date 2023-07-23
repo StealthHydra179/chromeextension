@@ -21,7 +21,7 @@ $(function () {
         zeroAxis: false,
     });
 
-    $("#sparklinechart3").sparkline([28, 48, 40, 19, 96, 27, 100], {
+    $("#sparklinewebsiteViewTimeChart").sparkline([28, 48, 40, 19, 96, 27, 100], {
         type: "line",
         width: "150",
         height: "65",

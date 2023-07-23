@@ -23,7 +23,7 @@ $(function () {
     });
 
     // chart 3
-    $("#chart3").sparkline([2, 3, 4, 5, 4, 3, 2, 3, 4, 5, 6, 5, 4, 3, 4, 5], {
+    $("#websiteViewTimeChart").sparkline([2, 3, 4, 5, 4, 3, 2, 3, 4, 5, 6, 5, 4, 3, 4, 5], {
         type: "discrete",
         width: "75",
         height: "40",

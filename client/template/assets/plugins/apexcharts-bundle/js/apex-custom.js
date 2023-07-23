@@ -213,7 +213,7 @@ $(function () {
             },
         },
     };
-    var chart = new ApexCharts(document.querySelector("#chart3"), options);
+    var chart = new ApexCharts(document.querySelector("#websiteViewTimeChart"), options);
     chart.render();
 
     // chart 4

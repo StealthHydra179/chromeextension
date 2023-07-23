@@ -123,9 +123,9 @@ $(function () {
         },
     });
 
-    // chart3
+    // websiteViewTimeChart
 
-    var ctx = document.getElementById("chart3").getContext("2d");
+    var ctx = document.getElementById("websiteViewTimeChart").getContext("2d");
 
     var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
     gradientStroke1.addColorStop(0, "#00b09b");

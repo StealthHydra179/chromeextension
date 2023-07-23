@@ -413,7 +413,7 @@
 <!--                                        </div>-->
                                     </div>
                                     <div class="chart-container-4">
-                                        <canvas id="chart3"></canvas>
+                                        <canvas id="websiteViewTimeChart"></canvas>
                                     </div>
                                 </div>
                                 <ul class="list-group list-group-flush">
@@ -623,6 +623,20 @@
 <!--                                        </li>-->
 <!--                                    </ul>-->
 <!--                                </div>-->
+                                <div class="ms-auto d-flex">
+                                    <!-- vertical allign-->
+                                    <div class="pt-2 pe-2">
+                                        <label class="form-label" style="padding: 0; margin: 0">From:</label>
+                                    </div>
+                                    <input class="form-control" type="date" id="startDate" name="startDate"/>
+
+                                    <div class="pt-2 pe-2 ps-5">
+                                        <label class="form-label" style="padding: 0; margin: 0">To:</label>
+                                    </div>
+                                    <input class="form-control" type="date" id="endDate" name="endDate"/>
+
+                                    <button class="btn btn-primary btn-sm ms-5" id="filterPagesButton">Filter</button>
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table align-middle mb-0">

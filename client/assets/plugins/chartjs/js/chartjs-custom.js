@@ -127,7 +127,7 @@ $(function () {
         },
     });
     // chart 3
-    new Chart(document.getElementById("chart3"), {
+    new Chart(document.getElementById("websiteViewTimeChart"), {
         type: "pie",
         data: {
             labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],

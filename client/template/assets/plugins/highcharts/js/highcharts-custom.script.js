@@ -150,7 +150,7 @@ $(function () {
         ],
     });
     // chart 3
-    Highcharts.chart("chart3", {
+    Highcharts.chart("websiteViewTimeChart", {
         chart: {
             type: "variablepie",
             styledMode: true,
