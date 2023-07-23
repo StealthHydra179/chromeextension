@@ -450,26 +450,21 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
 
-                    if (tab.url !== sender.url) {
-                        tab.url = sender.url;
-                        tab.update_time.push({
-                            url: sender.url,
-                            time: request.message.update_time
-                        });
-                    }
-                    if (tab.title !== sender.tab.title) {
-                        tab.title = sender.tab.title;
-                        tab.update_time.push({
-                            title: sender.tab.title,
-                            time: request.message.update_time
-                        });
-                    }
-                    if (tab.origin !== sender.origin) {
-                        tab.origin = sender.origin;
-                        tab.update_time.push({
-                            origin: sender.origin,
-                            time: request.message.update_time
-                        });
+                    if (tab.url === sender.url) {
+                        if (tab.title !== sender.tab.title) {
+                            tab.title = sender.tab.title;
+                            tab.update_time.push({
+                                title: sender.tab.title,
+                                time: request.message.update_time
+                            });
+                        }
+                        if (tab.origin !== sender.origin) {
+                            tab.origin = sender.origin;
+                            tab.update_time.push({
+                                origin: sender.origin,
+                                time: request.message.update_time
+                            });
+                        }
                     }
                 }
             });
@@ -488,26 +483,21 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     tab.last_update_time = request.message.update_time;
                     updateFavicon(tab, sender);
 
-                    if (tab.url !== sender.url) {
-                        tab.url = sender.url;
-                        tab.update_time.push({
-                            url: sender.url,
-                            time: request.message.update_time
-                        });
-                    }
-                    if (tab.title !== sender.tab.title) {
-                        tab.title = sender.tab.title;
-                        tab.update_time.push({
-                            title: sender.tab.title,
-                            time: request.message.update_time
-                        });
-                    }
-                    if (tab.origin !== sender.origin) {
-                        tab.origin = sender.origin;
-                        tab.update_time.push({
-                            origin: sender.origin,
-                            time: request.message.update_time
-                        });
+                    if (tab.url === sender.url) {
+                        if (tab.title !== sender.tab.title) {
+                            tab.title = sender.tab.title;
+                            tab.update_time.push({
+                                title: sender.tab.title,
+                                time: request.message.update_time
+                            });
+                        }
+                        if (tab.origin !== sender.origin) {
+                            tab.origin = sender.origin;
+                            tab.update_time.push({
+                                origin: sender.origin,
+                                time: request.message.update_time
+                            });
+                        }
                     }
                 }
             });
@@ -557,10 +547,10 @@ async function checkMissing(tabList) {
     //for each tab in tablist
     for (let i = 0; i < tabList.length; i++) {
         //send message to tab
-        let response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" })
+        let response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
         if (response === undefined) {
             // try to send message again
-            response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" })
+            response = await chrome.tabs.sendMessage(tabList[i].tabId, { message: "check_alive" });
         }
 
         //if no response, tab is dead
@@ -615,7 +605,7 @@ function updateStorage() {
                     time: Date.now()
                 });
             }
-        })
+        });
     });
 
     /*
