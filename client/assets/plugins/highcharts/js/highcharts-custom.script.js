@@ -1,7 +1,7 @@
 $(function () {
     "use strict";
     // chart 1
-    Highcharts.chart("chart1", {
+    Highcharts.chart("pagesVisitedChart", {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,

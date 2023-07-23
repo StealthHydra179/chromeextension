@@ -3,7 +3,7 @@ $(function () {
 
     // chart 1
 
-    $("#chart1").sparkline(
+    $("#pagesVisitedChart").sparkline(
         [5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8, 9, 10, 8, 6, 4, 5, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4, 8, 7, 10, 9, 5, 8, 7, 9, 5, 4],
         {
             type: "bar",

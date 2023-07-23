@@ -83,7 +83,7 @@ $(function () {
             },
         },
     };
-    var chart = new ApexCharts(document.querySelector("#chart1"), options);
+    var chart = new ApexCharts(document.querySelector("#pagesVisitedChart"), options);
     chart.render();
 
     // chart 2

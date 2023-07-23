@@ -2,7 +2,7 @@ $(function () {
     "use strict";
 
     // chart 1
-    $("#chart1").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8], {
+    $("#pagesVisitedChart").sparkline([5, 8, 7, 10, 9, 10, 8, 6, 4, 6, 8, 7, 6, 8], {
         type: "bar",
         height: "35",
         barWidth: "3",

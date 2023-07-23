@@ -3,7 +3,7 @@ $(function () {
 
     // chart 1
 
-    var ctx = document.getElementById("chart1").getContext("2d");
+    var ctx = document.getElementById("pagesVisitedChart").getContext("2d");
 
     var gradientStroke1 = ctx.createLinearGradient(0, 0, 0, 300);
     gradientStroke1.addColorStop(0, "#6078ea");

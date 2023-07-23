@@ -171,7 +171,134 @@ function onLoad() {
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
 
         //update graph
+        // create datasets
+        // convert tablist visit_history into a frequency table by hour if extention time < 1 day, other wise split by day, but if less than 1 hour split by minutes
+        let frequencyTable = {};
+        let timeOnlineInDays = response.timeOnline / 86400000;
+        let timeOnlineInHours = response.timeOnline / 3600000;
+        let timeOnlineInMinutes = response.timeOnline / 60000;
+        let datasets;
+        let timeLabels= [];
+        if (timeOnlineInHours < 1) {
+            for (let i = 0; i < timeOnlineInMinutes; i++) {
+                timeLabels.push(i);
+            }
+            for (let i = 0; i < tabList.length; i++) {
+                let times = [];
+                for (let j = 0; j < timeOnlineInMinutes; j++) {
+                    times.push(0);
+                }
+                let visitHistory = tabList[i]["visit_history"];
+                for (let j = 0; j < visitHistory.length; j++) {
+                    let visitTime = visitHistory[j];
+                    let visitTimeInMinutes = (Date.now() - visitTime) / 60000;
+                    let index = Math.min(Math.max(Math.floor(timeOnlineInMinutes-visitTimeInMinutes), 0), timeOnlineInMinutes-1);
+                    // console.log("index:", Math.floor(index));
+                    // console.log("vt:", visitTime)
+                    // console.log(visitTimeInMinutes)
+                    // console.log(timeOnlineInMinutes)
+                    // console.log(Math.floor(timeOnlineInMinutes-visitTimeInMinutes))
+                    times[Math.floor(index)] += 1;
+                }
 
+                frequencyTable[tabList[i]["title"]] = times;
+            }
+
+            function generateBorderColor(index) {
+                let colors = [
+                    "#6078ea",
+                    "#17c5ea",
+                    "#ffce00",
+                    "#ff6c00",
+                    "#ff0000",
+                    "#00ff00",
+                    "#0000ff",
+                    "#ff00ff",
+                    "#00ffff",
+                    "#ffff00",
+                    "#000000",
+                    "#ffffff",
+                ];
+                return colors[index % colors.length];
+            }
+
+
+            datasets = [];
+            for (let i = 0; i < tabList.length; i++) {
+                let dataset = {
+                        label: tabList[i]["title"],
+                        data: frequencyTable[tabList[i]["title"]],
+                        backgroundColor: "transparent",
+                        borderColor: generateBorderColor(i),
+                        pointRadius: "0",
+                        borderWidth: 4,
+                        tension: 0.4,
+                    }
+                datasets.push(dataset);
+            }
+        } else if (timeOnlineInHours < 24) {
+
+        } else {
+
+        }
+
+
+        var pagesVisitedChart = document.getElementById("pagesVisitedChart").getContext("2d");
+
+        var gradientStroke1 = pagesVisitedChart.createLinearGradient(0, 0, 0, 300);
+        gradientStroke1.addColorStop(0, "#6078ea");
+        gradientStroke1.addColorStop(1, "#17c5ea");
+
+        var gradientStroke2 = pagesVisitedChart.createLinearGradient(0, 0, 0, 300);
+        gradientStroke2.addColorStop(0, "#ff8359");
+        gradientStroke2.addColorStop(1, "#ffdf40");
+        console.log(datasets);
+        var myChart = new Chart(pagesVisitedChart, {
+            type: "line",
+            data: {
+                labels: timeLabels,
+                datasets: datasets,
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: "#585757",
+                        boxWidth: 40,
+                    },
+                },
+                tooltips: {
+                    enabled: false,
+                },
+                scales: {
+                    xAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                                fontColor: "#585757",
+                            },
+                            gridLines: {
+                                display: true,
+                                color: "rgba(0, 0, 0, 0.07)",
+                            },
+                        },
+                    ],
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                                fontColor: "#585757",
+                            },
+                            gridLines: {
+                                display: true,
+                                color: "rgba(0, 0, 0, 0.07)",
+                            },
+                        },
+                    ],
+                },
+            },
+        });
     }
 
     function topTimeBreakdown(response) {
