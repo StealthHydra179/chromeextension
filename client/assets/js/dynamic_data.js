@@ -211,7 +211,10 @@ function onLoad() {
         let timeLabels = [];
         if (timeOnlineInHours < 4) {
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
-                timeLabels.push((i + 1) + "m");
+                // timeLabels.push((i + 1) + "m");
+                // timeLabels.push();
+                let time = new Date(Date.now() - (timeOnlineInMinutes-1 - i) * 60000);
+                timeLabels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, '0'));
             }
             for (let i = 0; i < tabList.length; i++) {
                 let times = [];
@@ -261,7 +264,8 @@ function onLoad() {
             }
         } else if (timeOnlineInDays < 4) {
             for (let i = 0; i < timeOnlineInHours - 1; i++) {
-                timeLabels.push((i + 1) + "h");
+                let time = new Date(Date.now() - (timeOnlineInHours-1 - i) * 3600000);
+                timeLabels.push(time.getHours() + ":00");
             }
             for (let i = 0; i < tabList.length; i++) {
                 let times = [];
@@ -295,7 +299,9 @@ function onLoad() {
             }
         } else {
             for (let i = 0; i < timeOnlineInDays - 1; i++) {
-                timeLabels.push((i + 1) + "d");
+                // timeLabels.push((i + 1) + "d");
+                let time = new Date(Date.now() - (timeOnlineInDays -1- i) * 86400000);
+                timeLabels.push(time.getMonth() + "/" + time.getDate());
             }
             for (let i = 0; i < tabList.length; i++) {
                 let times = [];
@@ -627,7 +633,11 @@ function onLoad() {
         if (timeOnlineInHours < 4) {
             // create labels
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
-                labels[i] = i + 1 + "m";
+                // labels[i] = i + 1 + "m";
+                // let time = new Date(Date.now() - response.timeSinceInstall - ((timeOnlineInMinutes - i) * 60000));
+
+                let time = new Date(Date.now() - (timeOnlineInMinutes-1 - i) * 60000);
+                labels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, '0'));
                 times.push(0);
             }
 
@@ -682,7 +692,9 @@ function onLoad() {
         } else if (timeOnlineInDays < 4) {
             // create labels
             for (let i = 0; i < timeOnlineInHours - 1; i++) {
-                labels[i] = i + 1 + "h";
+                // labels[i] = i + 1 + "h";
+                let time = new Date(Date.now() - (timeOnlineInHours-1 - i) * 3600000);
+                labels.push(time.getHours() + ":00");
                 times.push(0);
             }
 
@@ -738,7 +750,9 @@ function onLoad() {
         } else {
             // create labels
             for (let i = 0; i < timeOnlineInDays - 1; i++) {
-                labels[i] = i + 1 + "d";
+                // labels[i] = i + 1 + "d";
+                let time = new Date(Date.now() - (timeOnlineInDays-1 - i) * 86400000);
+                labels.push(time.getDate() + "/" + (time.getMonth() + 1));
                 times.push(0);
             }
 
