@@ -543,6 +543,7 @@ function generateSpecifics() {
                     update_time: [],
                     loaded_time: [],
                     visit_history: [],
+                    active_time: [],
                     favicon: "",
                     last_update_time: tab.last_update_time
                 };
