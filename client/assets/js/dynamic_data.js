@@ -16,7 +16,7 @@ function onLoad() {
             //unique webpages visited
             let webpageCount = 0;
             for (let website in specificList) {
-                webpageCount += Object.keys(specificList[website]).length - 11;
+                webpageCount += Object.keys(specificList[website]).length - 12;
             }
             document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
 
