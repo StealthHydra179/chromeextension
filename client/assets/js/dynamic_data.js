@@ -188,10 +188,16 @@ function onLoad() {
         historyTotalPages.innerHTML = "" + totalPageVisits;
 
         let historyPagesPerHour = document.getElementById("historyPagesPerHour");
-        let timeOnline = response.timeOnline;
+        let timeOnline = response.timeSinceInstall;
         let timeTracked = document.getElementById("historyTracked");
         timeTracked.innerHTML = millisecondsToTimeString(timeOnline);
-        let pagesPerHour = Math.round(totalPageVisits / Math.ceil(timeOnline / 3600000));
+        let pagesPerHour = 0;
+        if (Math.ceil(response.timeSinceInstall / 3600000) == 1) {
+            pagesPerHour = Math.round(totalPageVisits / Math.ceil(response.timeSinceInstall / 3600000));
+        } else {
+            pagesPerHour = Math.round(totalPageVisits / (response.timeSinceInstall / 3600000));
+        }
+
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
 
         //update graph

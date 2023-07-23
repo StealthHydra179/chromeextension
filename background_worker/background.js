@@ -397,6 +397,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         time: request.message.update_time
                     });
                     tab.open = false;
+                    tab.last_update_time = request.message.update_time;
 
                     updateFavicon(tab, sender);
                 }
