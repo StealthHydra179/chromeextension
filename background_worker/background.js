@@ -23,23 +23,23 @@ chrome.runtime.onInstalled.addListener(function() {
         } else {
             console.log("tabList not loaded from storage");
         }
-        //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
-                chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err, tab.url);
-                        // memory saved tabs that are open but are not loaded dont work
-                    });
-            });
-        });
+        // //update tabList with current tab info
+        // chrome.tabs.query({}, function(tabArray) {
+        //     tabArray.forEach((tab) => {
+        //         chrome.scripting
+        //             .executeScript({
+        //                 target: { tabId: tab.id },
+        //                 files: ["background_worker/injected_content.js"]
+        //             })
+        //             .then(() => {
+        //                 console.log("injected content script into all tabs");
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err, tab.url);
+        //                 // memory saved tabs that are open but are not loaded dont work
+        //             });
+        //     });
+        // });
 
         installTime = Date.now();
         chrome.storage.local.get("timeOnline", function(result) {
@@ -71,22 +71,23 @@ chrome.runtime.onStartup.addListener(function() {
             console.log("tabList not loaded from storage");
         }
         //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
-                chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        console.log(tab.url);
-                    });
-            });
-        });
+        // chrome.tabs.query({}, function(tabArray) {
+        //     tabArray.forEach((tab) => {
+        //         chrome.scripting
+        //             .executeScript({
+        //                 target: { tabId: tab.id },
+        //                 files: ["background_worker/injected_content.js"]
+        //             })
+        //             .then(() => {
+        //                 console.log("injected content script into all tabs");
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err);
+        //                 console.log(tab.url);
+        //             });
+        //     });
+        // });
+        initialized = true
     });
 
     chrome.storage.local.get("installTime", function(result) {
@@ -130,23 +131,24 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
         } else {
             console.log("tabList not loaded from storage");
         }
-        //update tabList with current tab info
-        chrome.tabs.query({}, function(tabArray) {
-            tabArray.forEach((tab) => {
-                chrome.scripting
-                    .executeScript({
-                        target: { tabId: tab.id },
-                        files: ["background_worker/injected_content.js"]
-                    })
-                    .then(() => {
-                        console.log("injected content script into all tabs");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        console.log(tab.url);
-                    });
-            });
-        });
+        // //update tabList with current tab info
+        // chrome.tabs.query({}, function(tabArray) {
+        //     tabArray.forEach((tab) => {
+        //         chrome.scripting
+        //             .executeScript({
+        //                 target: { tabId: tab.id },
+        //                 files: ["background_worker/injected_content.js"]
+        //             })
+        //             .then(() => {
+        //                 console.log("injected content script into all tabs");
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err);
+        //                 console.log(tab.url);
+        //             });
+        //     });
+        // });
+        initialized = true
     });
 
     chrome.storage.local.get("installTime", function(result) {
@@ -169,34 +171,40 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
 
 
 //when new tab is created
-chrome.tabs.onCreated.addListener(function(tab) {
-    chrome.scripting
-        .executeScript({
-            target: { tabId: tab.id },
-            files: ["background_worker/injected_content.js"]
-        })
-        .then(() => {
-            // console.log("injected content script into new tab")
-        })
-        .catch((err) => console.log(err));
-});
+// chrome.tabs.onCreated.addListener(function(tab) {
+//     chrome.scripting
+//         .executeScript({
+//             target: { tabId: tab.id },
+//             files: ["background_worker/injected_content.js"]
+//         })
+//         .then(() => {
+//             // console.log("injected content script into new tab")
+//         })
+//         .catch((err) => console.log(err));
+// });
 
 //when tab is updated
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === "complete") {
-        chrome.scripting
-            .executeScript({
-                target: { tabId: tab.id },
-                files: ["background_worker/injected_content.js"]
-            })
-            .then(() => {
-                // console.log("injected content script into updated tab")
-            })
-            .catch((err) => console.log(err));
-    }
-});
+// chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+//     if (changeInfo.status === "complete") {
+//         chrome.scripting
+//             .executeScript({
+//                 target: { tabId: tab.id },
+//                 files: ["background_worker/injected_content.js"]
+//             })
+//             .then(() => {
+//                 // console.log("injected content script into updated tab")
+//             })
+//             .catch((err) => console.log(err));
+//     }
+// });
 
 //chrome:// tabs don't work
+
+function updateFavicon(tab, sender) {
+    if (tab.favicon === undefined && sender.tab.favIconUrl !== undefined) {
+        tab.favicon = sender.tab.favIconUrl;
+    }
+}
 
 //get current state of the tabs and store it in tabList
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -215,24 +223,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 generateSpecifics();
             } else {
                 console.log("tabList not loaded from storage");
+                initialized = true;
             }
             //update tabList with current tab info
-            chrome.tabs.query({}, function(tabArray) {
-                tabArray.forEach((tab) => {
-                    chrome.scripting
-                        .executeScript({
-                            target: { tabId: tab.id },
-                            files: ["background_worker/injected_content.js"]
-                        })
-                        .then(() => {
-                            console.log("injected content script into all tabs");
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            console.log(tab.url);
-                        });
-                });
-            });
+            // chrome.tabs.query({}, function(tabArray) {
+            //     tabArray.forEach((tab) => {
+            //         chrome.scripting
+            //             .executeScript({
+            //                 target: { tabId: tab.id },
+            //                 files: ["background_worker/injected_content.js"]
+            //             })
+            //             .then(() => {
+            //                 console.log("injected content script into all tabs");
+            //             })
+            //             .catch((err) => {
+            //                 console.log(err);
+            //                 console.log(tab.url);
+            //             });
+            //     });
+            // });
         });
 
         chrome.storage.local.get("installTime", function(result) {
@@ -292,8 +301,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
             return true;
         }
-        //why is this run like 55 times?
-        // console.log(request.message.state, sender.url);
+
         if (request.message.state === "loaded") {
             //if object exists, update it
             //if object doesn't exist, add it
@@ -312,6 +320,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     });
                     tab.open = true;
                     tab.last_update_time = request.message.update_time;
+                    updateFavicon(tab, sender);
                 }
             });
             if (!tabExists) {
@@ -322,7 +331,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     // "document_url": sender.origin,
                     title: sender.tab.title,
                     visibility: "hidden",
-                    active: sender.tab.active,
+                    active: false,
                     audible: sender.tab.audible,
                     muted: sender.tab.mutedInfo.muted,
                     update_time: [{ visibility: "hidden", time: request.message.update_time }],
@@ -349,6 +358,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         time: request.message.update_time
                     });
                     tab.open = false;
+
+                    updateFavicon(tab, sender);
                 }
             });
         }
@@ -363,6 +374,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         visibility: "visible",
                         time: request.message.update_time
                     });
+
+                    updateFavicon(tab, sender);
                 }
             });
         }
@@ -377,6 +390,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         visibility: "hidden",
                         time: request.message.update_time
                     });
+
+                    updateFavicon(tab, sender);
                 }
             });
         }
@@ -391,6 +406,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         active: true,
                         time: request.message.update_time
                     });
+
+                    updateFavicon(tab, sender);
                 }
             });
         }
@@ -405,6 +422,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         active: false,
                         time: request.message.update_time
                     });
+
+                    updateFavicon(tab, sender);
                 }
             });
         }
@@ -524,7 +543,8 @@ function generateSpecifics() {
                     update_time: [],
                     loaded_time: [],
                     visit_history: [],
-                    favicon: ""
+                    favicon: "",
+                    last_update_time: tab.last_update_time
                 };
 
                 if (tab.favicon !== undefined) {
@@ -618,6 +638,7 @@ function generateSpecifics() {
                 specificList[tab.origin][tab.documentId].update_time = tab.update_time;
                 specificList[tab.origin][tab.documentId].loaded_time = tab.loaded_time;
                 specificList[tab.origin][tab.documentId].visit_history = visitTimes;
+                specificList[tab.origin][tab.documentId].last_update_time = tab.last_update_time;
 
                 tabList[index].total_time = specificList[tab.origin][tab.documentId].total_time;
                 tabList[index].total_visits = specificList[tab.origin][tab.documentId].total_visits;
@@ -648,6 +669,7 @@ function generateSpecifics() {
             let total_time_audible = -1;
             let total_time_muted = -1;
             let total_time_unmuted = -1;
+            let last_update_time = 0;
 
             //for each key value pair in origin
             for (const [pkey, page] of Object.entries(specificList[key])) {
@@ -728,6 +750,10 @@ function generateSpecifics() {
                         total_time_unmuted += page.total_time_unmuted;
                     }
                 }
+                if (page.last_update_time > last_update_time) {
+                    last_update_time = page.last_update_time;
+                }
+
             } //)
 
             specificList[key]["total_time"] = total_time;
@@ -741,6 +767,7 @@ function generateSpecifics() {
             specificList[key]["total_time_audible"] = total_time_audible;
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
+            specificList[key]["last_update_time"] = last_update_time;
             // console.log(specificList[key])
             // console.log("specifics calculated.");
         }

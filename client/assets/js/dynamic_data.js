@@ -20,7 +20,12 @@ function onLoad() {
             }
             document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
 
-            //Average Time Per Day Over The Last 7 Days
+            //Average Time Per Day
+            let totalTime = calculate_totalTimeVisible(response);
+            let totalDays = Math.ceil(response.timeOnline / 86400000);
+            let averageTimePerDay = totalTime / totalDays;
+            console.log("atpd:", averageTimePerDay);
+            document.getElementById("average_time_per_day_row_1").innerHTML = millisecondsToTimeString(averageTimePerDay);
 
             //total time used
             let totalTimeUsedVisible = calculate_totalTimeVisible(response);
@@ -158,6 +163,8 @@ function onLoad() {
 
         let historyPagesPerHour = document.getElementById("historyPagesPerHour");
         let timeOnline = response.timeOnline;
+        let timeTracked = document.getElementById("historyTracked");
+        timeTracked.innerHTML = millisecondsToTimeString(timeOnline);
         let pagesPerHour = Math.round(totalPageVisits / (timeOnline / 3600000));
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
     }
@@ -399,6 +406,7 @@ function onLoad() {
                 <th>Website</th>
                 <th>Logo</th>
                 <th>Times Visited</th>
+                <th>Time Visible</th>
                 <th>Date Accessed</th>
                 <th>Active Time</th>
             </tr>
@@ -412,27 +420,60 @@ function onLoad() {
             let website = row.insertCell(0);
             let logo = row.insertCell(1);
             let timesVisited = row.insertCell(2);
-            let dateAccessed = row.insertCell(3);
-            let activeTime = row.insertCell(4);
+            let timeVisible = row.insertCell(3);
+            let dateAccessed = row.insertCell(4);
+            let activeTime = row.insertCell(5);
 
             website.innerHTML = sortedSpecificArray[i]["key"];
 
 
             let currentIndex = 0;
-            let found = false
+            let found = false;
             for (let currentIndex = 0; currentIndex < Object.keys(sortedSpecificArray[i]["value"]).length; currentIndex++) {
                 if (sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] !== undefined) {
                     logo.innerHTML = "<img alt=\"product img\" class=\"product-img-2\" src=\"" + sortedSpecificArray[i]["value"][Object.keys(sortedSpecificArray[i]["value"])[currentIndex]]["favicon"] + "\" />";
-                    found = true
-                    break
+                    found = true;
+                    break;
                 }
             }
             if (!found) {
                 logo.innerHTML = "<img alt=\"product img\" style=\"background-color: #eeeeee\" class=\"product-img-2\" src=\"./assets/images/icons/file.svg\" />";
             }
 
+            timesVisited.innerHTML = sortedSpecificArray[i]["value"]["total_visits"] < 0 ? 0 : sortedSpecificArray[i]["value"]["total_visits"];
 
-            timesVisited.innerHTML = sortedSpecificArray[i]["value"]["total_visits"];
+            if (sortedSpecificArray[i]["value"]["total_time_visible"] <= 0) {
+                timeVisible.innerHTML = millisecondsToTimeString(0);
+            } else {
+                timeVisible.innerHTML = millisecondsToTimeString(sortedSpecificArray[i]["value"]["total_time_visible"]);
+            }
+
+            let date = new Date(sortedSpecificArray[i]["value"]["last_update_time"]);
+            dateAccessed.innerHTML = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+            //progress bar like allPages
+            let totalTimeVisible = sortedSpecificArray[i]["value"]["total_time_visible"];
+            let totalTimeLoaded = sortedSpecificArray[i]["value"]["total_time_loaded"];
+            if (totalTimeVisible === undefined || totalTimeVisible === null || totalTimeVisible <= 0) {
+                totalTimeVisible = 0;
+            }
+            let percentageUsed = 0;
+            if (totalTimeLoaded === undefined || totalTimeLoaded === null || totalTimeLoaded <= 0) {
+                totalTimeLoaded = 0;
+            } else {
+                percentageUsed = Math.floor((totalTimeVisible / totalTimeLoaded) * 100);
+            }
+
+            if (percentageUsed <= 33) {
+                activeTime.innerHTML = " <div class=\"progress\" style=\"height: 4px\">" +
+                    "<div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: " + percentageUsed + "%\"></div></div>";
+            } else if (percentageUsed <= 67) {
+                activeTime.innerHTML = " <div class=\"progress\" style=\"height: 4px\">" +
+                    "<div class=\"progress-bar bg-warning\" role=\"progressbar\" style=\"width: " + percentageUsed + "%\"></div></div>";
+            } else {
+                activeTime.innerHTML = " <div class=\"progress\" style=\"height: 4px\">" +
+                    "<div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: " + percentageUsed + "%\"></div></div>";
+            }
         }
     }
 
@@ -502,22 +543,25 @@ function onLoad() {
 
             // add active time
             let activeTime = document.createElement("td");
-            if (sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"] > 0.67) {
-                activeTime.innerHTML +=
+            if (sortedTabList[i]["total_time_visible"] <= 0 || sortedTabList[i]["total_time_loaded"] <= 0 || sortedTabList[i]["total_time_visible"] === undefined || sortedTabList[i]["total_time_loaded"] === undefined) {
+                activeTime.innerHTML = " <div class=\"progress\" style=\"height: 4px\">" +
+                    "<div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width:0\"></div></div>";
+            } else if (sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"] > 0.67) {
+                activeTime.innerHTML =
                     " <div class=\"progress\" style=\"height: 4px\">" +
                     "<div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: " +
                     Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +
                     "%\"></div>" +
                     "</div>";
             } else if (sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"] > 0.33) {
-                activeTime.innerHTML +=
+                activeTime.innerHTML =
                     " <div class=\"progress\" style=\"height: 4px\">" +
                     "<div class=\"progress-bar bg-warning\" role=\"progressbar\" style=\"width: " +
                     Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +
                     "%\"></div>" +
                     "</div>";
             } else {
-                activeTime.innerHTML +=
+                activeTime.innerHTML =
                     " <div class=\"progress\" style=\"height: 4px\">" +
                     "<div class=\"progress-bar bg-danger\" role=\"progressbar\" style=\"width: " +
                     Math.floor((sortedTabList[i]["total_time_visible"] / sortedTabList[i]["total_time_loaded"]) * 100) +

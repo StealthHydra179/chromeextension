@@ -1,3 +1,5 @@
+let injected = "test";
+
 //https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
 document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
