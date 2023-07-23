@@ -115,6 +115,14 @@ if (document.hasFocus()) {
     } catch (err) {}
 }
 
+chrome.runtime.onMessage(function (request, sender, sendResponse) {
+    if (request.message === "check_alive") {
+        sendResponse({
+            message: "alive",
+        });
+    }
+})
+
 //every minute, poll the tab for its visiblity state
 setInterval(function () {
     if (document.hidden) {
