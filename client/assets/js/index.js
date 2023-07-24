@@ -114,7 +114,6 @@ function calculate_totalTimeVisible(response) {
     let totalTimeVisible = 0;
     for (let website in specificList) {
         for (let webpage in specificList[website]) {
-            // console.log("ttv: ", specificList[website][webpage]["total_time_visible"])
             if (
                 specificList[website][webpage]["total_time_visible"] === undefined ||
                 specificList[website][webpage]["total_time_visible"] <= -1
@@ -257,22 +256,6 @@ function onLoad() {
                     let index = Math.min(Math.max(Math.floor(timeOnlineInMinutes - visitTimeInMinutes), 0), timeOnlineInMinutes - 1);
                     times[Math.floor(index)] += 1;
                 }
-                // //remove trailing zeros
-                // for (let j = times.length - 1; j >= 0; j--) {
-                //     if (times[j] === 0 && j > 0 && times[j-1] === 0) {
-                //         times.pop();
-                //     } else {
-                //         break;
-                //     }
-                // }
-                // //replace leading zeros with undefined
-                // for (let j = 0; j < times.length; j++) {
-                //     if (times[j] === 0 && j < times.length - 1 && times[j+1] === 0) {
-                //         times[j] = undefined;
-                //     } else {
-                //         break;
-                //     }
-                // }
 
                 frequencyTable[tabList[i]["documentId"]] = times;
             }
@@ -445,19 +428,6 @@ function onLoad() {
                     y: {
                         stacked: true
                     }
-                    // yAxes: [
-                    //     {
-                    //         ticks: {
-                    //             beginAtZero: true,
-                    //             fontColor: "#585757",
-                    //             precision: 0
-                    //         },
-                    //         gridLines: {
-                    //             display: true,
-                    //             color: "rgba(0, 0, 0, 0.07)"
-                    //         }
-                    //     }
-                    // ]
                 }
             }
         });
@@ -568,8 +538,6 @@ function onLoad() {
             ];
         }
 
-        // console.log("Colors: ", colors);
-        // console.log("Times: ", times);
 
         new Chart(pieChart, {
             type: "doughnut",
@@ -700,8 +668,6 @@ function onLoad() {
         if (timeOnlineInHours < 4) {
             // create labels
             for (let i = 0; i < timeOnlineInMinutes - 1; i++) {
-                // labels[i] = i + 1 + "m";
-                // let time = new Date(Date.now() - response.timeSinceInstall - ((timeOnlineInMinutes - i) * 60000));
 
                 let time = new Date(Date.now() - (timeOnlineInMinutes - 1 - i) * 60000);
                 labels.push(time.getHours() + ":" + time.getMinutes().toString().padStart(2, "0"));
@@ -1117,18 +1083,6 @@ function onLoad() {
     }
 
     function allWebsites(response) {
-        /*
-        <thead class="table-light">
-            <tr>
-                <th>Website</th>
-                <th>Logo</th>
-                <th>Times Visited</th>
-                <th>Time Visible</th>
-                <th>Date Accessed</th>
-                <th>Active Time</th>
-            </tr>
-        </thead>
-         */
         let table = document.getElementById("allWebsitesTableBody");
 
         let sortedSpecificArray = response.sortedSpecificArray;
@@ -1309,11 +1263,6 @@ function filterPages() {
         return;
     }
 
-    // if (startDate === "" || endDate === "") {
-    //     window.alert("Please enter a valid date range");
-    //     return
-    // }
-
     if (startDate === "") {
         startDate = "0000-00-00";
     }
@@ -1461,8 +1410,6 @@ document.getElementById("clearData").addEventListener("click", function() {
         chrome.runtime.sendMessage({ message: "reloadTabs" }).then(function(response) {
             // console.log(response.message);
             window.alert("All data cleared, reloading all tabs... Please wait a few seconds. Press OK to continue.");
-
-            //delay reload
         });
     }
 });
@@ -1471,10 +1418,6 @@ document.getElementById("clearData").addEventListener("click", function() {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request === "reload") {
         console.log("reload");
-        //delay 4 sec
         location.reload();
-        // setTimeout(function() {
-        //     location.reload();
-        // }, 10000)
     }
 });

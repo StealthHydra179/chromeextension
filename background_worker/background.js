@@ -5,14 +5,7 @@ let installTime;
 let timeOnline;
 let startUpTime = Date.now();
 let initialized = false;
-//sender document id becomes sender.documentId
 
-//
-// chrome.runtime.onSuspend.addListener(
-//     function () {
-//         console.log("Unloading.");
-//     }
-// )
 
 function reset() {
     initialized = false;
@@ -41,9 +34,6 @@ async function reloadTabs(tabArray) {
         await chrome.tabs.discard(tab.id);
         console.log("reloaded, " + tab.id);
     }
-    // setTimeout(function() {
-    //     initialized = true;
-    // },10000);
 
     initialized = true;
 
@@ -60,23 +50,6 @@ chrome.runtime.onInstalled.addListener(function() {
         } else {
             console.log("tabList not loaded from storage");
         }
-        // //update tabList with current tab info
-        // chrome.tabs.query({}, function(tabArray) {
-        //     tabArray.forEach((tab) => {
-        //         chrome.scripting
-        //             .executeScript({
-        //                 target: { tabId: tab.id },
-        //                 files: ["background_worker/injected_content.js"]
-        //             })
-        //             .then(() => {
-        //                 console.log("injected content script into all tabs");
-        //             })
-        //             .catch((err) => {
-        //                 console.log(err, tab.url);
-        //                 // memory saved tabs that are open but are not loaded dont work
-        //             });
-        //     });
-        // });
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
@@ -123,23 +96,6 @@ chrome.runtime.onStartup.addListener(function() {
         } else {
             console.log("tabList not loaded from storage");
         }
-        //update tabList with current tab info
-        // chrome.tabs.query({}, function(tabArray) {
-        //     tabArray.forEach((tab) => {
-        //         chrome.scripting
-        //             .executeScript({
-        //                 target: { tabId: tab.id },
-        //                 files: ["background_worker/injected_content.js"]
-        //             })
-        //             .then(() => {
-        //                 console.log("injected content script into all tabs");
-        //             })
-        //             .catch((err) => {
-        //                 console.log(err);
-        //                 console.log(tab.url);
-        //             });
-        //     });
-        // });.
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
@@ -197,23 +153,6 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
         } else {
             console.log("tabList not loaded from storage");
         }
-        // //update tabList with current tab info
-        // chrome.tabs.query({}, function(tabArray) {
-        //     tabArray.forEach((tab) => {
-        //         chrome.scripting
-        //             .executeScript({
-        //                 target: { tabId: tab.id },
-        //                 files: ["background_worker/injected_content.js"]
-        //             })
-        //             .then(() => {
-        //                 console.log("injected content script into all tabs");
-        //             })
-        //             .catch((err) => {
-        //                 console.log(err);
-        //                 console.log(tab.url);
-        //             });
-        //     });
-        // });
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
@@ -244,34 +183,6 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
 });
 
 
-//when new tab is created
-// chrome.tabs.onCreated.addListener(function(tab) {
-//     chrome.scripting
-//         .executeScript({
-//             target: { tabId: tab.id },
-//             files: ["background_worker/injected_content.js"]
-//         })
-//         .then(() => {
-//             // console.log("injected content script into new tab")
-//         })
-//         .catch((err) => console.log(err));
-// });
-
-//when tab is updated
-// chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-//     if (changeInfo.status === "complete") {
-//         chrome.scripting
-//             .executeScript({
-//                 target: { tabId: tab.id },
-//                 files: ["background_worker/injected_content.js"]
-//             })
-//             .then(() => {
-//                 // console.log("injected content script into updated tab")
-//             })
-//             .catch((err) => console.log(err));
-//     }
-// });
-
 //chrome:// tabs don't work
 
 function updateFavicon(tab, sender) {
@@ -299,23 +210,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 console.log("tabList not loaded from storage");
                 initialized = true;
             }
-            //update tabList with current tab info
-            // chrome.tabs.query({}, function(tabArray) {
-            //     tabArray.forEach((tab) => {
-            //         chrome.scripting
-            //             .executeScript({
-            //                 target: { tabId: tab.id },
-            //                 files: ["background_worker/injected_content.js"]
-            //             })
-            //             .then(() => {
-            //                 console.log("injected content script into all tabs");
-            //             })
-            //             .catch((err) => {
-            //                 console.log(err);
-            //                 console.log(tab.url);
-            //             });
-            //     });
-            // });
         });
 
         chrome.storage.local.get("installTime", function(result) {
@@ -408,7 +302,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         documentId: sender.documentId,
                         origin: sender.origin,
                         url: sender.url,
-                        // "document_url": sender.origin,
                         title: sender.tab.title,
                         visibility: "hidden",
                         active: false,
@@ -485,7 +378,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         documentId: sender.documentId,
                         origin: sender.origin,
                         url: sender.url,
-                        // "document_url": sender.origin,
                         title: sender.tab.title,
                         visibility: "hidden",
                         active: false,
@@ -505,8 +397,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 // console.log("ifvisible")
                 tabList.forEach((tab) => {
                     if (tab.documentId === sender.documentId) {
-                        //&& request.message.update_time >= tab.last_update_time
-                        // console.log("visible")
                         tab.visibility = "visible";
                         tab.update_time.push({
                             visibility: "visible",
@@ -529,7 +419,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         documentId: sender.documentId,
                         origin: sender.origin,
                         url: sender.url,
-                        // "document_url": sender.origin,
                         title: sender.tab.title,
                         visibility: "hidden",
                         active: false,
@@ -549,8 +438,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 // console.log("ifhidden")
                 tabList.forEach((tab) => {
                     if (tab.documentId === sender.documentId) {
-                        // && request.message.update_time >= tab.last_update_time
-                        // console.log("hidden")
                         tab.visibility = "hidden";
                         tab.update_time.push({
                             visibility: "hidden",
@@ -573,7 +460,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         documentId: sender.documentId,
                         origin: sender.origin,
                         url: sender.url,
-                        // "document_url": sender.origin,
                         title: sender.tab.title,
                         visibility: "hidden",
                         active: false,
@@ -593,8 +479,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 // console.log("ifactive")
                 tabList.forEach((tab) => {
                     if (tab.documentId === sender.documentId && tab.active === false) {
-                        // && request.message.update_time >= tab.last_update_time
-                        // console.log("active")
                         tab.active = true;
                         tab.active_time.push({
                             active: true,
@@ -634,7 +518,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         documentId: sender.documentId,
                         origin: sender.origin,
                         url: sender.url,
-                        // "document_url": sender.origin,
                         title: sender.tab.title,
                         visibility: "hidden",
                         active: false,
@@ -654,8 +537,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 // console.log("ifinactive")
                 tabList.forEach((tab) => {
                     if (tab.documentId === sender.documentId && tab.active === true) {
-                        // && request.message.update_time >= tab.last_update_time
-                        // console.log("inactive")
                         tab.active = false;
                         tab.active_time.push({
                             active: false,
@@ -683,45 +564,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     }
                 });
             }
-            // console.log(tabList)
-            // console.log(request.message)
 
             updateStorage();
             generateSpecifics();
         }
-
-
-        /*
-          example sender object:
-              documentId: "7DF44B79F740FEDBB3300A015FCA347D"
-              documentLifecycle: "active"
-              frameId: 0
-              id: "ofakeomadjpnbfnabflblfgfcbcjdfpf"
-              origin: "https://parks.canada.ca"
-              tab: {active: true, audible: false, autoDiscardable: true, discarded: false, favIconUrl: 'https://www.canada.ca/etc/designs/canada/wet-boew/assets/favicon.ico', …}
-              url: "https://parks.canada.ca/pn-np/on/bruce/activ/camping"
-
-          example tab object:
-              active: true
-              audible: false
-              autoDiscardable: true
-              discarded: false
-              favIconUrl: "https://www.canada.ca/etc/designs/canada/wet-boew/assets/favicon.ico"
-              groupId: -1
-              height: 653
-              highlighted: true
-              id: 1421766072
-              incognito: false
-              index: 14
-              mutedInfo: {muted: false}
-              pinned: false
-              selected: true
-              status: "complete"
-              title: "Camping and overnight accommodations - Bruce Peninsula National Park"
-              url: "https://parks.canada.ca/pn-np/on/bruce/activ/camping"
-              width: 1278
-              windowId: 1421766057
-          */
     }
 });
 
@@ -754,29 +600,6 @@ async function checkMissing(tabList) {
 
 //update history
 function updateStorage() {
-    // if tab hasnt sent update in past 5 minutes, it is definitely closed
-    // for (let i = 0; i < tabList.length; i++) {
-    //     if (Date.now() - tabList[i].last_update_time > 300000) {
-    //         tabList[i].open = false;
-    //         tabList[i].active = false;
-    //         tabList[i].loaded_time.push({
-    //             state: "closed",
-    //             time: tabList[i].last_update_time
-    //         });
-    //
-    //         tabList[i].update_time.push({
-    //             visibility: "hidden",
-    //             time: tabList[i].last_update_time
-    //         });
-    //     }
-    // }
-
-    // //get all chrome tabs and add them to a list
-    // chrome.tabs.query({}, function(tabArray) {
-    //     console.log(tabArray, tabList)
-    //
-    // });
-
     if (initialized) {
 
         checkMissing(tabList).then(r => {
@@ -799,62 +622,18 @@ function updateStorage() {
         });
     }
 
-    /*
-    //check if in tab array
-        let found = false;
-
-        for (let i = 0; i < tabArray.length; i++) {
-            if (tab.documentId === tabArray[i].id) {
-                found = true;
-                break;
-            }
-        }
-        if (found === false) {
-            tab.open = false;
-            tab.active = false;
-            tab.loaded_time.push({
-                state: "closed",
-                time: Date.now()
-            });
-
-            tab.update_time.push({
-                visibility: "hidden",
-                time: Date.now()
-            });
-        }
-    })
-     */
-
     chrome.storage.local.set({ "tabList": tabList }, function() {
         // console.log(tabList)
     });
 }
 
 function generateSpecifics() {
-    // chrome.storage.local.get("specificList", function (result) {
-    //     if (result.specificList !== undefined && changedSchema === false) {
-    //         specificList = result.specificList;
-    //     }
-    //
-    // });
 
     calculateSpecifics();
 
     function calculateSpecifics() {
         specificList = {};
-        //until redo logic to check if alr exists
-        //tablist is the input
-        //specificList is the output
 
-        //specific list is a dictionary of dictionaries
-        /* the first dict is "url" (sorted by the origns of the tabs)
-            the second key is "page" (sorted by the individual pages)
-
-            */
-
-        //for each tab in tablist
-
-        // console.log("Calculating specifics...")
         let index = 0;
         tabList.forEach((tab) => {
             //if the origin is not in the specific list, add it
@@ -872,11 +651,11 @@ function generateSpecifics() {
                     total_visits: 0,
                     total_time_visible: -1,
                     total_time_hidden: -1,
-                    total_time_active: -1, //not currently implemented
-                    total_time_inactive: -1, //not currently implemented
-                    total_time_audible: -1, //not currently implemented
-                    total_time_muted: -1, //not currently implemented
-                    total_time_unmuted: -1, //not currently implemented
+                    total_time_active: -1,
+                    total_time_inactive: -1,
+                    total_time_audible: -1,
+                    total_time_muted: -1,
+                    total_time_unmuted: -1,
                     total_time_loaded: -1,
                     total_time_closed: -1,
                     update_time: [],
@@ -1108,8 +887,6 @@ function generateSpecifics() {
             specificList[key]["total_time_muted"] = total_time_muted;
             specificList[key]["total_time_unmuted"] = total_time_unmuted;
             specificList[key]["last_update_time"] = last_update_time;
-            // console.log(specificList[key])
-            // console.log("specifics calculated.");
         }
 
         saveSpecifics();
@@ -1117,7 +894,6 @@ function generateSpecifics() {
 
     function saveSpecifics() {
         chrome.storage.local.set({ "specificList": specificList }, function() {
-            // console.log(specificList)
         });
     }
 }

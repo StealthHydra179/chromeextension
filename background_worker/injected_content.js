@@ -79,7 +79,6 @@ try {
         },
     });
 } catch (err) {}
-// console.log("loaded") //change to extension loaded and add a extension unload part as well
 
 if (!document.hidden) {
     // console.log("visible")
