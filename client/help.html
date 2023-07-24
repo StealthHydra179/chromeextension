@@ -1,0 +1,209 @@
+<!doctype html>
+<html class="color-sidebar sidebarcolor2" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+
+  <link href="assets/images/logo-icon.png" rel="icon" type="image/png" />
+
+  <link href="assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
+  <link href="assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+  <link href="assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
+  <link href="assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
+
+  <link href="assets/css/pace.min.css" rel="stylesheet" />
+  <script src="assets/js/pace.min.js"></script>
+
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="assets/css/bootstrap-extended.css" rel="stylesheet" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link href="assets/css/app.css" rel="stylesheet" />
+  <link href="assets/css/icons.css" rel="stylesheet" />
+
+  <link href="assets/css/dark-theme.css" rel="stylesheet" />
+  <link href="assets/css/semi-dark.css" rel="stylesheet" />
+  <link href="assets/css/header-colors.css" rel="stylesheet" />
+
+  <title>Help | Web Activity Tracker</title>
+</head>
+<body>
+<div class="nav-wrapper">
+  <div class="sidebar-wrapper" data-simplebar="true">
+    <div class="sidebar-header pb-1r mt-1 mb-1">
+      <div><img alt="logo icon" class="logo-icon" src="assets/images/logo-icon.png" /></div>
+      <div><h4 class="logo-text pt-1">Web Activity Tracker</h4></div>
+      <div class="toggle-icon ms-auto"><i class="bx bx-arrow-to-left"></i></div>
+    </div>
+    <ul class="metismenu" id="menu">
+      <li>
+        <a href="index.html">
+          <div class="parent-icon"><i class="bx bx-home-circle"></i></div>
+          <div class="menu-title">Dashboard</div>
+        </a>
+      </li>
+      <li>
+        <a href="help.html">
+          <div class="parent-icon"><i class="bx bx-help-circle"></i></div>
+          <div class="menu-title">Help</div>
+        </a>
+      </li>
+      <li id="clearData">
+        <a href="#">
+          <div class="parent-icon"><i class="bx bx-eraser"></i></div>
+          <div class="menu-title">Clear Data</div>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <header>
+    <div class="topbar d-flex align-items-center">
+      <nav class="navbar navbar-expand">
+        <div class="mobile-toggle-menu">
+          <i class="bx bx-menu"></i>
+        </div>
+
+        <div class="top-menu ms-auto">
+          <ul class="navbar-nav align-items-center">
+          </ul>
+        </div>
+        <div class="user-box dropdown">
+          <img alt="user avatar" class="user-img" src="assets/images/logo-icon.png" />
+          <div class="user-info ps-3">
+            <p class="user-name mb-0">Web Activity tracker</p>
+            <p class="designattion mb-0">Chrome Extension</p>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <div class="page-content">
+      <!-- embed pdf -->
+        <embed src="assets/pdf/help.pdf" type="application/pdf" width="100%" style="height: 80vh"/>
+    </div>
+  </div>
+  <!--end page nav-wrapper -->
+  <!--start overlay-->
+  <div class="overlay toggle-icon"></div>
+  <!--end overlay-->
+  <!--Start Back To Top Button-->
+  <a class="back-to-top" href="javaScript:"><i class="bx bxs-up-arrow-alt"></i></a>
+  <!--End Back To Top Button-->
+  <footer class="page-footer"><p class="mb-0">Copyright © 2023. All right reserved.</p></footer>
+</div>
+<!--end nav-wrapper-->
+<!--start switcher-->
+<div class="switcher-wrapper">
+  <div class="switcher-btn"><i class="bx bx-cog bx-spin"></i></div>
+  <div class="switcher-body">
+    <div class="d-flex align-items-center">
+      <h5 class="mb-0 text-uppercase">Themes</h5>
+      <button aria-label="Close" class="btn-close ms-auto close-switcher" type="button"></button>
+    </div>
+    <hr />
+    <h6 class="mb-0">Theme Presets</h6>
+    <hr />
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="form-check">
+        <input class="form-check-input" id="lightmode" name="flexRadioDefault" type="radio" />
+        <label class="form-check-label" for="lightmode">Light</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" id="darkmode" name="flexRadioDefault" type="radio" />
+        <label class="form-check-label" for="darkmode">Dark</label>
+      </div>
+      <div class="form-check">
+        <input checked class="form-check-input" id="semidark" name="flexRadioDefault" type="radio" />
+        <label class="form-check-label" for="semidark">Semi Dark</label>
+      </div>
+    </div>
+    <hr />
+    <div class="form-check">
+      <input class="form-check-input" id="minimaltheme" name="flexRadioDefault" type="radio" />
+      <label class="form-check-label" for="minimaltheme">Minimal Theme</label>
+    </div>
+    <hr />
+    <h6 class="mb-0">Header Colors</h6>
+    <hr />
+    <div class="header-colors-indigators">
+      <div class="row row-cols-auto g-3">
+        <div class="col">
+          <div class="indigator headercolor1" id="headercolor1"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor2" id="headercolor2"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor3" id="headercolor3"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor4" id="headercolor4"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor5" id="headercolor5"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor6" id="headercolor6"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor7" id="headercolor7"></div>
+        </div>
+        <div class="col">
+          <div class="indigator headercolor8" id="headercolor8"></div>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <h6 class="mb-0">Sidebar Colors</h6>
+    <hr />
+    <div class="header-colors-indigators">
+      <div class="row row-cols-auto g-3">
+        <div class="col">
+          <div class="indigator sidebarcolor1" id="sidebarcolor1"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor2" id="sidebarcolor2"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor3" id="sidebarcolor3"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor4" id="sidebarcolor4"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor5" id="sidebarcolor5"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor6" id="sidebarcolor6"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor7" id="sidebarcolor7"></div>
+        </div>
+        <div class="col">
+          <div class="indigator sidebarcolor8" id="sidebarcolor8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end switcher-->
+<!-- Bootstrap JS -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<!--plugins-->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
+<script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
+<script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+<script src="assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+<script src="assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="assets/plugins/chartjs/js/Chart.min.js"></script>
+<script src="assets/plugins/sparkline-charts/jquery.sparkline.min.js"></script>
+<script src="assets/plugins/jquery.easy-pie-chart/jquery.easypiechart.min.js"></script>
+
+<!--app JS-->
+</body>
+</html>
