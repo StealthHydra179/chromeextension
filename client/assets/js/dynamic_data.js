@@ -404,7 +404,7 @@ function onLoad() {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                let label = context.label || "";
+                                let label = context.dataset.label || "";
 
                                 if (label) {
                                     label += ": ";
@@ -419,7 +419,7 @@ function onLoad() {
                                 }
 
                                 if (context.raw === 0) return;
-                                
+
                                 return label;
                             }
                         }
