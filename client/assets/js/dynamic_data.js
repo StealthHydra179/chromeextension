@@ -1382,12 +1382,26 @@ document.getElementById("filterPagesButton").addEventListener("click", filterPag
 document.getElementById("clearData").addEventListener("click", function() {
     if (confirm("Are you sure you want to clear all data?")) {
         //reload page
-        location.reload();
+        // location.reload();
 
         //send message to reload all tabs
         chrome.runtime.sendMessage({ message: "reloadTabs" }).then(function(response) {
             // console.log(response.message);
-            window.alert("All data cleared, reloading all tabs...");
+            window.alert("All data cleared, reloading all tabs... Please wait a few seconds. Press OK to continue.");
+
+            //delay reload
         });
     }
 });
+
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request === "reload") {
+        console.log("reload")
+        //delay 4 sec
+        location.reload()
+        // setTimeout(function() {
+        //     location.reload();
+        // }, 10000)
+    }
+})

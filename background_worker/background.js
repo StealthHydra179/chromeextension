@@ -15,6 +15,7 @@ let initialized = false;
 // )
 
 function reset() {
+    initialized = false;
 
     tabList = [];
     chrome.storage.local.set({ "tabList": tabList }, function() {
@@ -26,16 +27,28 @@ function reset() {
 
 
     chrome.tabs.query({}, function(tabArray) {
-        tabArray.forEach((tab) => {
-            chrome.tabs.reload(tab.id, { bypassCache: true }, function() {
-                console.log("reloaded tab " + tab.id);
-            });
-        });
+        reloadTabs(tabArray).then(r => console.log("reloaded tabs"));
     });
 
 
 }
 
+async function reloadTabs(tabArray) {
+    for (const tab of tabArray) {
+        if (tab.url.includes("chrome-extension://")) {
+            continue;
+        }
+        await chrome.tabs.discard(tab.id);
+        console.log("reloaded, " + tab.id);
+    }
+    // setTimeout(function() {
+    //     initialized = true;
+    // },10000);
+
+    initialized = true;
+
+    await chrome.runtime.sendMessage("reload");
+}
 
 //script on all tabs when extension is created
 chrome.runtime.onInstalled.addListener(function() {
@@ -67,7 +80,7 @@ chrome.runtime.onInstalled.addListener(function() {
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
-                chrome.tabs.reload(tab.id, { bypassCache: true }, function() {
+                chrome.tabs.reload(tab.id, { bypassCache: false }, function() {
                     console.log("reloaded tab " + tab.id);
                 });
             });
@@ -130,7 +143,7 @@ chrome.runtime.onStartup.addListener(function() {
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
-                chrome.tabs.reload(tab.id, { bypassCache: true }, function() {
+                chrome.tabs.reload(tab.id, { bypassCache: false }, function() {
                     console.log("reloaded tab " + tab.id);
                 });
             });
@@ -204,7 +217,7 @@ chrome.runtime.onSuspendCanceled.addListener(function() {
 
         chrome.tabs.query({}, function(tabArray) {
             tabArray.forEach((tab) => {
-                chrome.tabs.reload(tab.id, { bypassCache: true }, function() {
+                chrome.tabs.reload(tab.id, { bypassCache: false }, function() {
                     console.log("reloaded tab " + tab.id);
                 });
             });
@@ -764,25 +777,27 @@ function updateStorage() {
     //
     // });
 
+    if (initialized) {
 
-    checkMissing(tabList).then(r => {
-        let deadTabIds = r;
-        tabList.forEach((tab) => {
-            if (deadTabIds.includes(tab.tabId)) {
-                tab.open = false;
-                tab.active = false;
-                tab.loaded_time.push({
-                    state: "closed",
-                    time: Date.now()
-                });
+        checkMissing(tabList).then(r => {
+            let deadTabIds = r;
+            tabList.forEach((tab) => {
+                if (deadTabIds.includes(tab.tabId)) {
+                    tab.open = false;
+                    tab.active = false;
+                    tab.loaded_time.push({
+                        state: "closed",
+                        time: Date.now()
+                    });
 
-                tab.update_time.push({
-                    visibility: "hidden",
-                    time: Date.now()
-                });
-            }
+                    tab.update_time.push({
+                        visibility: "hidden",
+                        time: Date.now()
+                    });
+                }
+            });
         });
-    });
+    }
 
     /*
     //check if in tab array
