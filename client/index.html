@@ -641,19 +641,22 @@
                         <!--                                        </li>-->
                         <!--                                    </ul>-->
                         <!--                                </div>-->
-                        <div class="ms-auto d-flex">
-                            <!-- vertical allign-->
-                            <div class="pt-2 pe-2">
-                                <label class="form-label" style="padding: 0; margin: 0">From:</label>
+                        <div class="row g-2 ms-auto">
+                            <div class="col-md">
+                                <div class="form-floating">
+                                    <input class="form-control" type="date" id="startDate" name="startDate" placeholder="Start Date">
+                                    <label for="startDate">Start Date</label>
+                                </div>
                             </div>
-                            <input class="form-control" type="date" id="startDate" name="startDate" />
-
-                            <div class="pt-2 pe-2 ps-5">
-                                <label class="form-label" style="padding: 0; margin: 0">To:</label>
+                            <div class="col-md">
+                                <div class="form-floating">
+                                    <input class="form-control" type="date" id="endDate" name="startDate" placeholder="End Date">
+                                    <label for="startDate">End Date</label>
+                                </div>
                             </div>
-                            <input class="form-control" type="date" id="endDate" name="endDate" />
-
-                            <button class="btn btn-primary btn-sm ms-5" id="filterPagesButton">Filter</button>
+                            <div class="col-md">
+                                <button class="btn btn-primary btn-sm ms-1 py-md-3" id="filterPagesButton">Filter</button>
+                            </div>
                         </div>
                     </div>
                     <div class="table-responsive">

@@ -110,6 +110,10 @@ function calculate_totalTimeVisible(response) {
 }
 
 
+function isNaNString(value) {
+    return value === "NaN";
+}
+
 function onLoad() {
     let specificListExtraKeys = 12;
 
@@ -152,6 +156,7 @@ function onLoad() {
         specificList = response.specificList;
         //unique websites visited
         document.getElementById("websites_visited_row_1").innerHTML = "" + Object.keys(specificList).length;
+        document.getElementById("websites_visited_row_1").innerHTML = isNaNString(document.getElementById("websites_visited_row_1").innerHTML) ? 0 : document.getElementById("websites_visited_row_1").innerHTML;
 
         //unique webpages visited
         let webpageCount = 0;
@@ -159,6 +164,7 @@ function onLoad() {
             webpageCount += Object.keys(specificList[website]).length - specificListExtraKeys;
         }
         document.getElementById("webpages_visited_row_1").innerHTML = "" + webpageCount;
+        document.getElementById("webpages_visited_row_1").innerHTML = isNaNString(document.getElementById("webpages_visited_row_1").innerHTML) ? 0 : document.getElementById("webpages_visited_row_1").innerHTML;
 
         //Average Time Per Day
         let totalTime = calculate_totalTimeVisible(response);
@@ -166,6 +172,7 @@ function onLoad() {
         let averageTimePerDay = totalTime / totalDays;
         console.log("atpd:", averageTimePerDay);
         document.getElementById("average_time_per_day_row_1").innerHTML = millisecondsToTimeString(averageTimePerDay);
+        document.getElementById("average_time_per_day_row_1").innerHTML = isNaNString(document.getElementById("average_time_per_day_row_1").innerHTML) ? 0 : document.getElementById("average_time_per_day_row_1").innerHTML;
 
         //total time used
         let totalTimeUsedVisible = calculate_totalTimeVisible(response);
@@ -173,7 +180,7 @@ function onLoad() {
         //document.getElementById("total_time_used_row_1").innerHTML = totalTime
         // display time in hours, minutes, seconds (which ever one is applicable and only the largest one)
         document.getElementById("total_time_used_row_1").innerHTML = millisecondsToTimeString(totalTimeUsedVisible);
-
+        document.getElementById("total_time_used_row_1").innerHTML = isNaNString(document.getElementById("total_time_used_row_1").innerHTML) ? 0 : document.getElementById("total_time_used_row_1").innerHTML;
     }
 
     function websiteHistory(response) {
@@ -186,11 +193,14 @@ function onLoad() {
             totalPageVisits += tabList[i]["total_visits"] >= 0 ? tabList[i]["total_visits"] : 0;
         }
         historyTotalPages.innerHTML = "" + totalPageVisits;
+        document.getElementById("historyTotalPages").innerHTML = isNaNString(document.getElementById("historyTotalPages").innerHTML) ? 0 : document.getElementById("historyTotalPages").innerHTML;
 
         let historyPagesPerHour = document.getElementById("historyPagesPerHour");
         let timeOnline = response.timeSinceInstall;
         let timeTracked = document.getElementById("historyTracked");
         timeTracked.innerHTML = millisecondsToTimeString(timeOnline);
+        document.getElementById("historyTracked").innerHTML = isNaNString(document.getElementById("historyTracked").innerHTML) ? 0 : document.getElementById("historyTracked").innerHTML;
+
         let pagesPerHour = 0;
         if (Math.ceil(response.timeSinceInstall / 3600000) == 1) {
             pagesPerHour = Math.round(totalPageVisits / Math.ceil(response.timeSinceInstall / 3600000));
@@ -199,6 +209,7 @@ function onLoad() {
         }
 
         historyPagesPerHour.innerHTML = "" + pagesPerHour;
+        document.getElementById("historyPagesPerHour").innerHTML = isNaNString(document.getElementById("historyPagesPerHour").innerHTML) ? 0 : document.getElementById("historyPagesPerHour").innerHTML;
 
         //update graph
         // create datasets
@@ -596,13 +607,14 @@ function onLoad() {
         // calculate ratio of tab pages : specific website
         let ratio = response.tabList.length / response.sortedSpecificArray.length;
         averagePagesStatistic.innerHTML = ratio.toFixed(2);
-
+        document.getElementById("averagePagesStatistic").innerHTML = isNaNString(document.getElementById("averagePagesStatistic").innerHTML) ? 0 : ratio.toFixed(2);
 
         //averageTimePerWebsiteStatistic average time per website
         let averageTimePerWebsiteStatistic = document.getElementById("averageTimePerWebsiteStatistic");
         // calculate ratio of overall visible time : number of websites
         let ratio2 = calculate_totalTimeVisible(response) / response.sortedSpecificArray.length;
         averageTimePerWebsiteStatistic.innerHTML = millisecondsToTimeString(ratio2);
+        document.getElementById("averageTimePerWebsiteStatistic").innerHTML = isNaNString(document.getElementById("averageTimePerWebsiteStatistic").innerHTML) ? 0 : millisecondsToTimeString(ratio2);
 
 
         //averageTimePerPageStatistic average time per page
@@ -610,6 +622,7 @@ function onLoad() {
         // calculate ratio of overall visible time : number of tabs
         let ratio3 = calculate_totalTimeVisible(response) / response.tabList.length;
         averageTimePerPageStatistic.innerHTML = millisecondsToTimeString(ratio3);
+        document.getElementById("averageTimePerPageStatistic").innerHTML = isNaNString(document.getElementById("averageTimePerPageStatistic").innerHTML) ? 0 : millisecondsToTimeString(ratio3);
 
 
         //averageVisitsPerPageStatistic average views per page
@@ -624,6 +637,7 @@ function onLoad() {
         }
         let ratio4 = totalViews / response.tabList.length;
         averageVisitsPerPageStatistic.innerHTML = ratio4.toFixed(2);
+        document.getElementById("averageVisitsPerPageStatistic").innerHTML = isNaNString(document.getElementById("averageVisitsPerPageStatistic").innerHTML) ? 0 : ratio4.toFixed(2);
 
 
         //update chart
@@ -928,7 +942,7 @@ function onLoad() {
 
         let percentageVisible = (totalTimeVisible / totalTimeLoaded) * 100;
         // console.log(document.getElementById("timeVisibleSummary"));
-        document.getElementById("timeVisibleSummary").setAttribute("data-percent", percentageVisible.toString());
+        document.getElementById("timeVisibleSummary").setAttribute("data-percent", isNaNString(percentageVisible.toString()) ? "0" : percentageVisible.toString());
         // console.log("Percentage Used: ", percentageVisible);
 
         //create chart
@@ -947,7 +961,7 @@ function onLoad() {
 
         //calculate total time hidden (its the opposite of visible)
         let percentageHidden = 100 - percentageVisible;
-        document.getElementById("timeHiddenSummary").setAttribute("data-percent", percentageHidden.toString());
+        document.getElementById("timeHiddenSummary").setAttribute("data-percent", isNaNString(percentageHidden.toString()) ? "0" : percentageHidden.toString());
 
         //create chart
         $(".timeHiddenSummary").easyPieChart({
@@ -972,7 +986,7 @@ function onLoad() {
         }
         // turn single page websites into a percentage
         let percentageSinglePageWebsites = (singlePageWebsites / Object.keys(response.specificList).length) * 100;
-        document.getElementById("singlePageWebsiteSummary").setAttribute("data-percent", percentageSinglePageWebsites.toString());
+        document.getElementById("singlePageWebsiteSummary").setAttribute("data-percent", isNaNString(percentageSinglePageWebsites.toString()) ? "0" : percentageSinglePageWebsites.toString());
 
 
         $(".singlePageWebsiteSummary").easyPieChart({
@@ -991,7 +1005,7 @@ function onLoad() {
             let mostUsedWebsite = response.sortedSpecificArray[0]["key"];
             let mostUsedWebsitePages = Object.keys(response.specificList[mostUsedWebsite]).length - specificListExtraKeys;
             let percentageMostUsedWebsitePages = (mostUsedWebsitePages / Object.keys(response.tabList).length) * 100;
-            document.getElementById("pagesMostUsedWebsiteSummary").setAttribute("data-percent", percentageMostUsedWebsitePages.toString());
+            document.getElementById("pagesMostUsedWebsiteSummary").setAttribute("data-percent", isNaNString(percentageMostUsedWebsitePages.toString()) ? "0" : percentageMostUsedWebsitePages.toString());
         } else {
             document.getElementById("pagesMostUsedWebsiteSummary").setAttribute("data-percent", "0");
         }
@@ -1016,7 +1030,7 @@ function onLoad() {
         });
 
         let percentagePagesVisitedOnce = (pagesVisitedOnce / Object.keys(response.tabList).length) * 100;
-        document.getElementById("pagesVisitedOnceSummary").setAttribute("data-percent", percentagePagesVisitedOnce.toString());
+        document.getElementById("pagesVisitedOnceSummary").setAttribute("data-percent", isNaNString(percentagePagesVisitedOnce.toString()) ? "0" : percentagePagesVisitedOnce.toString());
 
         $(".pagesVisitedOnceSummary").easyPieChart({
             easing: "easeOutBounce",
@@ -1040,7 +1054,7 @@ function onLoad() {
         });
 
         let percentagePagesLoadedUnder10 = (pagesLoadedUnder10 / Object.keys(response.tabList).length) * 100;
-        document.getElementById("ineffectivelyUsedWebsitesSummary").setAttribute("data-percent", percentagePagesLoadedUnder10.toString());
+        document.getElementById("ineffectivelyUsedWebsitesSummary").setAttribute("data-percent", isNaNString(percentagePagesLoadedUnder10.toString()) ? "0" : percentagePagesLoadedUnder10.toString());
 
 
         $(".ineffectivelyUsedWebsitesSummary").easyPieChart({
