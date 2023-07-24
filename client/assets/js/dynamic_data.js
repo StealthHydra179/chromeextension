@@ -352,6 +352,12 @@ function onLoad() {
                 datasets: datasets
             },
             options: {
+                scale: {
+                    ticks: {
+                        precision: 0
+                    }
+                },
+
                 maintainAspectRatio: false,
 
                 plugins: {
@@ -879,7 +885,13 @@ function onLoad() {
                     y: {
                         stacked: false,
                         beginAtZero: true,
-                        display: false
+                        display: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return millisecondsToTimeString(value);
+                            }
+                        }
+
                     }
                 }
             }
@@ -1397,11 +1409,11 @@ document.getElementById("clearData").addEventListener("click", function() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request === "reload") {
-        console.log("reload")
+        console.log("reload");
         //delay 4 sec
-        location.reload()
+        location.reload();
         // setTimeout(function() {
         //     location.reload();
         // }, 10000)
     }
-})
+});
