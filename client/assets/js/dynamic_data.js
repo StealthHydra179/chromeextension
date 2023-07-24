@@ -285,7 +285,7 @@ function onLoad() {
                     backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
-                    borderWidth: 4,
+                    borderWidth: 2,
                     tension: 0.4,
                     fill: {
                         target: i === 0 ? "origin" : "-1",
@@ -323,7 +323,7 @@ function onLoad() {
                     backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
-                    borderWidth: 4,
+                    borderWidth: 2,
                     tension: 0.4
 
                 };
@@ -359,7 +359,7 @@ function onLoad() {
                     backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
-                    borderWidth: 4,
+                    borderWidth: 2,
                     tension: 0.4
 
                 };
