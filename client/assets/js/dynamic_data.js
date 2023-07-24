@@ -90,6 +90,23 @@ function generateBorderColor(index) {
     ];
     return colors[index % colors.length];
 }
+function generateRGBAColor(index, alpha) {
+    let colors = [
+        "rgba(96, 120, 234, " + alpha + ")",
+        "rgba(23, 197, 234, " + alpha + ")",
+        "rgba(255, 206, 0, " + alpha + ")",
+        "rgba(255, 108, 0, " + alpha + ")",
+        "rgba(255, 0, 0, " + alpha + ")",
+        "rgba(0, 255, 0, " + alpha + ")",
+        "rgba(0, 0, 255, " + alpha + ")",
+        "rgba(255, 0, 255, " + alpha + ")",
+        "rgba(0, 255, 255, " + alpha + ")",
+        "rgba(255, 255, 0, " + alpha + ")",
+        "rgba(0, 0, 0, " + alpha + ")"
+    ];
+    return colors[index % colors.length];
+}
+
 
 function calculate_totalTimeVisible(response) {
     let specificList = response.specificList;
@@ -265,11 +282,15 @@ function onLoad() {
                 let dataset = {
                     label: tabList[i]["title"],
                     data: frequencyTable[tabList[i]["documentId"]],
-                    backgroundColor: "transparent",
+                    backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
                     borderWidth: 4,
-                    tension: 0.4
+                    tension: 0.4,
+                    fill: {
+                        target: i === 0 ? "origin" : "-1",
+                        below: generateRGBAColor(i, 0.2),
+                    }
                 };
                 datasets.push(dataset);
             }
@@ -299,7 +320,7 @@ function onLoad() {
                 let dataset = {
                     label: tabList[i]["title"],
                     data: frequencyTable[tabList[i]["documentId"]],
-                    backgroundColor: "transparent",
+                    backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
                     borderWidth: 4,
@@ -335,7 +356,7 @@ function onLoad() {
                 let dataset = {
                     label: tabList[i]["title"],
                     data: frequencyTable[tabList[i]["documentId"]],
-                    backgroundColor: "transparent",
+                    backgroundColor: generateRGBAColor(i, 0.2),
                     borderColor: generateBorderColor(i),
                     pointRadius: "0",
                     borderWidth: 4,
@@ -344,7 +365,6 @@ function onLoad() {
                 };
             }
         }
-
 
         var pagesVisitedChart = document.getElementById("pagesVisitedChart").getContext("2d");
 
@@ -398,19 +418,22 @@ function onLoad() {
                             }
                         }
                     ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
-                                fontColor: "#585757",
-                                precision: 0
-                            },
-                            gridLines: {
-                                display: true,
-                                color: "rgba(0, 0, 0, 0.07)"
-                            }
-                        }
-                    ]
+                    y: {
+                        stacked: true
+                    },
+                    // yAxes: [
+                    //     {
+                    //         ticks: {
+                    //             beginAtZero: true,
+                    //             fontColor: "#585757",
+                    //             precision: 0
+                    //         },
+                    //         gridLines: {
+                    //             display: true,
+                    //             color: "rgba(0, 0, 0, 0.07)"
+                    //         }
+                    //     }
+                    // ]
                 }
             }
         });
