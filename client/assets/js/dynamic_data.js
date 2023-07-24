@@ -90,6 +90,7 @@ function generateBorderColor(index) {
     ];
     return colors[index % colors.length];
 }
+
 function generateRGBAColor(index, alpha) {
     let colors = [
         "rgba(96, 120, 234, " + alpha + ")",
@@ -289,7 +290,7 @@ function onLoad() {
                     tension: 0.4,
                     fill: {
                         target: i === 0 ? "origin" : "-1",
-                        below: generateRGBAColor(i, 0.2),
+                        below: generateRGBAColor(i, 0.2)
                     }
                 };
                 datasets.push(dataset);
@@ -399,6 +400,29 @@ function onLoad() {
                             boxWidth: 40
                         },
                         position: "bottom"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || "";
+
+                                if (label) {
+                                    label += ": ";
+                                }
+                                // console.log("CONTEXT:", context);
+                                if (context.raw !== null) {
+                                    // console.log(context.parsed.y)
+                                    if (context.raw === 1)
+                                        label += (context.raw) + " page";
+                                    else
+                                        label += (context.raw) + " pages";
+                                }
+
+                                if (context.raw === 0) return;
+                                
+                                return label;
+                            }
+                        }
                     }
                 },
 
@@ -420,7 +444,7 @@ function onLoad() {
                     ],
                     y: {
                         stacked: true
-                    },
+                    }
                     // yAxes: [
                     //     {
                     //         ticks: {
